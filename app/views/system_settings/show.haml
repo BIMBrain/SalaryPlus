@@ -1,0 +1,203 @@
+/ 系統設定詳細頁面
+.macos-page-header
+  .macos-page-title
+    %h1
+      %i.fas.fa-cog
+      = @setting.setting_name
+    %p.macos-page-subtitle 系統設定詳細資訊
+
+  .macos-page-actions
+    = link_to edit_system_setting_path(@setting), class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-edit
+      編輯設定
+    = link_to system_settings_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回列表
+
+.row
+  .col-md-8
+    .macos-card
+      .macos-card-header
+        %h3.macos-card-title
+          %i.fas.fa-info-circle
+          設定詳細資訊
+
+      .macos-card-body
+        .macos-detail-group
+          .macos-detail-item
+            %label.macos-detail-label 設定鍵值
+            %span.macos-detail-value
+              %code= @setting.setting_key
+
+          .macos-detail-item
+            %label.macos-detail-label 設定名稱
+            %span.macos-detail-value= @setting.setting_name
+
+          .macos-detail-item
+            %label.macos-detail-label 設定類型
+            %span.macos-detail-value
+              %span.macos-badge.macos-badge-primary= @setting.setting_type_name
+
+          .macos-detail-item
+            %label.macos-detail-label 資料類型
+            %span.macos-detail-value
+              %span.macos-badge.macos-badge-secondary= @setting.data_type_name
+
+          .macos-detail-item
+            %label.macos-detail-label 設定值
+            %span.macos-detail-value
+              - case @setting.data_type
+              - when 'boolean'
+                - if @setting.boolean_value
+                  %span.macos-badge.macos-badge-success
+                    %i.fas.fa-check
+                    啟用
+                - else
+                  %span.macos-badge.macos-badge-danger
+                    %i.fas.fa-times
+                    停用
+              - when 'percentage'
+                %strong= "#{(@setting.decimal_value * 100).round(4)}%"
+              - when 'decimal'
+                %strong= @setting.decimal_value
+              - when 'integer'
+                %strong= @setting.integer_value
+              - else
+                %strong= @setting.setting_value
+
+          - if @setting.description.present?
+            .macos-detail-item
+              %label.macos-detail-label 說明
+              %span.macos-detail-value= @setting.description
+
+          - if @setting.formula.present?
+            .macos-detail-item
+              %label.macos-detail-label 計算公式
+              %span.macos-detail-value
+                %code.macos-code-block= @setting.formula
+
+          .macos-detail-item
+            %label.macos-detail-label 狀態
+            %span.macos-detail-value
+              - if @setting.is_active?
+                %span.macos-badge.macos-badge-success
+                  %i.fas.fa-check-circle
+                  啟用中
+              - else
+                %span.macos-badge.macos-badge-warning
+                  %i.fas.fa-pause-circle
+                  已停用
+
+          .macos-detail-item
+            %label.macos-detail-label 建立時間
+            %span.macos-detail-value= @setting.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+          .macos-detail-item
+            %label.macos-detail-label 更新時間
+            %span.macos-detail-value= @setting.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+
+  .col-md-4
+    / 相關操作
+    .macos-card
+      .macos-card-header
+        %h4.macos-card-title
+          %i.fas.fa-tools
+          相關操作
+
+      .macos-card-body
+        .macos-action-list
+          = link_to edit_system_setting_path(@setting), class: "macos-action-item" do
+            %i.fas.fa-edit
+            %span 編輯設定
+
+          = link_to system_settings_path(type: @setting.setting_type), class: "macos-action-item" do
+            %i.fas.fa-list
+            %span 同類型設定
+
+          - if @setting.setting_type.in?(['overtime_calculation', 'insurance_calculation', 'income_tax_calculation', 'supplement_health_insurance'])
+            %a.macos-action-item{href: "#", onclick: "showCalculationPreview()"}
+              %i.fas.fa-calculator
+              %span 計算預覽
+
+          %a.macos-action-item{href: "#", onclick: "exportSetting()"}
+            %i.fas.fa-download
+            %span 匯出設定
+
+    / 使用統計（如果有的話）
+    .macos-card
+      .macos-card-header
+        %h4.macos-card-title
+          %i.fas.fa-chart-bar
+          使用資訊
+
+      .macos-card-body
+        .macos-stat-item
+          %span.macos-stat-label 設定類型
+          %span.macos-stat-value= @setting.setting_type_name
+
+        .macos-stat-item
+          %span.macos-stat-label 最後更新
+          %span.macos-stat-value= time_ago_in_words(@setting.updated_at) + "前"
+
+        - if @setting.setting_type == 'ui_preferences'
+          .macos-stat-item
+            %span.macos-stat-label 影響範圍
+            %span.macos-stat-value 全系統
+
+/ 計算預覽模態框
+- if @setting.setting_type.in?(['overtime_calculation', 'insurance_calculation', 'income_tax_calculation', 'supplement_health_insurance'])
+  .macos-modal{id: "calculationPreviewModal", style: "display: none;"}
+    .macos-modal-dialog
+      .macos-modal-content
+        .macos-modal-header
+          %h4.macos-modal-title
+            %i.fas.fa-calculator
+            計算預覽 - #{@setting.setting_name}
+          %button.macos-modal-close{type: "button", onclick: "hideCalculationPreview()"}
+            %i.fas.fa-times
+
+        .macos-modal-body
+          #calculationPreviewContent
+            %p 載入中...
+
+        .macos-modal-footer
+          %button.macos-btn.macos-btn-secondary{type: "button", onclick: "hideCalculationPreview()"}
+            關閉
+
+:javascript
+  function showCalculationPreview() {
+    document.getElementById('calculationPreviewModal').style.display = 'block';
+    loadPreviewContent('#{@setting.setting_type}');
+  }
+  
+  function hideCalculationPreview() {
+    document.getElementById('calculationPreviewModal').style.display = 'none';
+  }
+  
+  function exportSetting() {
+    const settingData = {
+      setting_key: '#{@setting.setting_key}',
+      setting_name: '#{@setting.setting_name}',
+      setting_type: '#{@setting.setting_type}',
+      data_type: '#{@setting.data_type}',
+      setting_value: '#{@setting.setting_value}',
+      description: '#{@setting.description}',
+      formula: '#{@setting.formula}',
+      is_active: #{@setting.is_active?}
+    };
+    
+    const dataStr = JSON.stringify(settingData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '#{@setting.setting_key}_setting.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+  
+  function loadPreviewContent(settingType) {
+    // 載入對應的預覽內容（簡化版本）
+    const content = document.getElementById('calculationPreviewContent');
+    content.innerHTML = '<p>計算預覽功能開發中...</p>';
+  }

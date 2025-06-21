@@ -1,0 +1,16 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-user-plus
+      新增員工資料
+    %p.macos-card-subtitle 填寫新員工的基本資料和聯絡資訊
+
+= render "form", employee: @employee
+
+/ Back Button
+.macos-card
+  .macos-card-actions
+    = link_to employees_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回員工列表

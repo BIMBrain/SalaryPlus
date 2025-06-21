@@ -1,0 +1,238 @@
+/ 頁面標題
+.macos-page-header
+  .macos-page-title
+    %h1
+      %i.fas.fa-shield-alt
+      = @insurance_statement.statement_type_name
+      對帳單詳情
+    %p.macos-page-subtitle= "#{@insurance_statement.year}/#{@insurance_statement.month.to_s.rjust(2, '0')}"
+  .macos-page-actions
+    = link_to edit_insurance_statement_path(@insurance_statement), class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-edit
+      編輯
+    = link_to reconcile_insurance_statement_path(@insurance_statement), method: :patch, class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-sync
+      重新對帳
+    = link_to insurance_statements_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回列表
+
+/ 對帳狀態總覽
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-chart-pie
+      對帳狀態總覽
+  .macos-card-body
+    .row
+      .col-md-3
+        .macos-stats-card
+          .macos-stats-icon.macos-stats-icon-blue
+            %i.fas.fa-file-invoice-dollar
+          .macos-stats-content
+            .macos-stats-number= number_to_currency(@insurance_statement.statement_amount, unit: "NT$ ", precision: 0)
+            .macos-stats-label 對帳單金額
+      
+      .col-md-3
+        .macos-stats-card
+          .macos-stats-icon.macos-stats-icon-green
+            %i.fas.fa-calculator
+          .macos-stats-content
+            .macos-stats-number= number_to_currency(@insurance_statement.calculated_amount, unit: "NT$ ", precision: 0)
+            .macos-stats-label 系統計算金額
+      
+      .col-md-3
+        .macos-stats-card
+          .macos-stats-icon{class: @insurance_statement.has_discrepancy? ? 'macos-stats-icon-red' : 'macos-stats-icon-green'}
+            %i.fas{class: @insurance_statement.has_discrepancy? ? 'fa-exclamation-triangle' : 'fa-check-circle'}
+          .macos-stats-content
+            .macos-stats-number{class: @insurance_statement.has_discrepancy? ? 'text-danger' : 'text-success'}
+              = number_to_currency(@insurance_statement.difference_amount, unit: "NT$ ", precision: 0)
+            .macos-stats-label 差異金額
+      
+      .col-md-3
+        .macos-stats-card
+          .macos-stats-icon{class: @insurance_statement.reconciliation_status == 'matched' ? 'macos-stats-icon-green' : 'macos-stats-icon-orange'}
+            %i.fas.fa-tasks
+          .macos-stats-content
+            .macos-stats-number
+              %span.macos-badge{class: "macos-badge-#{@insurance_statement.reconciliation_status == 'matched' ? 'success' : 'warning'}"}
+                = @insurance_statement.reconciliation_status_name
+            .macos-stats-label 對帳狀態
+
+/ 基本資訊
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-info-circle
+      基本資訊
+  .macos-card-body
+    %table.macos-table
+      %tr
+        %th 保險類型
+        %td
+          %span.macos-badge.macos-badge-info= @insurance_statement.statement_type_name
+        %th 對帳年月
+        %td= "#{@insurance_statement.year}/#{@insurance_statement.month.to_s.rjust(2, '0')}"
+      %tr
+        %th 上傳時間
+        %td= @insurance_statement.uploaded_at&.strftime('%Y-%m-%d %H:%M:%S')
+        %th 對帳單檔案
+        %td= @insurance_statement.statement_file_path.present? ? @insurance_statement.statement_file_path : '未設定'
+      - if @insurance_statement.resolved_at.present?
+        %tr
+          %th 解決時間
+          %td= @insurance_statement.resolved_at.strftime('%Y-%m-%d %H:%M:%S')
+          %th
+          %td
+
+/ 計算明細
+- if @calculated_details.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-calculator
+        系統計算明細
+    .macos-card-body
+      - case @insurance_statement.statement_type
+      - when 'labor_insurance'
+        %h4 勞保費計算明細
+        %p
+          %strong 計算基礎：
+          本月份共 #{@calculated_details[:employee_count]} 位員工參與勞保
+        .macos-table-container
+          %table.macos-table
+            %thead
+              %tr
+                %th 員工姓名
+                %th 投保薪資
+                %th 勞保費
+            %tbody
+              - @calculated_details[:payrolls].each do |payroll|
+                %tr
+                  %td= payroll.employee.display_name
+                  %td.text-right= number_to_currency(payroll.salary.insured_for_labor, unit: "NT$ ", precision: 0)
+                  %td.text-right= number_to_currency(payroll.salary.labor_insurance, unit: "NT$ ", precision: 0)
+            %tfoot
+              %tr
+                %th{colspan: 2} 總計
+                %th.text-right= number_to_currency(@calculated_details[:total_amount], unit: "NT$ ", precision: 0)
+      
+      - when 'health_insurance'
+        %h4 健保費計算明細
+        %p
+          %strong 計算基礎：
+          本月份共 #{@calculated_details[:employee_count]} 位員工參與健保
+        
+        .row
+          .col-md-4
+            .macos-stats-card
+              .macos-stats-content
+                .macos-stats-number= number_to_currency(@calculated_details[:regular_amount], unit: "NT$ ", precision: 0)
+                .macos-stats-label 一般健保費
+          .col-md-4
+            .macos-stats-card
+              .macos-stats-content
+                .macos-stats-number= number_to_currency(@calculated_details[:supplement_amount], unit: "NT$ ", precision: 0)
+                .macos-stats-label 二代健保費
+          .col-md-4
+            .macos-stats-card
+              .macos-stats-content
+                .macos-stats-number= number_to_currency(@calculated_details[:company_amount], unit: "NT$ ", precision: 0)
+                .macos-stats-label 公司負擔二代健保
+        
+        .macos-table-container
+          %table.macos-table
+            %thead
+              %tr
+                %th 員工姓名
+                %th 投保薪資
+                %th 一般健保費
+                %th 二代健保費
+                %th 小計
+            %tbody
+              - @calculated_details[:payrolls].each do |payroll|
+                - supplement_fee = HealthInsuranceService::Dispatcher.call(payroll)
+                %tr
+                  %td= payroll.employee.display_name
+                  %td.text-right= number_to_currency(payroll.salary.insured_for_health, unit: "NT$ ", precision: 0)
+                  %td.text-right= number_to_currency(payroll.salary.health_insurance, unit: "NT$ ", precision: 0)
+                  %td.text-right= number_to_currency(supplement_fee, unit: "NT$ ", precision: 0)
+                  %td.text-right= number_to_currency(payroll.salary.health_insurance + supplement_fee, unit: "NT$ ", precision: 0)
+            %tfoot
+              %tr
+                %th{colspan: 4} 總計（含公司負擔）
+                %th.text-right= number_to_currency(@calculated_details[:total_amount], unit: "NT$ ", precision: 0)
+      
+      - when 'labor_pension'
+        %h4 勞退費計算明細
+        %p
+          %strong 計算基礎：
+          本月份共 #{@calculated_details[:employee_count]} 位員工參與勞退，提繳率 #{(@calculated_details[:contribution_rate] * 100).to_i}%
+        .macos-table-container
+          %table.macos-table
+            %thead
+              %tr
+                %th 員工姓名
+                %th 投保薪資
+                %th 提繳率
+                %th 勞退費
+            %tbody
+              - @calculated_details[:payrolls].each do |payroll|
+                - pension_amount = (payroll.salary.insured_for_labor * @calculated_details[:contribution_rate]).round
+                %tr
+                  %td= payroll.employee.display_name
+                  %td.text-right= number_to_currency(payroll.salary.insured_for_labor, unit: "NT$ ", precision: 0)
+                  %td.text-center= "#{(@calculated_details[:contribution_rate] * 100).to_i}%"
+                  %td.text-right= number_to_currency(pension_amount, unit: "NT$ ", precision: 0)
+            %tfoot
+              %tr
+                %th{colspan: 3} 總計
+                %th.text-right= number_to_currency(@calculated_details[:total_amount], unit: "NT$ ", precision: 0)
+
+/ 差異分析
+- if @insurance_statement.has_discrepancy?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-exclamation-triangle
+        差異分析
+    .macos-card-body
+      .macos-alert.macos-alert-warning
+        %h4 發現差異
+        %p
+          對帳單金額與系統計算金額存在差異：
+          %strong.text-danger= number_to_currency(@insurance_statement.difference_amount, unit: "NT$ ", precision: 0)
+        
+        %h5 可能原因：
+        %ul
+          %li 對帳單金額輸入錯誤
+          %li 該月份有保險費調整或補繳
+          %li 員工保險異動處理時間差異
+          %li 系統計算基礎與實際投保資料不符
+          %li 有特殊的減免或優惠項目
+        
+        %h5 建議處理方式：
+        %ul
+          %li 重新確認對帳單上的金額
+          %li 檢查該月份員工異動記錄
+          %li 確認投保薪資是否正確
+          %li 聯繫保險機構確認差異原因
+        
+        - if @insurance_statement.reconciliation_status != 'resolved'
+          = form_with model: @insurance_statement, url: resolve_insurance_statement_path(@insurance_statement), method: :patch, local: true, class: "macos-form" do |f|
+            .macos-form-group
+              = f.label :resolution_notes, "解決備註", class: "macos-form-label"
+              = f.text_area :resolution_notes, class: "macos-form-control", rows: 3, placeholder: "請記錄差異原因和處理方式"
+            = f.submit "標記為已解決", class: "macos-btn macos-btn-warning"
+
+/ 備註資訊
+- if @insurance_statement.resolution_notes.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-sticky-note
+        解決備註
+    .macos-card-body
+      .macos-alert.macos-alert-info
+        = simple_format(@insurance_statement.resolution_notes)

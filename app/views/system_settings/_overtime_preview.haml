@@ -1,0 +1,174 @@
+.macos-preview-container
+  %h4.macos-preview-title
+    %i.fas.fa-calculator
+    一例一休加班費計算預覽
+  
+  .macos-preview-form
+    .row
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 基本時薪
+          %input#base_hourly_wage.macos-form-control{type: "number", step: "0.01", value: "200", placeholder: "請輸入基本時薪"}
+          %small.macos-form-help 月薪 ÷ 30天 ÷ 8小時
+      
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 加班時數
+          %input#overtime_hours.macos-form-control{type: "number", step: "0.5", value: "2", placeholder: "請輸入加班時數"}
+      
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 加班類型
+          %select#overtime_type.macos-form-control
+            %option{value: "weekday"} 平日加班
+            %option{value: "holiday_first_2h"} 休息日前2小時
+            %option{value: "holiday_after_2h"} 休息日第3小時起
+            %option{value: "national_holiday"} 國定假日
+    
+    .macos-form-actions
+      %button#calculate_overtime.macos-btn.macos-btn-primary{type: "button"}
+        %i.fas.fa-calculator
+        計算加班費
+  
+  .macos-preview-result#overtime_result{style: "display: none;"}
+    %h5.macos-result-title 計算結果
+    .macos-result-grid
+      .macos-result-item
+        .macos-result-label 基本時薪
+        .macos-result-value#result_base_wage --
+      .macos-result-item
+        .macos-result-label 加班時數
+        .macos-result-value#result_overtime_hours --
+      .macos-result-item
+        .macos-result-label 適用費率
+        .macos-result-value#result_rate --
+      .macos-result-item
+        .macos-result-label 加班費
+        .macos-result-value#result_overtime_pay --
+    
+    .macos-calculation-formula
+      %strong 計算公式：
+      %span#calculation_formula --
+
+:css
+  .macos-preview-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: var(--macos-radius-large);
+    padding: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .macos-preview-title {
+    color: var(--macos-text-primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    
+    i {
+      color: var(--macos-blue);
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .macos-preview-form {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+  
+  .macos-preview-result {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 122, 255, 0.2);
+  }
+  
+  .macos-result-title {
+    color: var(--macos-blue);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  
+  .macos-result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .macos-result-item {
+    background: var(--macos-bg-secondary);
+    border-radius: var(--macos-radius);
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .macos-result-label {
+    font-size: 0.9rem;
+    color: var(--macos-text-secondary);
+    margin-bottom: 0.5rem;
+  }
+  
+  .macos-result-value {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--macos-blue);
+  }
+  
+  .macos-calculation-formula {
+    background: rgba(0, 122, 255, 0.1);
+    border-left: 3px solid var(--macos-blue);
+    padding: 1rem;
+    border-radius: 0 var(--macos-radius) var(--macos-radius) 0;
+    font-family: 'SF Mono', Monaco, monospace;
+    
+    span {
+      color: var(--macos-blue);
+      font-weight: 500;
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const calculateBtn = document.getElementById('calculate_overtime');
+    const resultDiv = document.getElementById('overtime_result');
+    
+    calculateBtn.addEventListener('click', function() {
+      const baseWage = parseFloat(document.getElementById('base_hourly_wage').value) || 0;
+      const overtimeHours = parseFloat(document.getElementById('overtime_hours').value) || 0;
+      const overtimeType = document.getElementById('overtime_type').value;
+      
+      // 取得當前設定的費率
+      let rate = 1.34; // 預設值
+      
+      switch(overtimeType) {
+        case 'weekday':
+          rate = parseFloat(document.querySelector('[data-setting-key="overtime_weekday_rate"]')?.value) || 1.34;
+          break;
+        case 'holiday_first_2h':
+          rate = parseFloat(document.querySelector('[data-setting-key="overtime_holiday_rate_first_2h"]')?.value) || 1.34;
+          break;
+        case 'holiday_after_2h':
+          rate = parseFloat(document.querySelector('[data-setting-key="overtime_holiday_rate_after_2h"]')?.value) || 1.67;
+          break;
+        case 'national_holiday':
+          rate = parseFloat(document.querySelector('[data-setting-key="overtime_national_holiday_rate"]')?.value) || 2.0;
+          break;
+      }
+      
+      const overtimePay = baseWage * overtimeHours * rate;
+      
+      // 更新結果顯示
+      document.getElementById('result_base_wage').textContent = `NT$ ${baseWage.toFixed(2)}`;
+      document.getElementById('result_overtime_hours').textContent = `${overtimeHours} 小時`;
+      document.getElementById('result_rate').textContent = `${rate}倍`;
+      document.getElementById('result_overtime_pay').textContent = `NT$ ${overtimePay.toFixed(2)}`;
+      document.getElementById('calculation_formula').textContent = 
+        `${baseWage} × ${overtimeHours} × ${rate} = ${overtimePay.toFixed(2)}`;
+      
+      resultDiv.style.display = 'block';
+    });
+  });

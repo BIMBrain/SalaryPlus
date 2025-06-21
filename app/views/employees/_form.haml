@@ -1,0 +1,354 @@
+= simple_form_for employee, html: { class: "macos-form" } do |f|
+  / 基本資料
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-user
+        基本資料
+    .macos-card-body
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :employee_number, "員工編號", class: "macos-form-label"
+            = f.input_field :employee_number, class: "macos-form-control", placeholder: "例：EMP001"
+        .col-md-6
+          .macos-form-group
+            = f.label :chinese_name, "中文姓名", class: "macos-form-label"
+            = f.input_field :chinese_name, class: "macos-form-control", placeholder: "請輸入中文姓名"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :english_name, "英文姓名", class: "macos-form-label"
+            = f.input_field :english_name, class: "macos-form-control", placeholder: "請輸入英文姓名"
+        .col-md-6
+          .macos-form-group
+            = f.label :name, "顯示名稱", class: "macos-form-label"
+            = f.input_field :name, class: "macos-form-control", placeholder: "系統顯示用名稱"
+
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :gender, "性別", class: "macos-form-label"
+            = f.input_field :gender, collection: Employee::GENDER_OPTIONS, prompt: "請選擇性別", class: "macos-form-control"
+        .col-md-4
+          .macos-form-group
+            = f.label :birthday, "出生日期", class: "macos-form-label"
+            = f.input_field :birthday, as: :date, class: "macos-form-control"
+        .col-md-4
+          .macos-form-group
+            = f.label :marital_status, "婚姻狀況", class: "macos-form-label"
+            = f.input_field :marital_status, collection: Employee::MARITAL_STATUS_OPTIONS, prompt: "請選擇婚姻狀況", class: "macos-form-control"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :id_number, "身分證字號", class: "macos-form-label"
+            = f.input_field :id_number, class: "macos-form-control", placeholder: "請輸入身分證字號"
+        .col-md-6
+          .macos-form-group
+            = f.label :nationality, "國籍", class: "macos-form-label"
+            = f.input_field :nationality, class: "macos-form-control", placeholder: "例：中華民國", value: employee.nationality || "中華民國"
+
+  / 聯絡資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-phone
+        聯絡資訊
+    .macos-card-body
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :company_email, "公司電子郵件", class: "macos-form-label"
+            = f.input_field :company_email, class: "macos-form-control", placeholder: "example@company.com"
+        .col-md-4
+          .macos-form-group
+            = f.label :personal_email, "私人電子郵件", class: "macos-form-label"
+            = f.input_field :personal_email, class: "macos-form-control", placeholder: "personal@email.com"
+        .col-md-4
+          .macos-form-group
+            = f.label :phone_number, "電話號碼", class: "macos-form-label"
+            = f.input_field :phone_number, class: "macos-form-control", placeholder: "例：02-12345678"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :mobile_number, "手機號碼", class: "macos-form-label"
+            = f.input_field :mobile_number, class: "macos-form-control", placeholder: "例：0912345678"
+        .col-md-6
+          .macos-form-group
+            = f.label :residence_address, "戶籍地址", class: "macos-form-label"
+            = f.input_field :residence_address, class: "macos-form-control", placeholder: "請輸入戶籍地址"
+
+      .macos-form-group
+        = f.label :current_address, "現住地址", class: "macos-form-label"
+        = f.input_field :current_address, as: :text, class: "macos-form-control", rows: 2, placeholder: "請輸入現住地址"
+
+      .macos-form-group
+        = f.label :mailing_address, "通訊地址", class: "macos-form-label"
+        = f.input_field :mailing_address, as: :text, class: "macos-form-control", rows: 2, placeholder: "請輸入通訊地址（如與現住地址相同可留空）"
+
+      %h4{style: "color: var(--macos-blue); margin-top: 2rem; margin-bottom: 1rem;"}
+        %i.fas.fa-exclamation-triangle
+        緊急聯絡人
+
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :emergency_contact_name, "緊急聯絡人姓名", class: "macos-form-label"
+            = f.input_field :emergency_contact_name, class: "macos-form-control", placeholder: "請輸入緊急聯絡人姓名"
+        .col-md-4
+          .macos-form-group
+            = f.label :emergency_contact_relationship, "關係", class: "macos-form-label"
+            = f.input_field :emergency_contact_relationship, class: "macos-form-control", placeholder: "例：父親、配偶"
+        .col-md-4
+          .macos-form-group
+            = f.label :emergency_contact_phone, "緊急聯絡人電話", class: "macos-form-label"
+            = f.input_field :emergency_contact_phone, class: "macos-form-control", placeholder: "請輸入緊急聯絡人電話"
+
+  / 學歷資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-graduation-cap
+        學歷資訊
+    .macos-card-body
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :education_level, "學歷", class: "macos-form-label"
+            = f.input_field :education_level, collection: Employee::EDUCATION_LEVEL_OPTIONS, prompt: "請選擇學歷", class: "macos-form-control"
+        .col-md-6
+          .macos-form-group
+            = f.label :school_name, "學校名稱", class: "macos-form-label"
+            = f.input_field :school_name, class: "macos-form-control", placeholder: "請輸入學校名稱"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :major, "科系", class: "macos-form-label"
+            = f.input_field :major, class: "macos-form-control", placeholder: "請輸入科系"
+        .col-md-6
+          .macos-form-group
+            = f.label :graduation_year, "畢業年份", class: "macos-form-label"
+            = f.input_field :graduation_year, class: "macos-form-control", placeholder: "例：2020"
+
+  / 工作經歷
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-briefcase
+        工作經歷
+    .macos-card-body
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :previous_company, "前公司", class: "macos-form-label"
+            = f.input_field :previous_company, class: "macos-form-control", placeholder: "請輸入前公司名稱"
+        .col-md-6
+          .macos-form-group
+            = f.label :previous_position, "前職位", class: "macos-form-label"
+            = f.input_field :previous_position, class: "macos-form-control", placeholder: "請輸入前職位"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :previous_work_period, "前工作期間", class: "macos-form-label"
+            = f.input_field :previous_work_period, class: "macos-form-control", placeholder: "例：2018/01 - 2020/12"
+        .col-md-6
+          .macos-form-group
+            = f.label :work_experience_years, "工作年資", class: "macos-form-label"
+            = f.input_field :work_experience_years, class: "macos-form-control", placeholder: "例：3.5", step: 0.1
+
+  / 職位資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-id-badge
+        職位資訊
+    .macos-card-body
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :department, "部門", class: "macos-form-label"
+            = f.input_field :department, class: "macos-form-control", placeholder: "例：資訊部"
+        .col-md-4
+          .macos-form-group
+            = f.label :position, "職位", class: "macos-form-label"
+            = f.input_field :position, class: "macos-form-control", placeholder: "例：軟體工程師"
+        .col-md-4
+          .macos-form-group
+            = f.label :job_title, "職稱", class: "macos-form-label"
+            = f.input_field :job_title, class: "macos-form-control", placeholder: "例：資深工程師"
+
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :employment_type, "聘僱類型", class: "macos-form-label"
+            = f.input_field :employment_type, collection: Employee::EMPLOYMENT_TYPE_OPTIONS, prompt: "請選擇聘僱類型", class: "macos-form-control"
+        .col-md-4
+          .macos-form-group
+            = f.label :work_location, "工作地點", class: "macos-form-label"
+            = f.input_field :work_location, class: "macos-form-control", placeholder: "例：台北總公司"
+        .col-md-4
+          .macos-form-group
+            = f.label :probation_period, "試用期(月)", class: "macos-form-label"
+            = f.input_field :probation_period, class: "macos-form-control", placeholder: "例：3"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :hire_date, "到職日期", class: "macos-form-label"
+            = f.input_field :hire_date, as: :date, class: "macos-form-control"
+        .col-md-6
+          .macos-form-group
+            = f.label :resignation_date, "離職日期", class: "macos-form-label"
+            = f.input_field :resignation_date, as: :date, class: "macos-form-control"
+
+  / 薪資資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-dollar-sign
+        薪資資訊
+    .macos-card-body
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :basic_salary, "基本薪資", class: "macos-form-label"
+            = f.input_field :basic_salary, class: "macos-form-control", placeholder: "例：40000"
+        .col-md-4
+          .macos-form-group
+            = f.label :allowances, "津貼", class: "macos-form-label"
+            = f.input_field :allowances, class: "macos-form-control", placeholder: "例：5000"
+        .col-md-4
+          .macos-form-group
+            = f.label :performance_bonus, "績效獎金", class: "macos-form-label"
+            = f.input_field :performance_bonus, class: "macos-form-control", placeholder: "例：10000"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :bank_account, "銀行帳戶", class: "macos-form-label"
+            = f.input_field :bank_account, class: "macos-form-control", placeholder: "請輸入銀行帳號"
+        .col-md-6
+          .macos-form-group
+            = f.label :bank_transfer_type, "轉帳方式", class: "macos-form-label"
+            = f.input_field :bank_transfer_type, collection: Employee::BANK_TRANSFER_TYPE, class: "macos-form-control"
+
+  / 保險資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-shield-alt
+        保險資訊
+    .macos-card-body
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :labor_insurance_number, "勞保證號", class: "macos-form-label"
+            = f.input_field :labor_insurance_number, class: "macos-form-control", placeholder: "請輸入勞保證號"
+        .col-md-4
+          .macos-form-group
+            = f.label :health_insurance_number, "健保證號", class: "macos-form-label"
+            = f.input_field :health_insurance_number, class: "macos-form-control", placeholder: "請輸入健保證號"
+        .col-md-4
+          .macos-form-group
+            = f.label :pension_account, "退休金帳戶", class: "macos-form-label"
+            = f.input_field :pension_account, class: "macos-form-control", placeholder: "請輸入退休金帳戶"
+
+  / 家庭狀況
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-home
+        家庭狀況
+    .macos-card-body
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :spouse_name, "配偶姓名", class: "macos-form-label"
+            = f.input_field :spouse_name, class: "macos-form-control", placeholder: "請輸入配偶姓名"
+        .col-md-6
+          .macos-form-group
+            = f.label :spouse_id_number, "配偶身分證字號", class: "macos-form-label"
+            = f.input_field :spouse_id_number, class: "macos-form-control", placeholder: "請輸入配偶身分證字號"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :spouse_birthday, "配偶生日", class: "macos-form-label"
+            = f.input_field :spouse_birthday, as: :date, class: "macos-form-control"
+        .col-md-6
+          .macos-form-group
+            = f.label :children_count, "子女人數", class: "macos-form-label"
+            = f.input_field :children_count, class: "macos-form-control", placeholder: "例：2"
+
+  / 其他資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-info-circle
+        其他資訊
+    .macos-card-body
+      .row
+        .col-md-3
+          .macos-form-group
+            = f.label :blood_type, "血型", class: "macos-form-label"
+            = f.input_field :blood_type, class: "macos-form-control", placeholder: "例：A"
+        .col-md-3
+          .macos-form-group
+            = f.label :height, "身高(cm)", class: "macos-form-label"
+            = f.input_field :height, class: "macos-form-control", placeholder: "例：170"
+        .col-md-3
+          .macos-form-group
+            = f.label :weight, "體重(kg)", class: "macos-form-label"
+            = f.input_field :weight, class: "macos-form-control", placeholder: "例：65"
+        .col-md-3
+          .macos-form-group
+            = f.label :military_service_status, "兵役狀況", class: "macos-form-label"
+            = f.input_field :military_service_status, collection: Employee::MILITARY_SERVICE_OPTIONS, prompt: "請選擇兵役狀況", class: "macos-form-control"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :driver_license, "駕照", class: "macos-form-label"
+            = f.input_field :driver_license, class: "macos-form-control", placeholder: "例：汽車、機車"
+        .col-md-6
+          .macos-form-group
+            = f.label :languages, "語言能力", class: "macos-form-label"
+            = f.input_field :languages, class: "macos-form-control", placeholder: "例：中文、英文、日文"
+
+      .macos-form-group
+        = f.label :special_skills, "專長技能", class: "macos-form-label"
+        = f.input_field :special_skills, as: :text, class: "macos-form-control", rows: 3, placeholder: "請輸入專長技能"
+
+      .macos-form-group
+        = f.label :hobbies, "興趣嗜好", class: "macos-form-label"
+        = f.input_field :hobbies, as: :text, class: "macos-form-control", rows: 2, placeholder: "請輸入興趣嗜好"
+
+      .macos-form-group
+        = f.label :health_condition, "健康狀況", class: "macos-form-label"
+        = f.input_field :health_condition, as: :text, class: "macos-form-control", rows: 2, placeholder: "請輸入健康狀況"
+
+      .macos-form-group
+        = f.label :notes, "備註", class: "macos-form-label"
+        = f.input_field :notes, as: :text, class: "macos-form-control", rows: 3, placeholder: "其他備註事項"
+
+  / 系統設定
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-cogs
+        系統設定
+    .macos-card-body
+      .macos-form-group
+        .form-check{style: "display: flex; align-items: center; gap: 8px; padding: 16px; background-color: var(--macos-bg-secondary); border-radius: var(--macos-radius-medium);"}
+          = f.input_field :b2b, style: "margin: 0;"
+          = f.label :b2b, "非個人所得 - 付款對象可開立發票，不列入勞務報酬", class: "macos-form-label", style: "margin: 0; font-weight: 400;"
+
+  / 提交按鈕
+  .macos-form-group{style: "text-align: center; margin-top: 2rem;"}
+    = f.submit "儲存員工資料", class: "macos-btn macos-btn-primary", style: "padding: 12px 32px; font-size: 16px; margin-right: 1rem;"
+    = link_to "取消", employees_path, class: "macos-btn macos-btn-secondary", style: "padding: 12px 32px; font-size: 16px;"

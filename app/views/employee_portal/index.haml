@@ -1,0 +1,154 @@
+/ 歡迎標題
+.employee-portal-card{style: "margin-bottom: 2rem;"}
+  .macos-card-body{style: "text-align: center; padding: 2rem;"}
+    %h1{style: "color: var(--macos-blue); margin-bottom: 0.5rem;"}
+      %i.fas.fa-hand-wave
+      歡迎，#{@current_employee.display_name}
+    %p{style: "color: var(--macos-text-secondary); font-size: 1.1rem;"}
+      您可以在這裡查閱個人薪資、保險和出勤資訊
+
+/ 統計卡片
+.macos-stats-grid{style: "margin-bottom: 2rem;"}
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-green
+      %i.fas.fa-dollar-sign
+    .macos-stats-content
+      .macos-stats-number= number_to_currency(@ytd_gross_pay, unit: "NT$ ", precision: 0)
+      .macos-stats-label 今年總收入
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-red
+      %i.fas.fa-receipt
+    .macos-stats-content
+      .macos-stats-number= number_to_currency(@ytd_tax_withheld, unit: "NT$ ", precision: 0)
+      .macos-stats-label 今年扣繳稅額
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-blue
+      %i.fas.fa-shield-alt
+    .macos-stats-content
+      .macos-stats-number= number_to_currency(@ytd_insurance, unit: "NT$ ", precision: 0)
+      .macos-stats-label 今年保險費
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-orange
+      %i.fas.fa-clock
+    .macos-stats-content
+      .macos-stats-number= "#{@this_month_work_hours.round(1)}小時"
+      .macos-stats-label 本月工時
+
+/ 快速功能
+.employee-portal-card{style: "margin-bottom: 2rem;"}
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-rocket
+      快速功能
+  .macos-card-body
+    .macos-dashboard-grid
+      = link_to employee_portal_payrolls_path, class: "macos-dashboard-card" do
+        .macos-dashboard-icon
+          %i.fas.fa-file-invoice-dollar
+        %h3.macos-dashboard-title 薪資查詢
+        %p.macos-dashboard-description 查看薪資單和年度薪資統計
+      
+      = link_to employee_portal_insurance_path, class: "macos-dashboard-card" do
+        .macos-dashboard-icon
+          %i.fas.fa-shield-alt
+        %h3.macos-dashboard-title 保險資訊
+        %p.macos-dashboard-description 查看勞健保投保和繳費記錄
+      
+      = link_to employee_portal_tax_documents_path, class: "macos-dashboard-card" do
+        .macos-dashboard-icon
+          %i.fas.fa-file-alt
+        %h3.macos-dashboard-title 所得稅資料
+        %p.macos-dashboard-description 下載扣繳憑單和所得證明
+      
+      = link_to employee_portal_attendance_path, class: "macos-dashboard-card" do
+        .macos-dashboard-icon
+          %i.fas.fa-calendar-check
+        %h3.macos-dashboard-title 出勤記錄
+        %p.macos-dashboard-description 查看打卡記錄和出勤統計
+      
+      = link_to employee_portal_profile_path, class: "macos-dashboard-card" do
+        .macos-dashboard-icon
+          %i.fas.fa-user
+        %h3.macos-dashboard-title 個人資料
+        %p.macos-dashboard-description 查看個人基本資料和聯絡資訊
+
+/ 最近薪資記錄
+.employee-portal-card{style: "margin-bottom: 2rem;"}
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-history
+      最近薪資記錄
+    = link_to employee_portal_payrolls_path, class: "macos-btn macos-btn-sm macos-btn-primary" do
+      %i.fas.fa-eye
+      查看全部
+  .macos-card-body
+    - if @recent_payrolls.any?
+      .macos-table-container
+        %table.macos-table
+          %thead
+            %tr
+              %th 年月
+              %th 總收入
+              %th 實領金額
+              %th 所得稅
+              %th 操作
+          %tbody
+            - @recent_payrolls.each do |payroll|
+              %tr
+                %td= "#{payroll.year}/#{payroll.month.to_s.rjust(2, '0')}"
+                %td.text-right= number_to_currency(payroll.statement&.amount || 0, unit: "NT$ ", precision: 0)
+                %td.text-right= number_to_currency(payroll.statement&.net_income || 0, unit: "NT$ ", precision: 0)
+                %td.text-right= number_to_currency(payroll.statement&.income_tax || 0, unit: "NT$ ", precision: 0)
+                %td
+                  .macos-btn-group
+                    = link_to employee_portal_payroll_path(payroll), class: "macos-btn macos-btn-sm macos-btn-info" do
+                      %i.fas.fa-eye
+                    = link_to download_payslip_employee_portal_path(payroll, format: :pdf), class: "macos-btn macos-btn-sm macos-btn-success" do
+                      %i.fas.fa-download
+    - else
+      .macos-empty-state
+        %i.fas.fa-inbox
+        %h3 尚無薪資記錄
+        %p 目前沒有可顯示的薪資資料
+
+/ 最近出勤記錄
+.employee-portal-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-clock
+      最近出勤記錄
+    = link_to employee_portal_attendance_path, class: "macos-btn macos-btn-sm macos-btn-primary" do
+      %i.fas.fa-calendar
+      查看出勤日曆
+  .macos-card-body
+    - if @recent_attendances.any?
+      .macos-table-container
+        %table.macos-table
+          %thead
+            %tr
+              %th 日期時間
+              %th 打卡類型
+              %th 打卡方式
+              %th 狀態
+          %tbody
+            - @recent_attendances.each do |attendance|
+              %tr
+                %td= attendance.punch_time.strftime('%Y-%m-%d %H:%M')
+                %td
+                  %span.macos-badge.macos-badge-info= attendance.punch_type_name
+                %td= attendance.punch_method_name
+                %td
+                  - if attendance.late?
+                    %span.macos-badge.macos-badge-warning 遲到
+                  - elsif attendance.early_leave?
+                    %span.macos-badge.macos-badge-warning 早退
+                  - else
+                    %span.macos-badge.macos-badge-success 正常
+    - else
+      .macos-empty-state
+        %i.fas.fa-clock
+        %h3 尚無出勤記錄
+        %p 目前沒有可顯示的出勤資料

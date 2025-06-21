@@ -1,0 +1,14 @@
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-plus-circle
+      = init_button_text
+    %p.macos-card-subtitle 選擇要產生薪資單的員工類型
+
+  .macos-card-actions
+    = link_to init_regulars_path(year: init_year, month: init_month), class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-briefcase
+      月薪制員工
+    = link_to parttimers_path(year: init_year, month: init_month), class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-clock
+      兼職外包

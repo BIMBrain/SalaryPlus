@@ -1,0 +1,24 @@
+.payrolls#show {
+  .table {
+    margin-bottom: 0;
+  }
+
+  .row {
+    margin-right: 0;
+    margin-left: 0;
+
+    div.col-xs-3, div.col-xs-6 {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+}
+.payrolls#index {
+  #payroll_search {
+    margin-bottom: 20px;
+  }
+
+  .initiate_link {
+    margin: 10px 0 20px 0;
+  }
+}

@@ -1,0 +1,167 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-clock
+      快速打卡
+    %p.macos-card-subtitle 員工快速打卡和補卡功能
+
+/ Quick Punch Section
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-hand-pointer
+      快速打卡
+    %p.macos-card-subtitle 選擇員工進行快速打卡
+    
+  .macos-card-body
+    #quick-punch-form
+      .row
+        .col-md-6
+          .macos-form-group
+            %label.macos-form-label 選擇員工
+            %select#employee-select.macos-form-control
+              %option{value: ""} 請選擇員工
+              - @employees.each do |employee|
+                %option{value: employee.id}= employee.name
+        .col-md-6
+          .macos-form-group
+            %label.macos-form-label 打卡方式
+            %select#punch-method.macos-form-control
+              - Attendance::PUNCH_METHODS.each do |key, value|
+                %option{value: key}= value
+      
+      .row
+        .col-md-12
+          .macos-form-group
+            %label.macos-form-label 位置資訊（選填）
+            %input#location.macos-form-control{type: "text", placeholder: "例：辦公室、分公司A"}
+      
+      .row
+        .col-md-12
+          .macos-form-group
+            %label.macos-form-label 備註（選填）
+            %textarea#notes.macos-form-control{rows: "3", placeholder: "補卡原因或其他說明"}
+      
+      .row
+        .col-md-12
+          .macos-form-group{style: "text-align: center;"}
+            %button#quick-punch-btn.macos-btn.macos-btn-primary{style: "padding: 16px 32px; font-size: 18px;"}
+              %i.fas.fa-hand-pointer
+              立即打卡
+
+/ Manual Attendance Form
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-edit
+      手動補卡
+    %p.macos-card-subtitle 手動新增或修正打卡記錄
+    
+  .macos-card-body
+    = form_with model: @attendance, local: true, html: { class: "macos-form" } do |f|
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :employee_id, "員工", class: "macos-form-label"
+            = f.select :employee_id, options_from_collection_for_select(@employees, :id, :name), { prompt: "請選擇員工" }, { class: "macos-form-control" }
+        .col-md-6
+          .macos-form-group
+            = f.label :punch_type, "打卡類型", class: "macos-form-label"
+            = f.select :punch_type, options_for_select(Attendance::PUNCH_TYPES.map { |k, v| [v, k] }), { prompt: "請選擇打卡類型" }, { class: "macos-form-control" }
+      
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :punch_time, "打卡時間", class: "macos-form-label"
+            = f.datetime_local_field :punch_time, class: "macos-form-control", value: Time.current.strftime('%Y-%m-%dT%H:%M')
+        .col-md-6
+          .macos-form-group
+            = f.label :punch_method, "打卡方式", class: "macos-form-label"
+            = f.select :punch_method, options_for_select(Attendance::PUNCH_METHODS.map { |k, v| [v, k] }), { selected: 'manual' }, { class: "macos-form-control" }
+      
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :location, "位置", class: "macos-form-label"
+            = f.text_field :location, class: "macos-form-control", placeholder: "打卡位置"
+        .col-md-6
+          .macos-form-group
+            = f.label :ip_address, "IP地址", class: "macos-form-label"
+            = f.text_field :ip_address, class: "macos-form-control", value: request.remote_ip
+      
+      .row
+        .col-md-12
+          .macos-form-group
+            = f.label :notes, "備註", class: "macos-form-label"
+            = f.text_area :notes, class: "macos-form-control", rows: 3, placeholder: "補卡原因或其他說明"
+      
+      .macos-form-group{style: "text-align: center; margin-top: 2rem;"}
+        = f.submit "建立打卡記錄", class: "macos-btn macos-btn-primary", style: "padding: 12px 32px; font-size: 16px;"
+
+/ Back Button
+.macos-card
+  .macos-card-actions
+    = link_to attendances_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回出勤列表
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const quickPunchBtn = document.getElementById('quick-punch-btn');
+    const employeeSelect = document.getElementById('employee-select');
+    const punchMethod = document.getElementById('punch-method');
+    const location = document.getElementById('location');
+    const notes = document.getElementById('notes');
+    
+    quickPunchBtn.addEventListener('click', function() {
+      const employeeId = employeeSelect.value;
+      
+      if (!employeeId) {
+        alert('請選擇員工');
+        return;
+      }
+      
+      // 顯示載入狀態
+      quickPunchBtn.disabled = true;
+      quickPunchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 打卡中...';
+      
+      // 發送打卡請求
+      fetch('/attendances/quick_punch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          employee_id: employeeId,
+          punch_method: punchMethod.value,
+          location: location.value,
+          notes: notes.value
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert(data.message);
+          // 清空表單
+          employeeSelect.value = '';
+          location.value = '';
+          notes.value = '';
+          // 重新載入頁面顯示最新記錄
+          window.location.reload();
+        } else {
+          alert('打卡失敗：' + data.errors.join(', '));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('打卡失敗，請稍後再試');
+      })
+      .finally(() => {
+        // 恢復按鈕狀態
+        quickPunchBtn.disabled = false;
+        quickPunchBtn.innerHTML = '<i class="fas fa-hand-pointer"></i> 立即打卡';
+      });
+    });
+  });

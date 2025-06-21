@@ -1,0 +1,209 @@
+/ 新增系統設定頁面
+.macos-page-header
+  .macos-page-title
+    %h1
+      %i.fas.fa-plus-circle
+      新增系統設定
+    %p.macos-page-subtitle 建立新的系統計算公式或參數設定
+
+  .macos-page-actions
+    = link_to system_settings_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回設定列表
+
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-cog
+      設定資訊
+    %p.macos-card-subtitle 請填寫完整的設定資訊
+
+  .macos-card-body
+    = form_with model: @setting, url: system_settings_path, local: true, html: { class: "macos-form" } do |f|
+      - if @setting.errors.any?
+        .macos-alert.macos-alert-danger
+          %h4
+            %i.fas.fa-exclamation-triangle
+            發生 #{pluralize(@setting.errors.count, "個")} 錯誤：
+          %ul
+            - @setting.errors.full_messages.each do |message|
+              %li= message
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :setting_key, "設定鍵值", class: "macos-form-label required"
+            = f.text_field :setting_key, class: "macos-form-control", required: true, placeholder: "例如：overtime_weekday_rate"
+            %small.macos-form-text 系統內部使用的唯一識別碼，建議使用英文和底線
+
+        .col-md-6
+          .macos-form-group
+            = f.label :setting_name, "設定名稱", class: "macos-form-label required"
+            = f.text_field :setting_name, class: "macos-form-control", required: true, placeholder: "例如：平日加班費倍率"
+
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :setting_type, "設定類型", class: "macos-form-label required"
+            = f.select :setting_type, options_for_select(SystemSetting::SETTING_TYPES.map { |k, v| [v, k] }, @setting.setting_type), { prompt: "請選擇設定類型" }, { class: "macos-form-control", required: true }
+            %small.macos-form-text 選擇此設定所屬的功能類別
+
+        .col-md-6
+          .macos-form-group
+            = f.label :data_type, "資料類型", class: "macos-form-label required"
+            = f.select :data_type, options_for_select(SystemSetting::DATA_TYPES.map { |k, v| [v, k] }, @setting.data_type), { prompt: "請選擇資料類型" }, { class: "macos-form-control", required: true }
+            %small.macos-form-text 選擇設定值的資料格式
+
+      .macos-form-group
+        = f.label :setting_value, "設定值", class: "macos-form-label required"
+        #setting_value_input
+          = f.text_field :setting_value, class: "macos-form-control", required: true, placeholder: "請輸入設定值"
+        %small.macos-form-text#setting_value_help 請根據選擇的資料類型輸入對應格式的值
+
+      .macos-form-group
+        = f.label :description, "說明", class: "macos-form-label"
+        = f.text_area :description, class: "macos-form-control", rows: 3, placeholder: "請輸入設定的詳細說明，幫助其他使用者理解此設定的用途..."
+
+      .macos-form-group#formula_group{style: "display: none;"}
+        = f.label :formula, "計算公式", class: "macos-form-label"
+        = f.text_area :formula, class: "macos-form-control macos-code-input", rows: 4, placeholder: "請輸入計算公式（選填）..."
+        %small.macos-form-text 支援數學運算式，例如：base_salary * rate + allowance
+
+      .macos-form-group
+        .macos-form-check
+          = f.check_box :is_active, class: "macos-form-check-input", checked: true
+          = f.label :is_active, "啟用此設定", class: "macos-form-check-label"
+          %small.macos-form-text 新建立的設定預設為啟用狀態
+
+      .macos-form-actions
+        = f.submit "建立設定", class: "macos-btn macos-btn-primary"
+        = link_to "取消", system_settings_path, class: "macos-btn macos-btn-secondary"
+
+/ 設定類型說明
+.macos-card.mt-4
+  .macos-card-header
+    %h4.macos-card-title
+      %i.fas.fa-info-circle
+      設定類型說明
+
+  .macos-card-body
+    .row
+      .col-md-6
+        %h5.text-primary
+          %i.fas.fa-calculator
+          計算相關設定
+        %ul.macos-list
+          %li
+            %strong 加班費計算：
+            設定各種加班費倍率和計算規則
+          %li
+            %strong 保險費計算：
+            設定勞保、健保、勞退等費率
+          %li
+            %strong 所得稅計算：
+            設定所得稅扣繳相關參數
+          %li
+            %strong 補充保費計算：
+            設定二代健保補充保費規則
+
+      .col-md-6
+        %h5.text-success
+          %i.fas.fa-cogs
+          系統相關設定
+        %ul.macos-list
+          %li
+            %strong 一般設定：
+            系統基本參數和預設值
+          %li
+            %strong UI偏好設定：
+            使用者介面相關設定
+          %li
+            %strong 通知設定：
+            系統通知和提醒設定
+          %li
+            %strong 安全設定：
+            系統安全相關參數
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const settingTypeSelect = document.getElementById('system_setting_setting_type');
+    const dataTypeSelect = document.getElementById('system_setting_data_type');
+    const settingValueInput = document.getElementById('setting_value_input');
+    const formulaGroup = document.getElementById('formula_group');
+    const settingValueHelp = document.getElementById('setting_value_help');
+    
+    // 監聽設定類型變化
+    settingTypeSelect.addEventListener('change', function() {
+      const selectedType = this.value;
+      const calculationTypes = ['overtime_calculation', 'insurance_calculation', 'income_tax_calculation', 'supplement_health_insurance'];
+      
+      if (calculationTypes.includes(selectedType)) {
+        formulaGroup.style.display = 'block';
+      } else {
+        formulaGroup.style.display = 'none';
+      }
+    });
+    
+    // 監聽資料類型變化
+    dataTypeSelect.addEventListener('change', function() {
+      const selectedType = this.value;
+      const settingValueField = settingValueInput.querySelector('input, select');
+      
+      // 移除現有的輸入欄位
+      settingValueInput.innerHTML = '';
+      
+      let newInput;
+      let helpText = '';
+      
+      switch(selectedType) {
+        case 'boolean':
+          newInput = `
+            <div class="macos-form-check-group">
+              <input type="radio" name="system_setting[setting_value]" value="true" class="macos-form-check-input" id="setting_value_true">
+              <label for="setting_value_true" class="macos-form-check-label">啟用</label>
+              <input type="radio" name="system_setting[setting_value]" value="false" class="macos-form-check-input" id="setting_value_false">
+              <label for="setting_value_false" class="macos-form-check-label">停用</label>
+            </div>
+          `;
+          helpText = '選擇啟用或停用';
+          break;
+          
+        case 'integer':
+          newInput = '<input type="number" name="system_setting[setting_value]" class="macos-form-control" step="1" required placeholder="請輸入整數">';
+          helpText = '請輸入整數值';
+          break;
+          
+        case 'decimal':
+          newInput = '<input type="number" name="system_setting[setting_value]" class="macos-form-control" step="0.01" required placeholder="請輸入小數">';
+          helpText = '請輸入小數值，例如：1.34';
+          break;
+          
+        case 'percentage':
+          newInput = `
+            <div class="input-group">
+              <input type="number" name="system_setting[setting_value]" class="macos-form-control" step="0.0001" min="0" max="1" required placeholder="0.1234">
+              <div class="input-group-append">
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+          `;
+          helpText = '請輸入 0-1 之間的小數，例如：0.05 代表 5%';
+          break;
+          
+        default:
+          newInput = '<input type="text" name="system_setting[setting_value]" class="macos-form-control" required placeholder="請輸入設定值">';
+          helpText = '請輸入文字內容';
+      }
+      
+      settingValueInput.innerHTML = newInput;
+      settingValueHelp.textContent = helpText;
+    });
+    
+    // 初始化時觸發一次
+    if (settingTypeSelect.value) {
+      settingTypeSelect.dispatchEvent(new Event('change'));
+    }
+    if (dataTypeSelect.value) {
+      dataTypeSelect.dispatchEvent(new Event('change'));
+    }
+  });

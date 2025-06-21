@@ -1,0 +1,308 @@
+.macos-preview-container
+  %h4.macos-preview-title
+    %i.fas.fa-palette
+    介面偏好設定預覽
+  
+  .macos-preview-form
+    .row
+      .col-md-6
+        .macos-form-group
+          %label.macos-form-label 主題模式
+          %select#theme_mode.macos-form-control
+            %option{value: "light"} 淺色模式
+            %option{value: "dark"} 深色模式
+            %option{value: "auto"} 跟隨系統
+          %small.macos-form-help 選擇介面主題外觀
+      
+      .col-md-6
+        .macos-form-group
+          %label.macos-form-label 字體大小
+          %select#font_size.macos-form-control
+            %option{value: "small"} 小字體
+            %option{value: "medium", selected: true} 中字體
+            %option{value: "large"} 大字體
+          %small.macos-form-help 調整介面字體大小
+    
+    .row
+      .col-md-4
+        .macos-form-group
+          .macos-form-check
+            %input#enable_animations.macos-form-check-input{type: "checkbox", checked: true}
+            %label.macos-form-check-label{for: "enable_animations"} 啟用動畫效果
+          %small.macos-form-help 開啟介面動畫和過渡效果
+      
+      .col-md-4
+        .macos-form-group
+          .macos-form-check
+            %input#compact_mode.macos-form-check-input{type: "checkbox"}
+            %label.macos-form-check-label{for: "compact_mode"} 緊湊模式
+          %small.macos-form-help 減少間距以顯示更多內容
+      
+      .col-md-4
+        .macos-form-group
+          .macos-form-check
+            %input#sidebar_collapsed.macos-form-check-input{type: "checkbox"}
+            %label.macos-form-check-label{for: "sidebar_collapsed"} 側邊欄預設收合
+          %small.macos-form-help 頁面載入時收合側邊欄
+    
+    .macos-form-actions
+      %button#apply_ui_settings.macos-btn.macos-btn-primary{type: "button"}
+        %i.fas.fa-check
+        套用設定
+      %button#reset_ui_settings.macos-btn.macos-btn-secondary{type: "button"}
+        %i.fas.fa-undo
+        重置預設
+      %button#export_ui_settings.macos-btn.macos-btn-success{type: "button"}
+        %i.fas.fa-download
+        匯出設定
+      %input#import_ui_settings{type: "file", accept: ".json", style: "display: none;"}
+      %button#import_ui_settings_btn.macos-btn.macos-btn-info{type: "button"}
+        %i.fas.fa-upload
+        匯入設定
+  
+  .macos-preview-result#ui_preview_result{style: "display: none;"}
+    %h5.macos-result-title 設定已套用
+    .macos-result-content
+      %p 您的介面偏好設定已成功套用。如果您想要恢復預設設定，請點擊「重置預設」按鈕。
+      
+      .macos-keyboard-shortcuts
+        %h6 鍵盤快捷鍵
+        .macos-shortcut-list
+          .macos-shortcut-item
+            %kbd Ctrl/Cmd + Shift + D
+            %span 快速切換暗黑模式
+          .macos-shortcut-item
+            %kbd Ctrl/Cmd + ,
+            %span 開啟系統設定
+          .macos-shortcut-item
+            %kbd Ctrl/Cmd + Shift + S
+            %span 切換側邊欄
+
+/ 即時預覽區域
+.macos-live-preview{style: "margin-top: 2rem;"}
+  %h5.macos-preview-title
+    %i.fas.fa-eye
+    即時預覽
+  
+  .macos-preview-demo
+    / 示範卡片
+    .macos-card.macos-demo-card
+      .macos-card-header
+        %h6.macos-card-title 示範卡片
+      .macos-card-body
+        %p 這是一個示範卡片，用來展示當前的主題設定效果。
+        
+        .macos-demo-buttons
+          %button.macos-btn.macos-btn-primary.macos-btn-sm 主要按鈕
+          %button.macos-btn.macos-btn-secondary.macos-btn-sm 次要按鈕
+          %button.macos-btn.macos-btn-success.macos-btn-sm 成功按鈕
+        
+        .macos-demo-form{style: "margin-top: 1rem;"}
+          .macos-form-group
+            %label.macos-form-label 示範輸入欄位
+            %input.macos-form-control{type: "text", placeholder: "請輸入文字", value: "示範文字"}
+          
+          .macos-form-group
+            %label.macos-form-label 示範選擇欄位
+            %select.macos-form-control
+              %option 選項一
+              %option{selected: true} 選項二
+              %option 選項三
+
+:css
+  .macos-form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .macos-form-check-input {
+    margin-right: 0.5rem;
+    width: 18px;
+    height: 18px;
+  }
+  
+  .macos-form-check-label {
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+  
+  .macos-keyboard-shortcuts {
+    background: var(--bg-secondary);
+    border-radius: var(--macos-radius);
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .macos-shortcut-list {
+    .macos-shortcut-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-color);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      kbd {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        color: var(--text-primary);
+      }
+      
+      span {
+        color: var(--text-secondary);
+      }
+    }
+  }
+  
+  .macos-live-preview {
+    background: var(--bg-secondary);
+    border-radius: var(--macos-radius-large);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+  }
+  
+  .macos-preview-demo {
+    margin-top: 1rem;
+  }
+  
+  .macos-demo-card {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .macos-demo-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .macos-demo-form {
+    .macos-form-group {
+      margin-bottom: 1rem;
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const themeSelect = document.getElementById('theme_mode');
+    const fontSizeSelect = document.getElementById('font_size');
+    const animationsCheck = document.getElementById('enable_animations');
+    const compactCheck = document.getElementById('compact_mode');
+    const sidebarCheck = document.getElementById('sidebar_collapsed');
+    const applyBtn = document.getElementById('apply_ui_settings');
+    const resetBtn = document.getElementById('reset_ui_settings');
+    const exportBtn = document.getElementById('export_ui_settings');
+    const importBtn = document.getElementById('import_ui_settings_btn');
+    const importFile = document.getElementById('import_ui_settings');
+    const resultDiv = document.getElementById('ui_preview_result');
+    
+    // 載入當前設定
+    loadCurrentSettings();
+    
+    // 即時預覽
+    [themeSelect, fontSizeSelect, animationsCheck, compactCheck].forEach(element => {
+      element.addEventListener('change', updateLivePreview);
+    });
+    
+    // 套用設定
+    applyBtn.addEventListener('click', function() {
+      const settings = {
+        theme: themeSelect.value,
+        fontSize: fontSizeSelect.value,
+        animations: animationsCheck.checked,
+        compact: compactCheck.checked,
+        sidebarCollapsed: sidebarCheck.checked
+      };
+      
+      applyUISettings(settings);
+      resultDiv.style.display = 'block';
+    });
+    
+    // 重置設定
+    resetBtn.addEventListener('click', function() {
+      if (confirm('確定要重置所有UI設定為預設值嗎？')) {
+        if (window.themeController) {
+          window.themeController.resetUIPreferences();
+        }
+      }
+    });
+    
+    // 匯出設定
+    exportBtn.addEventListener('click', function() {
+      if (window.themeController) {
+        window.themeController.exportSettings();
+      }
+    });
+    
+    // 匯入設定
+    importBtn.addEventListener('click', function() {
+      importFile.click();
+    });
+    
+    importFile.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && window.themeController) {
+        window.themeController.importSettings(file)
+          .then(settings => {
+            alert('設定匯入成功！');
+            loadCurrentSettings();
+          })
+          .catch(error => {
+            alert('設定匯入失敗：' + error.message);
+          });
+      }
+    });
+    
+    function loadCurrentSettings() {
+      // 從themeController載入當前設定
+      if (window.themeController) {
+        const preferences = window.themeController.getStoredUIPreferences();
+        
+        themeSelect.value = window.themeController.currentTheme || 'light';
+        fontSizeSelect.value = preferences.ui_font_size || 'medium';
+        animationsCheck.checked = preferences.ui_enable_animations !== false;
+        compactCheck.checked = preferences.ui_compact_mode === true;
+        sidebarCheck.checked = preferences.ui_sidebar_collapsed === true;
+      }
+    }
+    
+    function updateLivePreview() {
+      // 即時更新預覽
+      if (window.themeController) {
+        window.themeController.setTheme(themeSelect.value);
+        window.themeController.setFontSize(fontSizeSelect.value);
+        
+        document.documentElement.setAttribute('data-animations', animationsCheck.checked);
+        document.documentElement.setAttribute('data-compact', compactCheck.checked);
+      }
+    }
+    
+    function applyUISettings(settings) {
+      if (window.themeController) {
+        window.themeController.setTheme(settings.theme);
+        window.themeController.setFontSize(settings.fontSize);
+        
+        if (settings.animations !== undefined) {
+          window.themeController.saveUIPreference('ui_enable_animations', settings.animations);
+          document.documentElement.setAttribute('data-animations', settings.animations);
+        }
+        
+        if (settings.compact !== undefined) {
+          window.themeController.saveUIPreference('ui_compact_mode', settings.compact);
+          document.documentElement.setAttribute('data-compact', settings.compact);
+        }
+        
+        if (settings.sidebarCollapsed !== undefined) {
+          window.themeController.saveUIPreference('ui_sidebar_collapsed', settings.sidebarCollapsed);
+          window.themeController.setSidebarCollapsed(settings.sidebarCollapsed);
+        }
+      }
+    }
+  });

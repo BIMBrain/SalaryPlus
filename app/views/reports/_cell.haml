@@ -1,0 +1,9 @@
+- if cell.present?
+  - if cell.adjusted_amount.zero?
+    %td{style: "text-align: right; color: var(--macos-text-tertiary);"} 0
+  - else
+    %td{style: "text-align: right;"}
+      = link_to edit_payroll_path(cell.payroll_id), style: "color: var(--macos-blue); text-decoration: none;" do
+        = number_with_delimiter(cell.adjusted_amount)
+- else
+  %td{style: "text-align: right; color: var(--macos-text-tertiary);"} 0

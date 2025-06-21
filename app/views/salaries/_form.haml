@@ -1,0 +1,47 @@
+%h3 薪資設定
+= link_to "帶入最近薪資資料", employee_salaries_recent_path(employee), class: "btn btn-xs btn-default", remote: true
+= f.input_field :term_id, as: :hidden, value: term.id
+%table.table
+  %tr
+    %th.col-xs-1= f.label "起薪日期"
+    %td.col-xs-2= f.input_field :effective_date, type: :date
+    %th.col-xs-1= f.label "身份"
+    %td.col-xs-2= f.input_field :role, collection: Salary::ROLE
+  %tr
+    %th= f.label "月薪"
+    %td= f.input_field :monthly_wage
+    %th= f.label "所得稅別"
+    %td
+      = f.input_field :tax_code, collection: Salary::TAX_CODE
+      = f.input_field :split
+      拆單
+  %tr
+    %th= f.label "時薪"
+    %td= f.input_field :hourly_wage
+    %th= f.label "交通津貼"
+    %td= f.input_field :commuting_subsidy
+  %tr
+    %th= f.label "設備津貼"
+    %td= f.input_field :equipment_subsidy
+    %th= f.label "主管加給"
+    %td= f.input_field :supervisor_allowance
+  %tr
+    %th= f.label "勞保投保金額"
+    %td= f.input_field :insured_for_labor
+    %th= f.label "勞保費"
+    %td= f.input_field :labor_insurance
+  %tr
+    %th= f.label "健保投保金額"
+    %td= f.input_field :insured_for_health
+    %th= f.label "健保費"
+    %td= f.input_field :health_insurance
+  %tr
+    %th= f.label "所得稅"
+    %td= f.input_field :fixed_income_tax
+    %th
+    %td
+  %tr
+    %th= f.label "計算周期"
+    %td= f.input_field :cycle, collection: Salary::CYCLE
+    %th= f.label "兼職調整", title: "每週天數 / 5", class: "tip"
+    %td= f.input_field :monthly_wage_adjustment

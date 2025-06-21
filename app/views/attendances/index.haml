@@ -1,0 +1,148 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-clock
+      出勤打卡管理
+    %p.macos-card-subtitle 管理員工出勤打卡記錄，支援多種打卡方式和統計分析
+    
+  .macos-card-actions
+    = link_to new_attendance_path, class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-plus
+      新增打卡記錄
+    = link_to daily_summary_attendances_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-calendar-day
+      今日出勤
+    = link_to monthly_report_attendances_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-chart-bar
+      月度報表
+
+/ Quick Stats
+.macos-dashboard-grid
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-users{style: "color: var(--macos-blue);"}
+      %h3.macos-dashboard-title= @total_employees
+      %p.macos-dashboard-description 總員工數
+      
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-user-check{style: "color: var(--macos-green);"}
+      %h3.macos-dashboard-title= @present_today
+      %p.macos-dashboard-description 今日出勤
+      
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-clock{style: "color: var(--macos-orange);"}
+      %h3.macos-dashboard-title= @today_attendances
+      %p.macos-dashboard-description 今日打卡次數
+      
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-exclamation-triangle{style: "color: var(--macos-red);"}
+      %h3.macos-dashboard-title= @late_today
+      %p.macos-dashboard-description 今日遲到
+
+/ Search Form
+.macos-card
+  .macos-card-body
+    = search_form_for @query, html: { class: "macos-form" } do |f|
+      .row
+        .col-md-3
+          .macos-form-group
+            = f.label :employee_name_cont, "員工姓名", class: "macos-form-label"
+            = f.search_field :employee_name_cont, class: "macos-form-control", placeholder: "搜尋員工姓名"
+        .col-md-3
+          .macos-form-group
+            = f.label :punch_type_eq, "打卡類型", class: "macos-form-label"
+            = f.select :punch_type_eq, options_for_select([['全部', '']] + Attendance::PUNCH_TYPES.map { |k, v| [v, k] }), {}, { class: "macos-form-control" }
+        .col-md-3
+          .macos-form-group
+            = f.label :punch_time_gteq, "開始日期", class: "macos-form-label"
+            = f.date_field :punch_time_gteq, class: "macos-form-control"
+        .col-md-3
+          .macos-form-group
+            = f.label :punch_time_lteq, "結束日期", class: "macos-form-label"
+            = f.date_field :punch_time_lteq, class: "macos-form-control"
+      .row
+        .col-md-12
+          .macos-form-group
+            = f.submit "搜尋", class: "macos-btn macos-btn-primary"
+            = link_to attendances_path, class: "macos-btn macos-btn-secondary" do
+              %i.fas.fa-refresh
+              重設
+
+/ Attendance Records Table
+.macos-card
+  .macos-card-body{style: "padding: 0; overflow-x: auto;"}
+    %table.macos-table
+      %thead
+        %tr
+          %th
+            %i.fas.fa-user
+            員工姓名
+          %th
+            %i.fas.fa-clock
+            打卡時間
+          %th
+            %i.fas.fa-tag
+            打卡類型
+          %th
+            %i.fas.fa-mobile-alt
+            打卡方式
+          %th
+            %i.fas.fa-map-marker-alt
+            位置
+          %th
+            %i.fas.fa-info-circle
+            狀態
+          %th
+            %i.fas.fa-cogs
+            操作
+      %tbody
+        - @attendances.each do |attendance|
+          %tr
+            %td
+              %div{style: "display: flex; align-items: center;"}
+                %div{style: "width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--macos-blue), var(--macos-purple)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 12px;"}
+                  = attendance.employee.name.first
+                %div
+                  %div{style: "font-weight: 500;"} #{attendance.employee.name}
+            %td
+              %div{style: "font-weight: 500;"} #{attendance.punch_time.strftime('%Y-%m-%d')}
+              %div{style: "color: var(--macos-text-secondary); font-size: 12px;"} #{attendance.punch_time.strftime('%H:%M:%S')}
+            %td
+              %span.macos-badge.macos-badge-primary
+                = attendance.punch_type_name
+            %td
+              %span{style: "color: var(--macos-text-secondary);"}
+                = attendance.punch_method_name
+            %td
+              %span{style: "color: var(--macos-text-secondary);"}
+                = attendance.location || '-'
+            %td
+              - case attendance.attendance_status
+              - when 'late'
+                %span.macos-badge.macos-badge-warning 遲到
+              - when 'early_leave'
+                %span.macos-badge.macos-badge-warning 早退
+              - else
+                %span.macos-badge.macos-badge-success 正常
+            %td
+              .btn-group{style: "display: flex; gap: 4px;"}
+                = link_to attendance_path(attendance), class: "macos-btn macos-btn-secondary macos-btn-xs" do
+                  %i.fas.fa-eye
+                = link_to edit_attendance_path(attendance), class: "macos-btn macos-btn-secondary macos-btn-xs" do
+                  %i.fas.fa-edit
+                = link_to attendance_path(attendance), method: :delete, data: { confirm: "確定刪除這筆打卡記錄嗎？" }, class: "macos-btn macos-btn-danger macos-btn-xs" do
+                  %i.fas.fa-trash
+
+/ Pagination
+- if @attendances.respond_to?(:current_page)
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      = paginate @attendances

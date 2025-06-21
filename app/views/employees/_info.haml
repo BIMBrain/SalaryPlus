@@ -1,0 +1,304 @@
+/ 基本資料
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-user
+      基本資料
+  .macos-card-body
+    %table.macos-table
+      %tr
+        %th 員工編號
+        %td= employee.employee_number
+        %th 中文姓名
+        %td= employee.chinese_name
+      %tr
+        %th 英文姓名
+        %td= employee.english_name
+        %th 顯示名稱
+        %td= employee.name
+      %tr
+        %th 性別
+        %td= employee.gender_display
+        %th 出生日期
+        %td= employee.birthday
+      %tr
+        %th 年齡
+        %td= "#{employee.age}歲" if employee.age
+        %th 婚姻狀況
+        %td= employee.marital_status_display
+      %tr
+        %th 身分證字號
+        %td= employee.id_number
+        %th 國籍
+        %td= employee.nationality
+
+/ 聯絡資訊
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-phone
+      聯絡資訊
+  .macos-card-body
+    %table.macos-table
+      %tr
+        %th 公司電子郵件
+        %td= employee.company_email
+        %th 私人電子郵件
+        %td= employee.personal_email
+      %tr
+        %th 電話號碼
+        %td= employee.phone_number
+        %th 手機號碼
+        %td= employee.mobile_number
+      %tr
+        %th 戶籍地址
+        %td{colspan: 3}= employee.residence_address
+      - if employee.current_address.present?
+        %tr
+          %th 現住地址
+          %td{colspan: 3}= employee.current_address
+      - if employee.mailing_address.present?
+        %tr
+          %th 通訊地址
+          %td{colspan: 3}= employee.mailing_address
+
+    - if employee.emergency_contact_name.present?
+      %h4{style: "color: var(--macos-blue); margin-top: 2rem; margin-bottom: 1rem;"}
+        %i.fas.fa-exclamation-triangle
+        緊急聯絡人
+      %table.macos-table
+        %tr
+          %th 緊急聯絡人姓名
+          %td= employee.emergency_contact_name
+          %th 關係
+          %td= employee.emergency_contact_relationship
+        %tr
+          %th 緊急聯絡人電話
+          %td= employee.emergency_contact_phone
+          %th
+          %td
+
+/ 學歷資訊
+- if employee.education_level.present? || employee.school_name.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-graduation-cap
+        學歷資訊
+    .macos-card-body
+      %table.macos-table
+        %tr
+          %th 學歷
+          %td= employee.education_level_display
+          %th 學校名稱
+          %td= employee.school_name
+        %tr
+          %th 科系
+          %td= employee.major
+          %th 畢業年份
+          %td= employee.graduation_year
+
+/ 工作經歷
+- if employee.previous_company.present? || employee.work_experience_years.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-briefcase
+        工作經歷
+    .macos-card-body
+      %table.macos-table
+        %tr
+          %th 前公司
+          %td= employee.previous_company
+          %th 前職位
+          %td= employee.previous_position
+        %tr
+          %th 前工作期間
+          %td= employee.previous_work_period
+          %th 工作年資
+          %td= "#{employee.work_experience_years}年" if employee.work_experience_years
+
+/ 職位資訊
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-id-badge
+      職位資訊
+  .macos-card-body
+    %table.macos-table
+      %tr
+        %th 部門
+        %td= employee.department
+        %th 職位
+        %td= employee.position
+      %tr
+        %th 職稱
+        %td= employee.job_title
+        %th 聘僱類型
+        %td= employee.employment_type_display
+      %tr
+        %th 工作地點
+        %td= employee.work_location
+        %th 試用期
+        %td= "#{employee.probation_period}個月" if employee.probation_period
+      %tr
+        %th 到職日期
+        %td= employee.hire_date
+        %th 離職日期
+        %td= employee.resignation_date
+      - if employee.employment_duration
+        %tr
+          %th 在職期間
+          %td= "#{employee.employment_duration}年"
+          %th 在職狀態
+          %td
+            - if employee.is_active?
+              %span.macos-badge.macos-badge-success
+                %i.fas.fa-check
+                在職中
+            - else
+              %span.macos-badge.macos-badge-danger
+                %i.fas.fa-times
+                已離職
+
+/ 薪資資訊
+- if employee.basic_salary.present? || employee.allowances.present? || employee.bank_account.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-dollar-sign
+        薪資資訊
+    .macos-card-body
+      %table.macos-table
+        %tr
+          %th 基本薪資
+          %td= number_to_currency(employee.basic_salary, unit: "NT$ ", precision: 0) if employee.basic_salary
+          %th 津貼
+          %td= number_to_currency(employee.allowances, unit: "NT$ ", precision: 0) if employee.allowances
+        %tr
+          %th 績效獎金
+          %td= number_to_currency(employee.performance_bonus, unit: "NT$ ", precision: 0) if employee.performance_bonus
+          %th 總薪資
+          %td
+            %strong{style: "color: var(--macos-green);"}
+              = number_to_currency(employee.total_salary, unit: "NT$ ", precision: 0)
+        %tr
+          %th 銀行帳戶
+          %td= employee.bank_account
+          %th 轉帳方式
+          %td= employee.given_bank_transfer_type
+
+/ 保險資訊
+- if employee.labor_insurance_number.present? || employee.health_insurance_number.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-shield-alt
+        保險資訊
+    .macos-card-body
+      %table.macos-table
+        %tr
+          %th 勞保證號
+          %td= employee.labor_insurance_number
+          %th 健保證號
+          %td= employee.health_insurance_number
+        %tr
+          %th 退休金帳戶
+          %td= employee.pension_account
+          %th
+          %td
+
+/ 家庭狀況
+- if employee.spouse_name.present? || employee.children_count.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-home
+        家庭狀況
+    .macos-card-body
+      %table.macos-table
+        - if employee.spouse_name.present?
+          %tr
+            %th 配偶姓名
+            %td= employee.spouse_name
+            %th 配偶身分證字號
+            %td= employee.spouse_id_number
+          %tr
+            %th 配偶生日
+            %td= employee.spouse_birthday
+            %th
+            %td
+        - if employee.children_count.present? && employee.children_count > 0
+          %tr
+            %th 子女人數
+            %td= "#{employee.children_count}人"
+            %th
+            %td
+
+/ 其他資訊
+- if employee.blood_type.present? || employee.height.present? || employee.special_skills.present?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-info-circle
+        其他資訊
+    .macos-card-body
+      %table.macos-table
+        - if employee.blood_type.present? || employee.height.present?
+          %tr
+            %th 血型
+            %td= employee.blood_type
+            %th 身高
+            %td= "#{employee.height}cm" if employee.height
+          %tr
+            %th 體重
+            %td= "#{employee.weight}kg" if employee.weight
+            %th 兵役狀況
+            %td= employee.military_service_status
+        - if employee.driver_license.present? || employee.languages.present?
+          %tr
+            %th 駕照
+            %td= employee.driver_license
+            %th 語言能力
+            %td= employee.languages
+
+      - if employee.special_skills.present?
+        %h4{style: "color: var(--macos-blue); margin-top: 1.5rem; margin-bottom: 0.5rem;"}
+          %i.fas.fa-star
+          專長技能
+        %p{style: "background-color: var(--macos-bg-secondary); padding: 1rem; border-radius: var(--macos-radius-medium);"}
+          = simple_format(employee.special_skills)
+
+      - if employee.hobbies.present?
+        %h4{style: "color: var(--macos-purple); margin-top: 1.5rem; margin-bottom: 0.5rem;"}
+          %i.fas.fa-heart
+          興趣嗜好
+        %p{style: "background-color: var(--macos-bg-secondary); padding: 1rem; border-radius: var(--macos-radius-medium);"}
+          = simple_format(employee.hobbies)
+
+      - if employee.health_condition.present?
+        %h4{style: "color: var(--macos-orange); margin-top: 1.5rem; margin-bottom: 0.5rem;"}
+          %i.fas.fa-heartbeat
+          健康狀況
+        %p{style: "background-color: var(--macos-bg-secondary); padding: 1rem; border-radius: var(--macos-radius-medium);"}
+          = simple_format(employee.health_condition)
+
+      - if employee.notes.present?
+        %h4{style: "color: var(--macos-gray); margin-top: 1.5rem; margin-bottom: 0.5rem;"}
+          %i.fas.fa-sticky-note
+          備註
+        %p{style: "background-color: var(--macos-bg-secondary); padding: 1rem; border-radius: var(--macos-radius-medium);"}
+          = simple_format(employee.notes)
+
+/ 系統設定
+- if employee.b2b?
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-cogs
+        系統設定
+    .macos-card-body
+      .macos-alert.macos-alert-info
+        %i.fas.fa-info-circle
+        %strong 非個人所得
+        - 付款對象可開立發票，不列入勞務報酬

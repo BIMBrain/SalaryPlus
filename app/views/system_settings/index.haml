@@ -1,0 +1,341 @@
+/ 頁面標題
+.macos-page-header
+  .macos-page-title
+    %h1
+      %i.fas.fa-cogs
+      系統設定
+    %p.macos-page-subtitle 管理系統計算公式和參數設定
+  .macos-page-actions
+    = link_to new_system_setting_path(type: @selected_type), class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-plus
+      新增設定
+    = link_to export_system_settings_path(format: :csv), class: "macos-btn macos-btn-success" do
+      %i.fas.fa-download
+      匯出設定
+    = link_to reset_defaults_system_settings_path(type: @selected_type), method: :patch, class: "macos-btn macos-btn-warning", data: { confirm: "確定要重置為預設值嗎？" } do
+      %i.fas.fa-undo
+      重置預設值
+
+/ 統計卡片
+.macos-stats-grid{style: "margin-bottom: 2rem;"}
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-blue
+      %i.fas.fa-cogs
+    .macos-stats-content
+      .macos-stats-number= @total_settings
+      .macos-stats-label 總設定項目
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-green
+      %i.fas.fa-calculator
+    .macos-stats-content
+      .macos-stats-number= @settings_by_type['overtime_calculation'] || 0
+      .macos-stats-label 加班費設定
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-orange
+      %i.fas.fa-shield-alt
+    .macos-stats-content
+      .macos-stats-number= @settings_by_type['insurance_calculation'] || 0
+      .macos-stats-label 保險費設定
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-purple
+      %i.fas.fa-receipt
+    .macos-stats-content
+      .macos-stats-number= @settings_by_type['income_tax_calculation'] || 0
+      .macos-stats-label 所得稅設定
+
+/ 設定類型選擇
+.macos-card{style: "margin-bottom: 2rem;"}
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-list
+      設定類型
+  .macos-card-body
+    .macos-tab-nav
+      - @setting_types.each do |type, name|
+        = link_to system_settings_path(type: type), class: "macos-tab-item #{'active' if @selected_type == type}" do
+          = name
+
+/ 計算公式說明
+- if @formulas
+  .macos-card{style: "margin-bottom: 2rem;"}
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-calculator
+        = @formulas[:name]
+        計算公式
+    .macos-card-body
+      .macos-formula-container
+        - @formulas[:formulas].each do |formula|
+          .macos-formula-item
+            %code.macos-formula= formula
+
+/ 設定項目
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-edit
+      設定項目
+    .macos-card-actions
+      = button_to "批量更新", batch_update_system_settings_path, method: :patch, form: { id: "batch-update-form" }, class: "macos-btn macos-btn-primary", style: "display: none;"
+  .macos-card-body
+    - if @settings.any?
+      = form_with url: batch_update_system_settings_path, method: :patch, local: true, id: "settings-form", class: "macos-form" do |f|
+        = f.hidden_field :setting_type, value: @selected_type
+        
+        .macos-settings-grid
+          - @settings.each do |setting|
+            .macos-setting-item
+              .macos-setting-header
+                %h4.macos-setting-title= setting.setting_name
+                .macos-setting-actions
+                  = link_to edit_system_setting_path(setting), class: "macos-btn macos-btn-sm macos-btn-secondary" do
+                    %i.fas.fa-edit
+                  = link_to setting, method: :delete, data: { confirm: "確定刪除？" }, class: "macos-btn macos-btn-sm macos-btn-danger" do
+                    %i.fas.fa-trash
+              
+              .macos-setting-content
+                .macos-setting-field
+                  = label_tag "settings[#{setting.setting_key}]", "設定值", class: "macos-form-label"
+                  - case setting.data_type
+                  - when 'decimal'
+                    = number_field_tag "settings[#{setting.setting_key}]", setting.get_value, step: 0.01, class: "macos-form-control", data: { setting_key: setting.setting_key }
+                  - when 'integer'
+                    = number_field_tag "settings[#{setting.setting_key}]", setting.get_value, class: "macos-form-control", data: { setting_key: setting.setting_key }
+                  - when 'percentage'
+                    .macos-input-group
+                      = number_field_tag "settings[#{setting.setting_key}]", (setting.get_value * 100).round(4), step: 0.0001, class: "macos-form-control", data: { setting_key: setting.setting_key }
+                      .macos-input-group-append
+                        %span.macos-input-group-text %
+                  - when 'boolean'
+                    = select_tag "settings[#{setting.setting_key}]", options_for_select([['是', 'true'], ['否', 'false']], setting.get_value.to_s), { class: "macos-form-control", data: { setting_key: setting.setting_key } }
+                  - else
+                    = text_field_tag "settings[#{setting.setting_key}]", setting.get_value, class: "macos-form-control", data: { setting_key: setting.setting_key }
+                
+                - if setting.description.present?
+                  %small.macos-form-help= setting.description
+                
+                - if setting.formula.present?
+                  .macos-formula-display
+                    %strong 公式：
+                    %code= setting.formula
+        
+        .macos-form-actions{style: "margin-top: 2rem; text-align: center;"}
+          = f.submit "批量更新設定", class: "macos-btn macos-btn-primary macos-btn-large"
+          = link_to "取消", system_settings_path(type: @selected_type), class: "macos-btn macos-btn-secondary macos-btn-large"
+    
+    - else
+      .macos-empty-state
+        %i.fas.fa-cogs
+        %h3 尚無設定項目
+        %p 請新增設定項目或初始化預設設定
+        = link_to initialize_defaults_system_settings_path, method: :post, class: "macos-btn macos-btn-primary" do
+          %i.fas.fa-magic
+          初始化預設設定
+
+/ 計算預覽區域
+- if @selected_type.present?
+  .macos-card{style: "margin-top: 2rem;"}
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-calculator
+        計算預覽
+    .macos-card-body
+      #calculation-preview
+        - case @selected_type
+        - when 'overtime_calculation'
+          = render 'overtime_preview'
+        - when 'insurance_calculation'
+          = render 'insurance_preview'
+        - when 'income_tax_calculation'
+          = render 'income_tax_preview'
+        - when 'supplement_health_insurance'
+          = render 'supplement_health_insurance_preview'
+        - when 'ui_preferences'
+          = render 'ui_preferences_preview'
+        - when 'style_templates'
+          = render 'style_templates'
+
+:css
+  .macos-tab-nav {
+    display: flex;
+    border-bottom: 2px solid var(--macos-border-color);
+    margin-bottom: 1.5rem;
+  }
+  
+  .macos-tab-item {
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    color: var(--macos-text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: var(--macos-blue);
+      background-color: rgba(0, 122, 255, 0.05);
+    }
+    
+    &.active {
+      color: var(--macos-blue);
+      border-bottom-color: var(--macos-blue);
+      background-color: rgba(0, 122, 255, 0.1);
+    }
+  }
+  
+  .macos-formula-container {
+    background: var(--macos-bg-secondary);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+  }
+  
+  .macos-formula-item {
+    margin-bottom: 0.75rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .macos-formula {
+    background: var(--macos-blue);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--macos-radius);
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-right: 1rem;
+  }
+  
+  .macos-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .macos-setting-item {
+    background: var(--macos-bg-secondary);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    border: 1px solid var(--macos-border-color);
+  }
+  
+  .macos-setting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--macos-border-color);
+  }
+  
+  .macos-setting-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--macos-text-primary);
+  }
+  
+  .macos-setting-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .macos-setting-content {
+    .macos-setting-field {
+      margin-bottom: 1rem;
+    }
+  }
+  
+  .macos-formula-display {
+    background: rgba(0, 122, 255, 0.1);
+    border-left: 3px solid var(--macos-blue);
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    border-radius: 0 var(--macos-radius) var(--macos-radius) 0;
+    
+    code {
+      background: none;
+      color: var(--macos-blue);
+      font-weight: 500;
+    }
+  }
+  
+  .macos-input-group {
+    display: flex;
+    
+    .macos-form-control {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+  
+  .macos-input-group-append {
+    .macos-input-group-text {
+      background: var(--macos-bg-secondary);
+      border: 1px solid var(--macos-border-color);
+      border-left: none;
+      border-radius: 0 var(--macos-radius) var(--macos-radius) 0;
+      padding: 0.75rem 1rem;
+      color: var(--macos-text-secondary);
+      font-weight: 500;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .macos-settings-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .macos-tab-nav {
+      flex-direction: column;
+    }
+    
+    .macos-tab-item {
+      border-bottom: none;
+      border-left: 2px solid transparent;
+      
+      &.active {
+        border-bottom: none;
+        border-left-color: var(--macos-blue);
+      }
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    // 監聽設定值變更
+    const settingInputs = document.querySelectorAll('[data-setting-key]');
+    
+    settingInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        // 可以在這裡添加即時預覽功能
+        updateCalculationPreview();
+      });
+    });
+    
+    function updateCalculationPreview() {
+      // 實作即時計算預覽
+      const settingType = '#{@selected_type}';
+      const formData = new FormData(document.getElementById('settings-form'));
+      
+      // 發送AJAX請求更新預覽
+      fetch(`/system_settings/calculation_preview?type=${settingType}`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // 更新預覽區域
+        console.log('Preview updated:', data);
+      })
+      .catch(error => {
+        console.error('Error updating preview:', error);
+      });
+    }
+  });

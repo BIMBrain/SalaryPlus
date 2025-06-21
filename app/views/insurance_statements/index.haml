@@ -1,0 +1,165 @@
+/ 頁面標題
+.macos-page-header
+  .macos-page-title
+    %h1
+      %i.fas.fa-shield-alt
+      勞健保比對工具
+  .macos-page-actions
+    = link_to new_insurance_statement_path, class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-plus
+      新增對帳單
+    = link_to dashboard_insurance_statements_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-chart-line
+      對帳總覽
+
+/ 統計卡片
+.macos-stats-grid
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-blue
+      %i.fas.fa-file-alt
+    .macos-stats-content
+      .macos-stats-number= @total_statements
+      .macos-stats-label 總對帳單數
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-orange
+      %i.fas.fa-clock
+    .macos-stats-content
+      .macos-stats-number= @pending_statements
+      .macos-stats-label 待對帳
+  
+  .macos-stats-card
+    .macos-stats-icon.macos-stats-icon-red
+      %i.fas.fa-exclamation-triangle
+    .macos-stats-content
+      .macos-stats-number= @discrepancy_statements
+      .macos-stats-label 有差異
+
+/ 搜尋和篩選
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-search
+      搜尋篩選
+  .macos-card-body
+    = search_form_for @query, html: { class: "macos-form" } do |f|
+      .row
+        .col-md-3
+          .macos-form-group
+            = f.label :statement_type_eq, "保險類型", class: "macos-form-label"
+            = f.select :statement_type_eq, options_for_select([['全部', '']] + InsuranceStatement::STATEMENT_TYPES.map { |k, v| [v, k] }), {}, { class: "macos-form-control" }
+        .col-md-2
+          .macos-form-group
+            = f.label :year_eq, "年度", class: "macos-form-label"
+            = f.select :year_eq, options_for_select([['全部', '']] + (2020..Date.current.year).to_a.reverse.map { |y| [y, y] }), {}, { class: "macos-form-control" }
+        .col-md-2
+          .macos-form-group
+            = f.label :month_eq, "月份", class: "macos-form-label"
+            = f.select :month_eq, options_for_select([['全部', '']] + (1..12).map { |m| [m, m] }), {}, { class: "macos-form-control" }
+        .col-md-3
+          .macos-form-group
+            = f.label :reconciliation_status_eq, "對帳狀態", class: "macos-form-label"
+            = f.select :reconciliation_status_eq, options_for_select([['全部', '']] + InsuranceStatement::RECONCILIATION_STATUS.map { |k, v| [v, k] }), {}, { class: "macos-form-control" }
+        .col-md-2
+          .macos-form-group
+            %label.macos-form-label &nbsp;
+            = f.submit "搜尋", class: "macos-btn macos-btn-primary", style: "width: 100%;"
+
+/ 批量操作
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-cogs
+      批量操作
+  .macos-card-body
+    .row
+      .col-md-4
+        = form_with url: batch_reconcile_insurance_statements_path, method: :post, local: true, class: "macos-form" do |f|
+          .row
+            .col-md-4
+              = f.select :year, options_for_select((2020..Date.current.year).to_a.reverse.map { |y| [y, y] }, @current_year), {}, { class: "macos-form-control" }
+            .col-md-4
+              = f.select :month, options_for_select((1..12).map { |m| [m, m] }, @current_month), {}, { class: "macos-form-control" }
+            .col-md-4
+              = f.submit "批量對帳", class: "macos-btn macos-btn-secondary"
+      
+      .col-md-4
+        = form_with url: import_insurance_statements_path, method: :post, multipart: true, local: true, class: "macos-form" do |f|
+          .row
+            .col-md-8
+              = f.file_field :file, class: "macos-form-control", accept: ".csv,.xlsx"
+            .col-md-4
+              = f.submit "匯入檔案", class: "macos-btn macos-btn-info"
+      
+      .col-md-4
+        = form_with url: export_insurance_statements_path, method: :get, local: true, class: "macos-form" do |f|
+          .row
+            .col-md-4
+              = f.select :year, options_for_select((2020..Date.current.year).to_a.reverse.map { |y| [y, y] }, @current_year), {}, { class: "macos-form-control" }
+            .col-md-4
+              = f.select :month, options_for_select((1..12).map { |m| [m, m] }, @current_month), {}, { class: "macos-form-control" }
+            .col-md-4
+              = f.submit "匯出CSV", class: "macos-btn macos-btn-success", formaction: export_insurance_statements_path(format: :csv)
+
+/ 對帳單列表
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-list
+      對帳單列表
+  .macos-card-body
+    - if @insurance_statements.any?
+      .macos-table-container
+        %table.macos-table
+          %thead
+            %tr
+              %th 保險類型
+              %th 年月
+              %th 對帳單金額
+              %th 系統計算金額
+              %th 差異金額
+              %th 對帳狀態
+              %th 上傳時間
+              %th 操作
+          %tbody
+            - @insurance_statements.each do |statement|
+              %tr{class: statement.has_discrepancy? ? 'macos-table-row-warning' : ''}
+                %td
+                  %span.macos-badge.macos-badge-info
+                    = statement.statement_type_name
+                %td= "#{statement.year}/#{statement.month.to_s.rjust(2, '0')}"
+                %td.text-right= number_to_currency(statement.statement_amount, unit: "NT$ ", precision: 0)
+                %td.text-right= number_to_currency(statement.calculated_amount, unit: "NT$ ", precision: 0)
+                %td.text-right{class: statement.difference_amount != 0 ? 'text-danger' : 'text-success'}
+                  = number_to_currency(statement.difference_amount, unit: "NT$ ", precision: 0)
+                %td
+                  - case statement.reconciliation_status
+                  - when 'pending'
+                    %span.macos-badge.macos-badge-warning= statement.reconciliation_status_name
+                  - when 'matched'
+                    %span.macos-badge.macos-badge-success= statement.reconciliation_status_name
+                  - when 'discrepancy'
+                    %span.macos-badge.macos-badge-danger= statement.reconciliation_status_name
+                  - when 'resolved'
+                    %span.macos-badge.macos-badge-secondary= statement.reconciliation_status_name
+                %td= statement.uploaded_at&.strftime('%Y-%m-%d %H:%M')
+                %td
+                  .macos-btn-group
+                    = link_to statement, class: "macos-btn macos-btn-sm macos-btn-info" do
+                      %i.fas.fa-eye
+                    = link_to edit_insurance_statement_path(statement), class: "macos-btn macos-btn-sm macos-btn-secondary" do
+                      %i.fas.fa-edit
+                    = link_to reconcile_insurance_statement_path(statement), method: :patch, class: "macos-btn macos-btn-sm macos-btn-primary" do
+                      %i.fas.fa-sync
+                    = link_to statement, method: :delete, data: { confirm: "確定刪除？" }, class: "macos-btn macos-btn-sm macos-btn-danger" do
+                      %i.fas.fa-trash
+    - else
+      .macos-empty-state
+        %i.fas.fa-inbox
+        %h3 尚無對帳單資料
+        %p 請新增對帳單或匯入檔案開始使用
+
+/ 分頁
+- if @insurance_statements.respond_to?(:current_page)
+  .macos-pagination-container
+    = paginate @insurance_statements, theme: 'macos'

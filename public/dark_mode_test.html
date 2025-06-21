@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="color-scheme" content="light dark">
+    <title>Fortuna HR - 暗黑模式測試</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* 基本變數 */
+        :root {
+          --bg-primary: #ffffff;
+          --bg-secondary: #f5f5f7;
+          --bg-tertiary: #e5e5e7;
+          --text-primary: #1d1d1f;
+          --text-secondary: #86868b;
+          --border-color: #d2d2d7;
+          --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          --blue: #007aff;
+          --green: #34c759;
+          --orange: #ff9500;
+          --red: #ff3b30;
+        }
+
+        /* 暗黑模式變數 */
+        [data-theme="dark"] {
+          --bg-primary: #1c1c1e;
+          --bg-secondary: #2c2c2e;
+          --bg-tertiary: #3a3a3c;
+          --text-primary: #ffffff;
+          --text-secondary: #98989d;
+          --border-color: #48484a;
+          --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+          --blue: #0a84ff;
+          --green: #30d158;
+          --orange: #ff9f0a;
+          --red: #ff453a;
+        }
+
+        /* 基本樣式 */
+        * {
+          box-sizing: border-box;
+          transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          background-color: var(--bg-primary);
+          color: var(--text-primary);
+          margin: 0;
+          padding: 2rem;
+          line-height: 1.6;
+        }
+
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .card {
+          background-color: var(--bg-primary);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
+          padding: 2rem;
+          margin-bottom: 2rem;
+          box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+          color: var(--blue);
+          margin-top: 0;
+        }
+
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.5rem;
+          border: none;
+          border-radius: 10px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          text-decoration: none;
+          margin: 0.25rem;
+        }
+
+        .btn-primary {
+          background-color: var(--blue);
+          color: white;
+        }
+
+        .btn-secondary {
+          background-color: var(--bg-secondary);
+          color: var(--text-primary);
+          border: 1px solid var(--border-color);
+        }
+
+        .btn-success {
+          background-color: var(--green);
+          color: white;
+        }
+
+        .btn-warning {
+          background-color: var(--orange);
+          color: white;
+        }
+
+        .btn-danger {
+          background-color: var(--red);
+          color: white;
+        }
+
+        .btn:hover {
+          transform: translateY(-1px);
+          opacity: 0.9;
+        }
+
+        /* 主題切換器 */
+        .theme-switcher {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background-color: var(--bg-primary);
+          border: 1px solid var(--border-color);
+          border-radius: 25px;
+          padding: 8px;
+          box-shadow: var(--shadow);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          z-index: 1000;
+        }
+
+        .theme-option {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          border: 2px solid transparent;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s ease;
+          font-size: 18px;
+        }
+
+        .theme-option:hover {
+          transform: scale(1.1);
+        }
+
+        .theme-option.active {
+          border-color: var(--blue);
+          box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+        }
+
+        .theme-light {
+          background: linear-gradient(135deg, #ffffff 0%, #f5f5f7 100%);
+          color: #1d1d1f;
+        }
+
+        .theme-dark {
+          background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+          color: #ffffff;
+        }
+
+        .theme-auto {
+          background: linear-gradient(135deg, #ffffff 0%, #1c1c1e 100%);
+          color: #007aff;
+        }
+
+        .demo-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin: 1rem 0;
+        }
+
+        .demo-item {
+          background-color: var(--bg-secondary);
+          border: 1px solid var(--border-color);
+          border-radius: 10px;
+          padding: 1rem;
+          text-align: center;
+        }
+
+        .form-group {
+          margin-bottom: 1rem;
+        }
+
+        .form-label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+          color: var(--text-primary);
+        }
+
+        .form-control {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid var(--border-color);
+          border-radius: 8px;
+          background-color: var(--bg-primary);
+          color: var(--text-primary);
+          font-size: 14px;
+        }
+
+        .form-control:focus {
+          outline: none;
+          border-color: var(--blue);
+          box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+
+        .status {
+          padding: 1rem;
+          border-radius: 8px;
+          margin: 1rem 0;
+          font-weight: 500;
+        }
+
+        .status-success {
+          background-color: rgba(52, 199, 89, 0.1);
+          color: var(--green);
+          border: 1px solid var(--green);
+        }
+
+        .status-info {
+          background-color: rgba(0, 122, 255, 0.1);
+          color: var(--blue);
+          border: 1px solid var(--blue);
+        }
+    </style>
+</head>
+<body>
+    <!-- 主題切換器 -->
+    <div class="theme-switcher">
+        <div class="theme-option theme-light" data-theme="light" title="淺色模式">
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="theme-option theme-dark" data-theme="dark" title="深色模式">
+            <i class="fas fa-moon"></i>
+        </div>
+        <div class="theme-option theme-auto" data-theme="auto" title="跟隨系統">
+            <i class="fas fa-adjust"></i>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1><i class="fas fa-palette"></i> Fortuna HR 暗黑模式測試</h1>
+            <p>這是一個測試頁面，用來驗證暗黑模式功能是否正常運作。</p>
+            
+            <div class="status status-success">
+                <i class="fas fa-check-circle"></i> 暗黑模式功能已啟用！
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-cogs"></i> 功能測試</h2>
+            
+            <h3>按鈕樣式</h3>
+            <div>
+                <button class="btn btn-primary"><i class="fas fa-star"></i> 主要按鈕</button>
+                <button class="btn btn-secondary"><i class="fas fa-cog"></i> 次要按鈕</button>
+                <button class="btn btn-success"><i class="fas fa-check"></i> 成功按鈕</button>
+                <button class="btn btn-warning"><i class="fas fa-exclamation-triangle"></i> 警告按鈕</button>
+                <button class="btn btn-danger"><i class="fas fa-times"></i> 危險按鈕</button>
+            </div>
+
+            <h3>表單元素</h3>
+            <div class="form-group">
+                <label class="form-label">姓名</label>
+                <input type="text" class="form-control" placeholder="請輸入姓名" value="測試使用者">
+            </div>
+            <div class="form-group">
+                <label class="form-label">部門</label>
+                <select class="form-control">
+                    <option>人力資源部</option>
+                    <option>財務部</option>
+                    <option>資訊部</option>
+                </select>
+            </div>
+
+            <h3>卡片網格</h3>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <i class="fas fa-users" style="font-size: 2rem; color: var(--blue); margin-bottom: 0.5rem;"></i>
+                    <h4>員工管理</h4>
+                    <p>管理員工資料</p>
+                </div>
+                <div class="demo-item">
+                    <i class="fas fa-calculator" style="font-size: 2rem; color: var(--green); margin-bottom: 0.5rem;"></i>
+                    <h4>薪資計算</h4>
+                    <p>自動計算薪資</p>
+                </div>
+                <div class="demo-item">
+                    <i class="fas fa-chart-bar" style="font-size: 2rem; color: var(--orange); margin-bottom: 0.5rem;"></i>
+                    <h4>報表分析</h4>
+                    <p>產生各種報表</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-keyboard"></i> 快捷鍵</h2>
+            <div class="status status-info">
+                <strong>Ctrl/Cmd + Shift + D</strong> - 快速切換暗黑模式
+            </div>
+            <p>您也可以點擊右上角的主題切換器來切換主題。</p>
+        </div>
+    </div>
+
+    <script>
+        // 簡化的主題控制器
+        (function() {
+            'use strict';
+            
+            var currentTheme = 'light';
+            
+            function initTheme() {
+                currentTheme = localStorage.getItem('fortuna_theme') || 'light';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                updateSwitcherState();
+                updateMetaThemeColor(currentTheme);
+            }
+            
+            function setTheme(theme) {
+                currentTheme = theme;
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('fortuna_theme', theme);
+                updateSwitcherState();
+                updateMetaThemeColor(theme);
+            }
+            
+            function toggleDarkMode() {
+                var newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                setTheme(newTheme);
+            }
+            
+            function updateSwitcherState() {
+                var options = document.querySelectorAll('.theme-option');
+                for (var i = 0; i < options.length; i++) {
+                    var option = options[i];
+                    var isActive = option.getAttribute('data-theme') === currentTheme;
+                    if (isActive) {
+                        option.classList.add('active');
+                    } else {
+                        option.classList.remove('active');
+                    }
+                }
+            }
+            
+            function updateMetaThemeColor(theme) {
+                var metaThemeColor = document.querySelector('meta[name="theme-color"]');
+                if (!metaThemeColor) {
+                    metaThemeColor = document.createElement('meta');
+                    metaThemeColor.name = 'theme-color';
+                    document.head.appendChild(metaThemeColor);
+                }
+                var color = theme === 'dark' ? '#1c1c1e' : '#ffffff';
+                metaThemeColor.content = color;
+            }
+            
+            // 事件綁定
+            document.addEventListener('click', function(e) {
+                var themeOption = e.target.closest('.theme-option');
+                if (themeOption) {
+                    var theme = themeOption.getAttribute('data-theme');
+                    setTheme(theme);
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
+                    e.preventDefault();
+                    toggleDarkMode();
+                }
+            });
+            
+            // 全域函數
+            window.toggleDarkMode = toggleDarkMode;
+            window.setTheme = setTheme;
+            
+            // 初始化
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initTheme);
+            } else {
+                initTheme();
+            }
+        })();
+    </script>
+</body>
+</html>

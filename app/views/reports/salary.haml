@@ -1,0 +1,62 @@
+= render "header"
+= render "title"
+
+/ Export Actions
+.macos-card
+  .macos-card-actions
+    = link_to salary_reports_path(params[:year], format: :csv), class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-download
+      匯出 CSV
+
+- if @report.any?
+  .macos-card
+    .macos-card-body{style: "padding: 0; overflow-x: auto;"}
+      %table.macos-table
+        %thead
+          %tr
+            %th
+              %i.fas.fa-user
+              姓名
+            %th.hide 身份證字號
+            %th.hide 戶籍地址
+            - 1.upto(12) do |month|
+              %th
+                = link_to monthly_reports_path(params[:year], month), style: "color: var(--macos-blue); text-decoration: none;" do
+                  #{month} 月
+            %th{style: "background-color: var(--macos-green); color: white;"} 端午
+            %th{style: "background-color: var(--macos-orange); color: white;"} 中秋
+            %th{style: "background-color: var(--macos-red); color: white;"} 年終
+            %th{style: "background-color: var(--macos-purple); color: white;"} 總計
+
+        %tbody
+          - @report.each do |row|
+            %tr
+              %td
+                = link_to employee_path(row[:employee][:id]), style: "color: var(--macos-blue); text-decoration: none; font-weight: 500;" do
+                  = row[:employee][:name]
+              %td.hide= row[:employee][:id_number]
+              %td.hide= row[:employee][:address]
+              - 12.times do |month|
+                = render "cell", cell: row[:income][month]
+              %td{style: "text-align: right; font-weight: 500;"}= number_with_delimiter row[:festival_bonus][:dragonboat]
+              %td{style: "text-align: right; font-weight: 500;"}= number_with_delimiter row[:festival_bonus][:midautumn]
+              %td{style: "text-align: right; font-weight: 500;"}= number_with_delimiter row[:festival_bonus][:newyear]
+              %td{style: "text-align: right; font-weight: 600; color: var(--macos-blue);"}= number_with_delimiter Report.sum_salary_income_for(params[:year], row[:employee][:id])
+
+          %tr{style: "background-color: var(--macos-bg-secondary); font-weight: 600;"}
+            %td{style: "color: var(--macos-text-primary);"} 總計
+            %td.hide
+            %td.hide
+            - 1.upto(12) do |month|
+              %td{style: "text-align: right; color: var(--macos-blue);"}= number_with_delimiter Report.sum_by_month(year: params[:year], month: month, tax_code: 50)
+            %td{style: "text-align: right; color: var(--macos-green);"}= number_with_delimiter Report.sum_by_festival(params[:year], :dragonboat)
+            %td{style: "text-align: right; color: var(--macos-orange);"}= number_with_delimiter Report.sum_by_festival(params[:year], :midautumn)
+            %td{style: "text-align: right; color: var(--macos-red);"}= number_with_delimiter Report.sum_by_festival(params[:year], :newyear)
+            %td
+
+- else
+  .macos-card
+    .macos-card-body{style: "text-align: center; padding: 3rem;"}
+      %i.fas.fa-chart-bar{style: "font-size: 48px; color: var(--macos-gray-3); margin-bottom: 1rem;"}
+      %h3{style: "color: var(--macos-text-secondary); margin-bottom: 0.5rem;"} 暫無報表資料
+      %p{style: "color: var(--macos-text-tertiary);"} 請先產生薪資單後再查看報表

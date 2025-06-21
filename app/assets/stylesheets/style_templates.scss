@@ -1,0 +1,1311 @@
+// 樣式模板切換功能的 CSS
+.style-templates-card {
+  margin-bottom: 2rem;
+}
+
+// 字體縮放功能
+[data-font-scale="1.5"] {
+  font-size: 1.5em !important;
+}
+
+[data-font-scale="2"] {
+  font-size: 2em !important;
+}
+
+[data-font-scale="2.5"] {
+  font-size: 2.5em !important;
+}
+
+// 針對不同元素的字體縮放
+html[data-font-scale="1.5"] {
+  .macos-card-title { font-size: 36px; }
+  .macos-page-title { font-size: 48px; }
+  .macos-dashboard-title { font-size: 30px; }
+  .macos-form-label { font-size: 21px; }
+  .macos-form-control { font-size: 21px; }
+  .macos-btn { font-size: 21px; }
+  .macos-table th, .macos-table td { font-size: 21px; }
+  .template-name { font-size: 1.65rem; }
+  .template-description { font-size: 1.35rem; }
+}
+
+html[data-font-scale="2"] {
+  .macos-card-title { font-size: 48px; }
+  .macos-page-title { font-size: 64px; }
+  .macos-dashboard-title { font-size: 40px; }
+  .macos-form-label { font-size: 28px; }
+  .macos-form-control { font-size: 28px; }
+  .macos-btn { font-size: 28px; }
+  .macos-table th, .macos-table td { font-size: 28px; }
+  .template-name { font-size: 2.2rem; }
+  .template-description { font-size: 1.8rem; }
+
+  // 加班費計算公式的字體放大
+  .macos-formula {
+    font-size: 1.8rem;
+    padding: 1rem 2rem;
+  }
+
+  .macos-formula-display {
+    font-size: 1.6rem;
+    padding: 1.5rem;
+  }
+}
+
+html[data-font-scale="2.5"] {
+  .macos-card-title { font-size: 60px; }
+  .macos-page-title { font-size: 80px; }
+  .macos-dashboard-title { font-size: 50px; }
+  .macos-form-label { font-size: 35px; }
+  .macos-form-control { font-size: 35px; }
+  .macos-btn { font-size: 35px; }
+  .macos-table th, .macos-table td { font-size: 35px; }
+  .template-name { font-size: 2.75rem; }
+  .template-description { font-size: 2.25rem; }
+}
+
+.style-templates-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.style-template-item {
+  background: var(--macos-bg-secondary);
+  border-radius: var(--macos-radius-large);
+  padding: 1.5rem;
+  border: 2px solid var(--macos-border-color);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    border-color: var(--macos-blue);
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  &.selected {
+    border-color: var(--macos-blue);
+    background: rgba(0, 122, 255, 0.05);
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.2);
+  }
+}
+
+// 預覽區域基本樣式
+.style-template-preview {
+  background: #f5f5f7;
+  border-radius: var(--macos-radius);
+  height: 180px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-header {
+  height: 40px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  border-bottom: 1px solid #e5e5e7;
+}
+
+.preview-dots {
+  display: flex;
+  gap: 0.5rem;
+  margin-right: 1rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  
+  &.dot-red { background: #ff5f57; }
+  &.dot-yellow { background: #ffbd2e; }
+  &.dot-green { background: #28ca42; }
+  &.dot-dark-red { background: #ff6058; }
+  &.dot-dark-yellow { background: #ffbd30; }
+  &.dot-dark-green { background: #28ca44; }
+}
+
+.preview-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.preview-content {
+  display: flex;
+  height: 140px;
+}
+
+.preview-sidebar {
+  width: 60px;
+  background: #f5f5f7;
+  border-right: 1px solid #e5e5e7;
+  padding: 0.5rem;
+}
+
+.sidebar-item {
+  height: 20px;
+  background: #d1d1d6;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  
+  &.active {
+    background: #007aff;
+  }
+}
+
+.preview-main {
+  flex: 1;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.content-block {
+  height: 20px;
+  border-radius: 4px;
+  
+  &.primary { background: #007aff; }
+  &.secondary { background: #5ac8fa; }
+  &.tertiary { background: #34c759; }
+}
+
+// AI 現代風格
+.ai-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  
+  .preview-title {
+    color: white;
+  }
+}
+
+.preview-logo {
+  margin-right: 0.5rem;
+  
+  i {
+    color: #00d4ff;
+    font-size: 1.2rem;
+  }
+}
+
+.ai-content {
+  background: #1a1a2e;
+}
+
+.ai-sidebar {
+  background: #16213e;
+  border-right-color: #0f3460;
+}
+
+.ai-item {
+  background: #0f3460;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64b5f6;
+  
+  &.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+}
+
+.ai-main {
+  background: #0e1419;
+}
+
+.ai-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  
+  .ai-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #00d4ff;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #00d4ff;
+    animation: aiPulse 2s infinite;
+  }
+}
+
+.ai-secondary {
+  background: #1e3a8a;
+}
+
+.ai-accent {
+  background: #0f766e;
+}
+
+@keyframes aiPulse {
+  0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+// 極簡風格
+.minimal-header {
+  background: #ffffff;
+  border-bottom: 1px solid #f0f0f0;
+  
+  .preview-title {
+    color: #333333;
+    font-weight: 300;
+  }
+}
+
+.minimal-content {
+  background: #fafafa;
+}
+
+.minimal-sidebar {
+  background: #ffffff;
+  border-right: 1px solid #f0f0f0;
+}
+
+.minimal-item {
+  background: #f5f5f5;
+  border-radius: 2px;
+  
+  &.active {
+    background: #333333;
+  }
+}
+
+.minimal-main {
+  background: #ffffff;
+}
+
+.minimal-primary {
+  background: #333333;
+}
+
+.minimal-secondary {
+  background: #666666;
+}
+
+// 深色專業風格
+.dark-preview {
+  background: #1c1c1e;
+}
+
+.dark-header {
+  background: #2c2c2e;
+  border-bottom-color: #38383a;
+  
+  .preview-title {
+    color: #ffffff;
+  }
+}
+
+.dark-content {
+  background: #1c1c1e;
+}
+
+.dark-sidebar {
+  background: #2c2c2e;
+  border-right-color: #38383a;
+}
+
+.dark-item {
+  background: #38383a;
+  
+  &.active {
+    background: #0a84ff;
+  }
+}
+
+.dark-main {
+  background: #1c1c1e;
+}
+
+.dark-primary {
+  background: #0a84ff;
+}
+
+.dark-secondary {
+  background: #30d158;
+}
+
+.dark-accent {
+  background: #ff9f0a;
+}
+
+// 彩色活潑風格
+.colorful-header {
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+  
+  .preview-title {
+    color: white;
+    font-weight: 700;
+  }
+}
+
+.preview-rainbow {
+  width: 30px;
+  height: 20px;
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+  border-radius: 10px;
+  margin-right: 0.5rem;
+}
+
+.colorful-content {
+  background: #f8f9fa;
+}
+
+.colorful-sidebar {
+  background: #ffffff;
+  border-right: 1px solid #e9ecef;
+}
+
+.colorful-item {
+  border-radius: 8px;
+  
+  &.color-blue { background: #45b7d1; }
+  &.color-green { background: #96ceb4; }
+  &.color-orange { background: #feca57; }
+  
+  &.active {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+}
+
+.colorful-main {
+  background: #ffffff;
+}
+
+.colorful-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.colorful-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.colorful-tertiary {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+// 商務正式風格
+.business-header {
+  background: #2c3e50;
+  color: white;
+
+  .preview-title {
+    color: white;
+  }
+
+  .preview-logo i {
+    color: #3498db;
+  }
+}
+
+.business-content {
+  background: #ecf0f1;
+}
+
+.business-sidebar {
+  background: #34495e;
+  border-right: none;
+}
+
+.business-item {
+  background: #2c3e50;
+
+  &.active {
+    background: #3498db;
+  }
+}
+
+.business-main {
+  background: #ffffff;
+}
+
+.business-primary {
+  background: #3498db;
+}
+
+.business-secondary {
+  background: #2c3e50;
+}
+
+.business-accent {
+  background: #e74c3c;
+}
+
+// HubSpot CRM 風格
+.hubspot-header {
+  background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+  color: white;
+
+  .preview-title {
+    color: white;
+    font-weight: 600;
+  }
+
+  .preview-logo i {
+    color: #fff3e0;
+    font-size: 1.1rem;
+  }
+}
+
+.hubspot-content {
+  background: #f8fafc;
+}
+
+.hubspot-sidebar {
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  padding: 0.75rem 0.5rem;
+}
+
+.hubspot-item {
+  background: transparent;
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #ff7a59;
+  }
+
+  &.active {
+    background: #ff7a59;
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 122, 89, 0.3);
+  }
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+.hubspot-main {
+  background: #ffffff;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hubspot-primary {
+  background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+
+  .hubspot-metric {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+
+    .metric-value {
+      font-size: 0.7rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .metric-label {
+      font-size: 0.4rem;
+      opacity: 0.9;
+      margin-top: 1px;
+    }
+  }
+}
+
+.hubspot-secondary {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  position: relative;
+
+  .hubspot-chart {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    height: 8px;
+    background: linear-gradient(90deg, #ff7a59 0%, #4ade80 50%, #3b82f6 100%);
+    border-radius: 2px;
+  }
+}
+
+.hubspot-accent {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  position: relative;
+
+  .hubspot-progress {
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
+    width: 60%;
+    height: 4px;
+    background: #f59e0b;
+    border-radius: 2px;
+    animation: hubspotProgress 2s ease-in-out infinite;
+  }
+}
+
+// HubSpot 動畫效果
+@keyframes hubspotProgress {
+  0%, 100% { width: 60%; }
+  50% { width: 75%; }
+}
+
+@keyframes hubspotGlow {
+  0%, 100% { box-shadow: 0 2px 8px rgba(255, 122, 89, 0.3); }
+  50% { box-shadow: 0 4px 16px rgba(255, 122, 89, 0.5); }
+}
+
+// HubSpot 特殊元素樣式
+.template-hubspot-crm {
+  .hubspot-metric-card {
+    background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: hubspotShimmer 3s ease-in-out infinite;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .metric-trend {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  }
+
+  .hubspot-chart-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin: 0;
+      }
+
+      .chart-period {
+        background: #f1f5f9;
+        border-radius: 6px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.8rem;
+        color: #64748b;
+      }
+    }
+
+    .chart-placeholder {
+      height: 120px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40%;
+        background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(255, 122, 89, 0.3) 25%,
+          rgba(74, 222, 128, 0.3) 50%,
+          rgba(59, 130, 246, 0.3) 75%,
+          transparent 100%);
+        animation: hubspotWave 4s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+@keyframes hubspotShimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+@keyframes hubspotWave {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+// 模板資訊區域
+.style-template-info {
+  margin-bottom: 1rem;
+}
+
+.template-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--macos-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.template-description {
+  color: var(--macos-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.template-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-tag {
+  background: var(--macos-blue);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  
+  &.ai-tag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  &.minimal-tag {
+    background: #333333;
+  }
+  
+  &.dark-tag {
+    background: #0a84ff;
+  }
+  
+  &.colorful-tag {
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+  }
+  
+  &.business-tag {
+    background: #3498db;
+  }
+
+  &.hubspot-tag {
+    background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+    color: white;
+    font-weight: 600;
+  }
+}
+
+.style-template-actions {
+  text-align: center;
+}
+
+.select-template {
+  width: 100%;
+}
+
+// 自定義選項區域
+.style-customization-section {
+  background: var(--macos-bg-secondary);
+  border-radius: var(--macos-radius-large);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--macos-border-color);
+}
+
+.customization-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--macos-text-primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.customization-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.customization-group {
+  .customization-label {
+    display: block;
+    font-weight: 500;
+    color: var(--macos-text-primary);
+    margin-bottom: 0.5rem;
+  }
+}
+
+.color-picker-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.color-picker {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--macos-radius);
+  cursor: pointer;
+  
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  
+  &::-webkit-color-swatch {
+    border: 2px solid var(--macos-border-color);
+    border-radius: var(--macos-radius);
+  }
+}
+
+.color-label {
+  font-size: 0.9rem;
+  color: var(--macos-text-secondary);
+}
+
+.slider-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.range-slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--macos-border-color);
+  outline: none;
+  
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--macos-blue);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+  }
+  
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--macos-blue);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+  }
+}
+
+.slider-value {
+  font-size: 0.9rem;
+  color: var(--macos-text-secondary);
+  min-width: 50px;
+  text-align: right;
+}
+
+.customization-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+// 字體縮放相關樣式
+.font-scale-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.font-scale-help {
+  color: var(--macos-text-secondary);
+  font-size: 0.85rem;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.font-scale-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.font-scale-btn {
+  background: var(--macos-bg-secondary);
+  border: 1px solid var(--macos-border-color);
+  border-radius: var(--macos-radius);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: var(--macos-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--macos-blue);
+    color: white;
+    border-color: var(--macos-blue);
+  }
+
+  &.active {
+    background: var(--macos-blue);
+    color: white;
+    border-color: var(--macos-blue);
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+  }
+
+  &.recommended {
+    border-color: var(--macos-orange);
+    color: var(--macos-orange);
+    font-weight: 600;
+
+    &:hover, &.active {
+      background: var(--macos-orange);
+      color: white;
+      border-color: var(--macos-orange);
+    }
+  }
+}
+
+// 當前樣式資訊
+.current-style-info {
+  background: var(--macos-bg-secondary);
+  border-radius: var(--macos-radius-large);
+  padding: 1.5rem;
+  border: 1px solid var(--macos-border-color);
+}
+
+.current-style-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--macos-text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.current-style-details {
+  p {
+    margin-bottom: 0.5rem;
+    color: var(--macos-text-secondary);
+    
+    strong {
+      color: var(--macos-text-primary);
+    }
+  }
+}
+
+// HubSpot CRM 全局樣式覆蓋
+.template-hubspot-crm {
+  .macos-card {
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(255, 122, 89, 0.15);
+    }
+  }
+
+  .macos-card-header {
+    background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+    color: white;
+    border-bottom: none;
+
+    .macos-card-title {
+      color: white;
+    }
+
+    .macos-card-subtitle {
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  .macos-btn-primary {
+    background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+    border: none;
+    box-shadow: 0 2px 8px rgba(255, 122, 89, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, #ff5722 0%, #e64a19 100%);
+      box-shadow: 0 4px 12px rgba(255, 122, 89, 0.4);
+    }
+  }
+
+  .macos-btn-secondary {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #64748b;
+
+    &:hover {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+      color: #475569;
+    }
+  }
+
+  .macos-dashboard-card {
+    border: 1px solid #e2e8f0;
+    background: white;
+
+    &:hover {
+      border-color: #ff7a59;
+      box-shadow: 0 8px 25px rgba(255, 122, 89, 0.15);
+    }
+  }
+
+  .macos-dashboard-icon {
+    color: #ff7a59;
+  }
+
+  .macos-form-control {
+    border-color: #e2e8f0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: #ff7a59;
+      box-shadow: 0 0 0 3px rgba(255, 122, 89, 0.1);
+    }
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+  }
+
+  .macos-form-label {
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .macos-form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  // HubSpot 風格的輸入組
+  .hubspot-input-group {
+    position: relative;
+
+    .hubspot-input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      z-index: 1;
+    }
+
+    .macos-form-control {
+      padding-left: 40px;
+    }
+  }
+
+  // HubSpot 風格的選擇器
+  .hubspot-select {
+    position: relative;
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 12px center;
+      background-repeat: no-repeat;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+  }
+
+  .macos-table {
+    border: 1px solid #e2e8f0;
+
+    th {
+      background: #f8fafc;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+  }
+
+  .macos-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom-color: #e2e8f0;
+
+    .macos-navbar-brand {
+      color: #ff7a59;
+      font-weight: 700;
+
+      i {
+        color: #ff7a59;
+        margin-right: 0.5rem;
+      }
+    }
+
+    .macos-btn {
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &.macos-btn-secondary {
+        background: transparent;
+        border: 1px solid transparent;
+        color: #64748b;
+
+        &:hover {
+          background: #f1f5f9;
+          border-color: #e2e8f0;
+          color: #ff7a59;
+        }
+      }
+    }
+  }
+
+  .macos-page-header {
+    background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+  }
+
+  // 統計卡片樣式
+  .macos-stats-card {
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: #ff7a59;
+      box-shadow: 0 4px 12px rgba(255, 122, 89, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .macos-stats-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+
+      &.macos-stats-icon-blue {
+        background: linear-gradient(135deg, #ff7a59 0%, #ff5722 100%);
+        box-shadow: 0 4px 12px rgba(255, 122, 89, 0.3);
+      }
+
+      &.macos-stats-icon-green {
+        background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+      }
+
+      &.macos-stats-icon-orange {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      }
+
+      &.macos-stats-icon-purple {
+        background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+      }
+
+      i {
+        color: white;
+        font-size: 1.2rem;
+      }
+    }
+
+    .macos-stats-content {
+      .macos-stats-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+        line-height: 1;
+      }
+
+      .macos-stats-label {
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+    }
+  }
+
+  // HubSpot 風格的統計網格
+  .hubspot-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  // 標籤和徽章
+  .macos-badge {
+    &.macos-badge-primary {
+      background: #ff7a59;
+    }
+
+    &.macos-badge-success {
+      background: #4ade80;
+    }
+
+    &.macos-badge-warning {
+      background: #f59e0b;
+    }
+
+    &.macos-badge-danger {
+      background: #ef4444;
+    }
+  }
+}
+
+// 通知樣式
+.macos-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--macos-bg-primary);
+  border: 1px solid var(--macos-border-color);
+  border-radius: var(--macos-radius-large);
+  padding: 1rem 1.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  transform: translateX(400px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  max-width: 350px;
+
+  &.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  &.macos-notification-success {
+    border-left: 4px solid var(--macos-success);
+  }
+
+  &.macos-notification-info {
+    border-left: 4px solid var(--macos-blue);
+  }
+
+  &.macos-notification-warning {
+    border-left: 4px solid var(--macos-warning);
+  }
+
+  &.macos-notification-error {
+    border-left: 4px solid var(--macos-danger);
+  }
+}
+
+.macos-notification-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  i {
+    font-size: 1.2rem;
+
+    .macos-notification-success & {
+      color: var(--macos-success);
+    }
+
+    .macos-notification-info & {
+      color: var(--macos-blue);
+    }
+
+    .macos-notification-warning & {
+      color: var(--macos-warning);
+    }
+
+    .macos-notification-error & {
+      color: var(--macos-danger);
+    }
+  }
+
+  span {
+    color: var(--macos-text-primary);
+    font-weight: 500;
+  }
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+  .style-templates-container {
+    grid-template-columns: 1fr;
+  }
+
+  .customization-options {
+    grid-template-columns: 1fr;
+  }
+
+  .customization-actions {
+    flex-direction: column;
+  }
+
+  .macos-notification {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    transform: translateY(-100px);
+
+    &.show {
+      transform: translateY(0);
+    }
+  }
+}

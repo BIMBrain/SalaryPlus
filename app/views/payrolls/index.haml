@@ -1,0 +1,36 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-calculator
+      薪資單產生器
+    %p.macos-card-subtitle 產生和管理員工的月薪資單，支援加班費計算和各項扣款
+
+/ Search Form
+.macos-card
+  .macos-card-body
+    = search_form_for @query, html: { class: "macos-form" } do |f|
+      .row
+        .col-md-3
+          .macos-form-group
+            = f.label :year_eq, "年份", class: "macos-form-label"
+            = f.search_field :year_eq, class: "macos-form-control", placeholder: Date.current.year.to_s
+        .col-md-3
+          .macos-form-group
+            = f.label :month_eq, "月份", class: "macos-form-label"
+            = f.search_field :month_eq, class: "macos-form-control", placeholder: Date.current.month.to_s
+        .col-md-6
+          .macos-form-group
+            %label.macos-form-label &nbsp;
+            .d-flex{style: "gap: 8px;"}
+              = f.submit "查詢薪資單", class: "macos-btn macos-btn-primary"
+              = link_to payrolls_path, class: "macos-btn macos-btn-secondary" do
+                %i.fas.fa-refresh
+                重設
+
+/ Action Links
+= render "initiate_link"
+
+/ Results
+- if params[:query]
+  = render "list", payrolls: @result

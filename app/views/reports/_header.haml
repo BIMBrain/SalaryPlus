@@ -1,0 +1,25 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-chart-bar
+      年度報表
+    %p.macos-card-subtitle 產生和查看年度薪資統計報表，支援多種報表類型
+
+/ Report Filter
+.macos-card
+  .macos-card-body
+    = form_tag(reports_path, method: :get, class: "macos-form") do |f|
+      .row
+        .col-md-4
+          .macos-form-group
+            = label_tag :year, "年度", class: "macos-form-label"
+            = select_tag :year, options_for_select(Report.years, (params[:year] || Date.today.year)), class: "macos-form-control"
+        .col-md-4
+          .macos-form-group
+            = label_tag :report_type, "報表類型", class: "macos-form-label"
+            = select_tag :report_type, options_for_select(Report::INCOME_TYPE, params[:report_type]), class: "macos-form-control"
+        .col-md-4
+          .macos-form-group
+            %label.macos-form-label &nbsp;
+            = submit_tag "產生報表", class: "macos-btn macos-btn-primary", style: "width: 100%;"

@@ -1,0 +1,187 @@
+.macos-preview-container
+  %h4.macos-preview-title
+    %i.fas.fa-shield-alt
+    勞健保費用計算預覽
+  
+  .macos-preview-form
+    .row
+      .col-md-6
+        .macos-form-group
+          %label.macos-form-label 勞保投保薪資
+          %input#labor_insured_salary.macos-form-control{type: "number", value: "45800", placeholder: "請輸入勞保投保薪資"}
+          %small.macos-form-help 依勞保投保薪資分級表
+      
+      .col-md-6
+        .macos-form-group
+          %label.macos-form-label 健保投保薪資
+          %input#health_insured_salary.macos-form-control{type: "number", value: "45800", placeholder: "請輸入健保投保薪資"}
+          %small.macos-form-help 依健保投保薪資分級表
+    
+    .macos-form-actions
+      %button#calculate_insurance.macos-btn.macos-btn-primary{type: "button"}
+        %i.fas.fa-calculator
+        計算保險費
+  
+  .macos-preview-result#insurance_result{style: "display: none;"}
+    %h5.macos-result-title 計算結果
+    
+    / 員工負擔
+    .macos-insurance-section
+      %h6.macos-section-title
+        %i.fas.fa-user
+        員工負擔
+      .macos-result-grid
+        .macos-result-item
+          .macos-result-label 勞保費
+          .macos-result-value#employee_labor_insurance --
+        .macos-result-item
+          .macos-result-label 健保費
+          .macos-result-value#employee_health_insurance --
+        .macos-result-item
+          .macos-result-label 小計
+          .macos-result-value#employee_total --
+    
+    / 雇主負擔
+    .macos-insurance-section
+      %h6.macos-section-title
+        %i.fas.fa-building
+        雇主負擔
+      .macos-result-grid
+        .macos-result-item
+          .macos-result-label 勞保費
+          .macos-result-value#employer_labor_insurance --
+        .macos-result-item
+          .macos-result-label 健保費
+          .macos-result-value#employer_health_insurance --
+        .macos-result-item
+          .macos-result-label 勞退提繳
+          .macos-result-value#labor_pension --
+        .macos-result-item
+          .macos-result-label 小計
+          .macos-result-value#employer_total --
+    
+    / 計算公式
+    .macos-calculation-formulas
+      %h6.macos-section-title 計算公式
+      .macos-formula-list
+        .macos-formula-item
+          %strong 員工勞保費：
+          %span#labor_employee_formula --
+        .macos-formula-item
+          %strong 雇主勞保費：
+          %span#labor_employer_formula --
+        .macos-formula-item
+          %strong 員工健保費：
+          %span#health_employee_formula --
+        .macos-formula-item
+          %strong 雇主健保費：
+          %span#health_employer_formula --
+        .macos-formula-item
+          %strong 勞退提繳：
+          %span#pension_formula --
+
+:css
+  .macos-insurance-section {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(0, 122, 255, 0.1);
+  }
+  
+  .macos-section-title {
+    color: var(--macos-blue);
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    
+    i {
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .macos-calculation-formulas {
+    background: rgba(0, 122, 255, 0.05);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 122, 255, 0.2);
+  }
+  
+  .macos-formula-list {
+    .macos-formula-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0, 122, 255, 0.1);
+      
+      &:last-child {
+        border-bottom: none;
+      }
+      
+      strong {
+        color: var(--macos-text-primary);
+        min-width: 120px;
+      }
+      
+      span {
+        color: var(--macos-blue);
+        font-family: 'SF Mono', Monaco, monospace;
+        font-weight: 500;
+      }
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const calculateBtn = document.getElementById('calculate_insurance');
+    const resultDiv = document.getElementById('insurance_result');
+    
+    calculateBtn.addEventListener('click', function() {
+      const laborSalary = parseFloat(document.getElementById('labor_insured_salary').value) || 0;
+      const healthSalary = parseFloat(document.getElementById('health_insured_salary').value) || 0;
+      
+      // 取得當前設定的費率
+      const laborEmployeeRate = parseFloat(document.querySelector('[data-setting-key="labor_insurance_employee_rate"]')?.value) || 0.11;
+      const laborEmployerRate = parseFloat(document.querySelector('[data-setting-key="labor_insurance_employer_rate"]')?.value) || 0.22;
+      const healthEmployeeRate = parseFloat(document.querySelector('[data-setting-key="health_insurance_employee_rate"]')?.value) || 0.0517;
+      const healthEmployerRate = parseFloat(document.querySelector('[data-setting-key="health_insurance_employer_rate"]')?.value) || 0.0517;
+      const pensionRate = parseFloat(document.querySelector('[data-setting-key="labor_pension_rate"]')?.value) || 0.06;
+      
+      // 計算各項費用
+      const employeeLaborInsurance = Math.round(laborSalary * laborEmployeeRate);
+      const employerLaborInsurance = Math.round(laborSalary * laborEmployerRate);
+      const employeeHealthInsurance = Math.round(healthSalary * healthEmployeeRate);
+      const employerHealthInsurance = Math.round(healthSalary * healthEmployerRate);
+      const laborPension = Math.round(laborSalary * pensionRate);
+      
+      const employeeTotal = employeeLaborInsurance + employeeHealthInsurance;
+      const employerTotal = employerLaborInsurance + employerHealthInsurance + laborPension;
+      
+      // 更新結果顯示
+      document.getElementById('employee_labor_insurance').textContent = `NT$ ${employeeLaborInsurance.toLocaleString()}`;
+      document.getElementById('employee_health_insurance').textContent = `NT$ ${employeeHealthInsurance.toLocaleString()}`;
+      document.getElementById('employee_total').textContent = `NT$ ${employeeTotal.toLocaleString()}`;
+      
+      document.getElementById('employer_labor_insurance').textContent = `NT$ ${employerLaborInsurance.toLocaleString()}`;
+      document.getElementById('employer_health_insurance').textContent = `NT$ ${employerHealthInsurance.toLocaleString()}`;
+      document.getElementById('labor_pension').textContent = `NT$ ${laborPension.toLocaleString()}`;
+      document.getElementById('employer_total').textContent = `NT$ ${employerTotal.toLocaleString()}`;
+      
+      // 更新公式顯示
+      document.getElementById('labor_employee_formula').textContent = 
+        `${laborSalary.toLocaleString()} × ${(laborEmployeeRate * 100).toFixed(2)}% = ${employeeLaborInsurance.toLocaleString()}`;
+      document.getElementById('labor_employer_formula').textContent = 
+        `${laborSalary.toLocaleString()} × ${(laborEmployerRate * 100).toFixed(2)}% = ${employerLaborInsurance.toLocaleString()}`;
+      document.getElementById('health_employee_formula').textContent = 
+        `${healthSalary.toLocaleString()} × ${(healthEmployeeRate * 100).toFixed(4)}% = ${employeeHealthInsurance.toLocaleString()}`;
+      document.getElementById('health_employer_formula').textContent = 
+        `${healthSalary.toLocaleString()} × ${(healthEmployerRate * 100).toFixed(4)}% = ${employerHealthInsurance.toLocaleString()}`;
+      document.getElementById('pension_formula').textContent = 
+        `${laborSalary.toLocaleString()} × ${(pensionRate * 100).toFixed(1)}% = ${laborPension.toLocaleString()}`;
+      
+      resultDiv.style.display = 'block';
+    });
+  });

@@ -1,0 +1,937 @@
+/*
+ *= require_self
+ *= require_tree .
+ */
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "workspace";
+
+/* macOS Sequoia Design System */
+
+/* Color Palette */
+:root {
+  /* Primary Colors */
+  --macos-blue: #007AFF;
+  --macos-blue-light: #5AC8FA;
+  --macos-blue-dark: #0051D5;
+
+  /* System Colors */
+  --macos-red: #FF3B30;
+  --macos-orange: #FF9500;
+  --macos-yellow: #FFCC00;
+  --macos-green: #34C759;
+  --macos-mint: #00C7BE;
+  --macos-teal: #30B0C7;
+  --macos-cyan: #32D2FF;
+  --macos-indigo: #5856D6;
+  --macos-purple: #AF52DE;
+  --macos-pink: #FF2D92;
+  --macos-brown: #A2845E;
+
+  /* Neutral Colors */
+  --macos-gray-1: #8E8E93;
+  --macos-gray-2: #AEAEB2;
+  --macos-gray-3: #C7C7CC;
+  --macos-gray-4: #D1D1D6;
+  --macos-gray-5: #E5E5EA;
+  --macos-gray-6: #F2F2F7;
+
+  /* Background Colors */
+  --macos-bg-primary: #FFFFFF;
+  --macos-bg-secondary: #F2F2F7;
+  --macos-bg-tertiary: #FFFFFF;
+  --macos-bg-grouped: #F2F2F7;
+
+  /* Text Colors */
+  --macos-text-primary: #000000;
+  --macos-text-secondary: #3C3C43;
+  --macos-text-tertiary: #3C3C4399;
+  --macos-text-quaternary: #3C3C432E;
+
+  /* Border Colors */
+  --macos-border-primary: #3C3C4329;
+  --macos-border-secondary: #3C3C431F;
+
+  /* Shadow */
+  --macos-shadow-small: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --macos-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --macos-shadow-large: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+  /* Border Radius */
+  --macos-radius-small: 6px;
+  --macos-radius-medium: 10px;
+  --macos-radius-large: 16px;
+  --macos-radius-xl: 20px;
+
+  /* Spacing */
+  --macos-space-xs: 4px;
+  --macos-space-sm: 8px;
+  --macos-space-md: 16px;
+  --macos-space-lg: 24px;
+  --macos-space-xl: 32px;
+  --macos-space-2xl: 48px;
+}
+
+/* Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--macos-bg-grouped);
+  color: var(--macos-text-primary);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layout */
+.macos-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--macos-space-lg);
+}
+
+.macos-content {
+  background-color: var(--macos-bg-primary);
+  border-radius: var(--macos-radius-large);
+  box-shadow: var(--macos-shadow-medium);
+  overflow: hidden;
+}
+
+/* 字體縮放工具列 */
+.font-scale-toolbar {
+  background: var(--macos-blue);
+  color: white;
+  padding: 0.5rem 0;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 101;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.font-scale-toolbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.font-scale-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.font-scale-quick-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  &.active {
+    background: white;
+    color: var(--macos-blue);
+    border-color: white;
+    font-weight: 600;
+  }
+
+  &.recommended {
+    background: var(--macos-orange);
+    border-color: var(--macos-orange);
+    font-weight: 600;
+
+    &:hover {
+      background: #e6850e;
+      border-color: #e6850e;
+    }
+
+    &.active {
+      background: white;
+      color: var(--macos-orange);
+      border-color: white;
+    }
+  }
+}
+
+/* Navigation Bar */
+.macos-navbar {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--macos-border-primary);
+  padding: var(--macos-space-md) var(--macos-space-lg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: var(--macos-space-md);
+}
+
+.macos-navbar-brand {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--macos-text-primary);
+  text-decoration: none;
+  margin-right: var(--macos-space-lg);
+}
+
+.macos-navbar-nav {
+  display: flex;
+  gap: var(--macos-space-sm);
+  flex: 1;
+}
+
+/* Buttons */
+.macos-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--macos-space-sm) var(--macos-space-md);
+  border-radius: var(--macos-radius-medium);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.macos-btn:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.macos-btn:active {
+  transform: translateY(0);
+}
+
+.macos-btn-primary {
+  background-color: var(--macos-blue);
+  color: white;
+  box-shadow: var(--macos-shadow-small);
+}
+
+.macos-btn-primary:hover {
+  background-color: var(--macos-blue-dark);
+  box-shadow: var(--macos-shadow-medium);
+  color: white;
+}
+
+.macos-btn-secondary {
+  background-color: var(--macos-bg-secondary);
+  color: var(--macos-text-primary);
+  border: 1px solid var(--macos-border-primary);
+}
+
+.macos-btn-secondary:hover {
+  background-color: var(--macos-gray-5);
+  color: var(--macos-text-primary);
+}
+
+.macos-btn-danger {
+  background-color: var(--macos-red);
+  color: white;
+  box-shadow: var(--macos-shadow-small);
+}
+
+.macos-btn-danger:hover {
+  background-color: #D70015;
+  box-shadow: var(--macos-shadow-medium);
+  color: white;
+}
+
+.macos-btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: var(--macos-radius-small);
+}
+
+.macos-btn-xs {
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: var(--macos-radius-small);
+}
+
+/* Cards */
+.macos-card {
+  background-color: var(--macos-bg-primary);
+  border-radius: var(--macos-radius-large);
+  box-shadow: var(--macos-shadow-medium);
+  overflow: hidden;
+  margin-bottom: var(--macos-space-lg);
+}
+
+.macos-card-header {
+  padding: var(--macos-space-lg);
+  border-bottom: 1px solid var(--macos-border-primary);
+  background-color: var(--macos-bg-secondary);
+}
+
+.macos-card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--macos-text-primary);
+  margin: 0;
+}
+
+.macos-card-subtitle {
+  font-size: 14px;
+  color: var(--macos-text-secondary);
+  margin: 4px 0 0 0;
+}
+
+.macos-card-body {
+  padding: var(--macos-space-lg);
+}
+
+.macos-card-actions {
+  padding: var(--macos-space-md) var(--macos-space-lg);
+  border-top: 1px solid var(--macos-border-primary);
+  background-color: var(--macos-bg-secondary);
+  display: flex;
+  gap: var(--macos-space-sm);
+  justify-content: flex-end;
+}
+
+/* Tables */
+.macos-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--macos-bg-primary);
+  border-radius: var(--macos-radius-medium);
+  overflow: hidden;
+  box-shadow: var(--macos-shadow-small);
+}
+
+.macos-table th {
+  background-color: var(--macos-bg-secondary);
+  padding: var(--macos-space-md);
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--macos-text-secondary);
+  border-bottom: 1px solid var(--macos-border-primary);
+}
+
+.macos-table td {
+  padding: var(--macos-space-md);
+  border-bottom: 1px solid var(--macos-border-secondary);
+  font-size: 14px;
+  color: var(--macos-text-primary);
+}
+
+.macos-table tr:last-child td {
+  border-bottom: none;
+}
+
+.macos-table tr:hover {
+  background-color: var(--macos-bg-secondary);
+}
+
+/* Forms */
+.macos-form-group {
+  margin-bottom: var(--macos-space-lg);
+}
+
+.macos-form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--macos-text-primary);
+  margin-bottom: var(--macos-space-sm);
+}
+
+.macos-form-control {
+  width: 100%;
+  padding: var(--macos-space-md);
+  border: 1px solid var(--macos-border-primary);
+  border-radius: var(--macos-radius-medium);
+  font-size: 14px;
+  color: var(--macos-text-primary);
+  background-color: var(--macos-bg-primary);
+  transition: all 0.2s ease;
+}
+
+.macos-form-control:focus {
+  outline: none;
+  border-color: var(--macos-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+.macos-form-control::placeholder {
+  color: var(--macos-text-tertiary);
+}
+
+/* Page Header */
+.macos-page-header {
+  padding: var(--macos-space-xl) var(--macos-space-lg) var(--macos-space-lg);
+  background: linear-gradient(135deg, var(--macos-blue) 0%, var(--macos-purple) 100%);
+  color: white;
+  text-align: center;
+}
+
+.macos-page-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 var(--macos-space-sm) 0;
+}
+
+.macos-page-subtitle {
+  font-size: 16px;
+  opacity: 0.8;
+  margin: 0;
+}
+
+/* Dashboard Grid */
+.macos-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--macos-space-lg);
+  margin-bottom: var(--macos-space-xl);
+}
+
+.macos-dashboard-card {
+  background: linear-gradient(135deg, var(--macos-bg-primary) 0%, var(--macos-bg-secondary) 100%);
+  border-radius: var(--macos-radius-large);
+  padding: var(--macos-space-xl);
+  box-shadow: var(--macos-shadow-medium);
+  text-align: center;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.macos-dashboard-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--macos-shadow-large);
+  text-decoration: none;
+  color: inherit;
+}
+
+.macos-dashboard-icon {
+  font-size: 48px;
+  margin-bottom: var(--macos-space-md);
+  color: var(--macos-blue);
+}
+
+.macos-dashboard-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 var(--macos-space-sm) 0;
+  color: var(--macos-text-primary);
+}
+
+.macos-dashboard-description {
+  font-size: 14px;
+  color: var(--macos-text-secondary);
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .macos-container {
+    padding: var(--macos-space-md);
+  }
+
+  .macos-navbar {
+    flex-direction: column;
+    gap: var(--macos-space-sm);
+    padding: var(--macos-space-md);
+  }
+
+  .macos-navbar-nav {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .macos-navbar-nav .macos-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .macos-dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--macos-space-md);
+  }
+
+  .macos-page-header {
+    padding: var(--macos-space-lg) var(--macos-space-md);
+  }
+
+  .macos-page-title {
+    font-size: 24px;
+  }
+
+  .macos-card-header,
+  .macos-card-body,
+  .macos-card-actions {
+    padding: var(--macos-space-md);
+  }
+
+  .macos-table {
+    font-size: 12px;
+  }
+
+  .macos-table th,
+  .macos-table td {
+    padding: var(--macos-space-sm);
+  }
+
+  .row .col-md-6,
+  .row .col-md-4,
+  .row .col-md-3 {
+    margin-bottom: var(--macos-space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .macos-container {
+    padding: var(--macos-space-sm);
+  }
+
+  .macos-page-title {
+    font-size: 20px;
+  }
+
+  .macos-card-title {
+    font-size: 18px;
+  }
+
+  .macos-dashboard-card {
+    padding: var(--macos-space-lg);
+  }
+
+  .macos-dashboard-icon {
+    font-size: 36px;
+  }
+
+  .macos-dashboard-title {
+    font-size: 16px;
+  }
+
+  .macos-btn {
+    padding: var(--macos-space-md);
+    font-size: 14px;
+  }
+
+  .macos-btn-sm {
+    padding: var(--macos-space-sm) var(--macos-space-md);
+    font-size: 12px;
+  }
+
+  .font-scale-toolbar-content {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .font-scale-label {
+    font-size: 0.8rem;
+  }
+
+  .font-scale-quick-btn {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+/* Utility Classes */
+.d-flex {
+  display: flex;
+}
+
+.d-none {
+  display: none;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--macos-space-xs); }
+.mb-2 { margin-bottom: var(--macos-space-sm); }
+.mb-3 { margin-bottom: var(--macos-space-md); }
+.mb-4 { margin-bottom: var(--macos-space-lg); }
+.mb-5 { margin-bottom: var(--macos-space-xl); }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--macos-space-xs); }
+.mt-2 { margin-top: var(--macos-space-sm); }
+.mt-3 { margin-top: var(--macos-space-md); }
+.mt-4 { margin-top: var(--macos-space-lg); }
+.mt-5 { margin-top: var(--macos-space-xl); }
+
+/* Badge Component */
+.macos-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.macos-badge-primary {
+  background-color: var(--macos-blue);
+  color: white;
+}
+
+.macos-badge-success {
+  background-color: var(--macos-green);
+  color: white;
+}
+
+.macos-badge-warning {
+  background-color: var(--macos-orange);
+  color: white;
+}
+
+.macos-badge-danger {
+  background-color: var(--macos-red);
+  color: white;
+}
+
+.macos-badge-secondary {
+  background-color: var(--macos-gray-5);
+  color: var(--macos-text-primary);
+}
+
+/* Animations and Transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Enhanced Transitions */
+.macos-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.macos-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--macos-shadow-large);
+}
+
+.macos-btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.macos-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.macos-btn:hover::before {
+  left: 100%;
+}
+
+.macos-form-control {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.macos-form-control:focus {
+  transform: translateY(-1px);
+}
+
+.macos-table tr {
+  transition: background-color 0.2s ease;
+}
+
+.macos-navbar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading States */
+.loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--macos-gray-4);
+  border-top: 2px solid var(--macos-blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Hover Effects */
+.macos-dashboard-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.macos-dashboard-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--macos-shadow-large);
+}
+
+.macos-dashboard-card:hover .macos-dashboard-icon {
+  transform: scale(1.1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Page Transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Micro Interactions */
+.macos-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.macos-card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Focus States */
+.macos-btn:focus,
+.macos-form-control:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Page Load Animation */
+body {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Bootstrap Grid System Compatibility */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.col-md-12 { flex: 0 0 100%; max-width: 100%; padding: 0 15px; }
+.col-md-6 { flex: 0 0 50%; max-width: 50%; padding: 0 15px; }
+.col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; padding: 0 15px; }
+.col-md-3 { flex: 0 0 25%; max-width: 25%; padding: 0 15px; }
+
+@media (max-width: 768px) {
+  .col-md-12,
+  .col-md-6,
+  .col-md-4,
+  .col-md-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* Form Enhancements */
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: var(--macos-space-sm);
+}
+
+.form-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--macos-border-primary);
+  border-radius: 4px;
+  background-color: var(--macos-bg-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-check input[type="checkbox"]:checked {
+  background-color: var(--macos-blue);
+  border-color: var(--macos-blue);
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='m13.854 3.646-7.5 7.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6 10.293l7.146-7.147a.5.5 0 0 1 .708.708z'/%3e%3c/svg%3e");
+  background-size: 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Select Dropdown Styling */
+select.macos-form-control {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  padding-right: 40px;
+  appearance: none;
+}
+
+/* Table Responsive */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .macos-table {
+    min-width: 600px;
+  }
+
+  .table-responsive {
+    border-radius: var(--macos-radius-medium);
+    box-shadow: var(--macos-shadow-small);
+  }
+}
+
+/* Button Groups */
+.btn-group {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-group .macos-btn {
+  margin: 0;
+}
+
+/* Alert Messages */
+.macos-alert {
+  padding: var(--macos-space-md);
+  border-radius: var(--macos-radius-medium);
+  margin-bottom: var(--macos-space-lg);
+  border: 1px solid transparent;
+}
+
+.macos-alert-success {
+  background-color: rgba(52, 199, 89, 0.1);
+  border-color: var(--macos-green);
+  color: var(--macos-green);
+}
+
+.macos-alert-danger {
+  background-color: rgba(255, 59, 48, 0.1);
+  border-color: var(--macos-red);
+  color: var(--macos-red);
+}
+
+.macos-alert-warning {
+  background-color: rgba(255, 149, 0, 0.1);
+  border-color: var(--macos-orange);
+  color: var(--macos-orange);
+}
+
+.macos-alert-info {
+  background-color: rgba(0, 122, 255, 0.1);
+  border-color: var(--macos-blue);
+  color: var(--macos-blue);
+}
+
+/* Import Dark Mode Styles */
+@import "dark_mode";

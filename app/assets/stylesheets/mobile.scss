@@ -1,0 +1,386 @@
+// 手機版專用樣式
+
+// 手機版導航
+.macos-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid #e5e5e7;
+  padding: 0.5rem;
+  z-index: 1000;
+  
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+.macos-mobile-nav-items {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.macos-mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: #86868b;
+  font-size: 0.75rem;
+  transition: color 0.2s ease;
+  
+  &.active {
+    color: #007aff;
+  }
+  
+  i {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
+// 手機版標題列
+.macos-mobile-header {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #e5e5e7;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  
+  @media (max-width: 768px) {
+    display: flex;
+  }
+}
+
+.macos-mobile-menu-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #1d1d1f;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.macos-mobile-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+// 手機版側邊欄
+.macos-mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid #e5e5e7;
+  transition: left 0.3s ease;
+  z-index: 1001;
+  overflow-y: auto;
+  
+  &.open {
+    left: 0;
+  }
+}
+
+.macos-mobile-sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e5e7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.macos-mobile-sidebar-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.macos-mobile-sidebar-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #86868b;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.macos-mobile-sidebar-menu {
+  padding: 1rem 0;
+}
+
+.macos-mobile-sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: #1d1d1f;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  &.active {
+    background-color: rgba(0, 122, 255, 0.1);
+    color: #007aff;
+  }
+  
+  i {
+    margin-right: 0.75rem;
+    width: 1.2rem;
+    text-align: center;
+  }
+}
+
+// 手機版遮罩
+.macos-mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// 響應式設計調整
+@media (max-width: 768px) {
+  // 隱藏桌面版導航
+  .macos-sidebar {
+    display: none;
+  }
+  
+  // 調整主要內容區域
+  .macos-main-content {
+    margin-left: 0;
+    padding-bottom: 80px; // 為底部導航留空間
+  }
+  
+  .macos-container {
+    padding: 1rem;
+  }
+  
+  // 調整網格佈局
+  .macos-dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .macos-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  // 調整頁面標題
+  .macos-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .macos-page-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  // 表格響應式
+  .macos-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .macos-table-mobile {
+    display: block;
+    
+    thead {
+      display: none;
+    }
+    
+    tbody {
+      display: block;
+    }
+    
+    tr {
+      display: block;
+      margin-bottom: 1rem;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e5e5e7;
+    }
+    
+    td {
+      display: block;
+      text-align: left !important;
+      padding: 0.5rem 0;
+      border: none;
+      
+      &:before {
+        content: attr(data-label) ": ";
+        font-weight: 600;
+        color: #86868b;
+        display: inline-block;
+        min-width: 100px;
+      }
+      
+      &:first-child {
+        padding-top: 0;
+      }
+      
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
+  
+  // 表單響應式
+  .macos-form .row {
+    flex-direction: column;
+  }
+  
+  .macos-form .col-md-6,
+  .macos-form .col-md-4,
+  .macos-form .col-md-3,
+  .macos-form .col-md-2 {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .macos-form-mobile {
+    .macos-form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    .macos-form-control {
+      font-size: 16px; // 防止iOS縮放
+      padding: 0.75rem;
+    }
+    
+    .macos-btn {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+    }
+  }
+  
+  // 按鈕組響應式
+  .macos-btn-group {
+    flex-direction: column;
+    gap: 0.5rem;
+    
+    .macos-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  // 卡片響應式
+  .macos-card {
+    margin: 0.5rem 0;
+    border-radius: 12px;
+  }
+  
+  .macos-dashboard-card {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  .macos-dashboard-title {
+    font-size: 1rem;
+  }
+  
+  .macos-dashboard-description {
+    font-size: 0.85rem;
+  }
+}
+
+// 超小螢幕優化
+@media (max-width: 480px) {
+  .macos-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .macos-page-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .macos-mobile-nav-item {
+    font-size: 0.7rem;
+    
+    i {
+      font-size: 1rem;
+    }
+  }
+  
+  .macos-container {
+    padding: 0.75rem;
+  }
+  
+  .macos-card-body {
+    padding: 1rem;
+  }
+}
+
+// 觸控優化
+@media (hover: none) and (pointer: coarse) {
+  .macos-btn {
+    min-height: 44px; // iOS建議的最小觸控區域
+  }
+  
+  .macos-mobile-nav-item {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .macos-form-control {
+    min-height: 44px;
+  }
+}
+
+// 橫屏模式優化
+@media (max-width: 768px) and (orientation: landscape) {
+  .macos-mobile-nav {
+    display: none;
+  }
+  
+  .macos-main-content {
+    padding-bottom: 1rem;
+  }
+  
+  .macos-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

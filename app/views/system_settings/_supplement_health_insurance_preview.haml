@@ -1,0 +1,217 @@
+.macos-preview-container
+  %h4.macos-preview-title
+    %i.fas.fa-plus-square
+    二代健保補充保費計算預覽
+  
+  .macos-preview-form
+    .row
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 薪資所得
+          %input#salary_income.macos-form-control{type: "number", value: "80000", placeholder: "請輸入薪資所得"}
+          %small.macos-form-help 單次給付金額
+      
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 投保金額
+          %input#insured_amount.macos-form-control{type: "number", value: "45800", placeholder: "請輸入投保金額"}
+          %small.macos-form-help 健保投保金額
+      
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 所得類型
+          %select#income_type.macos-form-control
+            %option{value: "salary"} 薪資所得
+            %option{value: "bonus"} 獎金
+            %option{value: "professional"} 執行業務所得
+            %option{value: "dividend"} 股利所得
+            %option{value: "interest"} 利息所得
+            %option{value: "rent"} 租金收入
+    
+    .macos-form-actions
+      %button#calculate_supplement.macos-btn.macos-btn-primary{type: "button"}
+        %i.fas.fa-calculator
+        計算補充保費
+  
+  .macos-preview-result#supplement_result{style: "display: none;"}
+    %h5.macos-result-title 計算結果
+    
+    / 計算明細
+    .macos-supplement-section
+      %h6.macos-section-title
+        %i.fas.fa-calculator
+        計算明細
+      .macos-result-grid
+        .macos-result-item
+          .macos-result-label 薪資所得
+          .macos-result-value#result_salary_income --
+        .macos-result-item
+          .macos-result-label 投保金額
+          .macos-result-value#result_insured_amount --
+        .macos-result-item
+          .macos-result-label 補充保費基數
+          .macos-result-value#supplement_base --
+        .macos-result-item
+          .macos-result-label 補充保費率
+          .macos-result-value#supplement_rate --
+        .macos-result-item
+          .macos-result-label 補充保費
+          .macos-result-value#supplement_fee --
+        .macos-result-item
+          .macos-result-label 是否需扣繳
+          .macos-result-value#need_withholding --
+    
+    / 計算說明
+    .macos-supplement-explanation
+      %h6.macos-section-title 計算說明
+      .macos-explanation-content
+        %div#calculation_explanation --
+        
+        .macos-formula-display
+          %strong 計算公式：
+          %span#supplement_formula --
+    
+    / 扣繳規則
+    .macos-supplement-rules
+      %h6.macos-section-title 二代健保補充保費扣繳規則
+      .macos-rules-list
+        .macos-rule-item
+          %i.fas.fa-check-circle.text-success
+          %span 薪資所得：單次給付超過當月投保金額4倍部分
+        .macos-rule-item
+          %i.fas.fa-check-circle.text-success
+          %span 獎金：單次給付超過當月投保金額4倍部分
+        .macos-rule-item
+          %i.fas.fa-check-circle.text-success
+          %span 執行業務所得：單次給付超過20,000元部分
+        .macos-rule-item
+          %i.fas.fa-check-circle.text-success
+          %span 股利所得：單次給付超過20,000元部分
+        .macos-rule-item
+          %i.fas.fa-check-circle.text-success
+          %span 利息所得：單次給付超過20,000元部分
+        .macos-rule-item
+          %i.fas.fa-check-circle.text-success
+          %span 租金收入：單次給付超過20,000元部分
+        .macos-rule-item
+          %i.fas.fa-info-circle.text-info
+          %span 年度計費上限：1,000,000元
+
+:css
+  .macos-supplement-section {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(0, 122, 255, 0.1);
+  }
+  
+  .macos-supplement-explanation {
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+  }
+  
+  .macos-explanation-content {
+    margin-bottom: 1rem;
+    color: var(--macos-text-primary);
+    line-height: 1.6;
+  }
+  
+  .macos-supplement-rules {
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+  }
+  
+  .macos-rules-list {
+    .macos-rule-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0;
+      
+      i {
+        margin-right: 0.75rem;
+        font-size: 1rem;
+      }
+      
+      span {
+        color: var(--macos-text-primary);
+        line-height: 1.5;
+      }
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const calculateBtn = document.getElementById('calculate_supplement');
+    const resultDiv = document.getElementById('supplement_result');
+    
+    calculateBtn.addEventListener('click', function() {
+      const salaryIncome = parseFloat(document.getElementById('salary_income').value) || 0;
+      const insuredAmount = parseFloat(document.getElementById('insured_amount').value) || 0;
+      const incomeType = document.getElementById('income_type').value;
+      
+      // 取得當前設定的費率和門檻
+      const supplementRate = parseFloat(document.querySelector('[data-setting-key="supplement_health_insurance_rate"]')?.value) || 0.0211;
+      const threshold = parseFloat(document.querySelector('[data-setting-key="supplement_health_insurance_threshold"]')?.value) || 20000;
+      
+      let supplementBase = 0;
+      let supplementFee = 0;
+      let needWithholding = false;
+      let explanation = '';
+      
+      switch(incomeType) {
+        case 'salary':
+        case 'bonus':
+          // 薪資所得和獎金：超過投保金額4倍部分
+          const fourTimesInsured = insuredAmount * 4;
+          if (salaryIncome > fourTimesInsured) {
+            supplementBase = salaryIncome - fourTimesInsured;
+            supplementFee = Math.round(supplementBase * supplementRate);
+            needWithholding = true;
+            explanation = `薪資所得 ${salaryIncome.toLocaleString()} 元超過投保金額4倍 ${fourTimesInsured.toLocaleString()} 元，需扣繳補充保費。`;
+          } else {
+            explanation = `薪資所得 ${salaryIncome.toLocaleString()} 元未超過投保金額4倍 ${fourTimesInsured.toLocaleString()} 元，無需扣繳補充保費。`;
+          }
+          break;
+          
+        case 'professional':
+        case 'dividend':
+        case 'interest':
+        case 'rent':
+          // 其他所得：超過20,000元部分
+          if (salaryIncome > threshold) {
+            supplementBase = salaryIncome - threshold;
+            supplementFee = Math.round(supplementBase * supplementRate);
+            needWithholding = true;
+            explanation = `所得金額 ${salaryIncome.toLocaleString()} 元超過起扣門檻 ${threshold.toLocaleString()} 元，需扣繳補充保費。`;
+          } else {
+            explanation = `所得金額 ${salaryIncome.toLocaleString()} 元未超過起扣門檻 ${threshold.toLocaleString()} 元，無需扣繳補充保費。`;
+          }
+          break;
+      }
+      
+      // 更新結果顯示
+      document.getElementById('result_salary_income').textContent = `NT$ ${salaryIncome.toLocaleString()}`;
+      document.getElementById('result_insured_amount').textContent = `NT$ ${insuredAmount.toLocaleString()}`;
+      document.getElementById('supplement_base').textContent = `NT$ ${supplementBase.toLocaleString()}`;
+      document.getElementById('supplement_rate').textContent = `${(supplementRate * 100).toFixed(2)}%`;
+      document.getElementById('supplement_fee').textContent = `NT$ ${supplementFee.toLocaleString()}`;
+      document.getElementById('need_withholding').textContent = needWithholding ? '是' : '否';
+      
+      document.getElementById('calculation_explanation').textContent = explanation;
+      
+      if (supplementFee > 0) {
+        document.getElementById('supplement_formula').textContent = 
+          `${supplementBase.toLocaleString()} × ${(supplementRate * 100).toFixed(2)}% = ${supplementFee.toLocaleString()}`;
+      } else {
+        document.getElementById('supplement_formula').textContent = '無需計算補充保費';
+      }
+      
+      resultDiv.style.display = 'block';
+    });
+  });

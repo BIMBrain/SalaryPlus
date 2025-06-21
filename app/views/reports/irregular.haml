@@ -1,0 +1,18 @@
+= render "header"
+= render "title"
+
+%p= link_to "匯出 CSV", irregular_reports_path(params[:year], format: :csv), class: "btn btn-m btn-primary"
+
+- if @report.any?
+  %table.table
+    %tr
+      %th.col-sm-2 姓名
+      %th.col-sm-2 計算月份
+      %th.col-sm-2 項目
+      %th 金額
+    - @report.each do |row|
+      %tr
+        %td= link_to row[:name], employee_path(row[:employee_id])
+        %td= link_to row[:period], edit_payroll_path(row[:payroll_id])
+        %td= row[:description]
+        %td= number_with_delimiter(row[:amount])

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>快速操作功能測試 - Fortuna</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f7;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .meeting-section {
+            margin-bottom: 30px;
+        }
+        
+        .meeting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .meeting-header h3 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .meeting-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .meeting-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .meeting-btn:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+        
+        .meeting-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .function-selector {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .function-selector h4 {
+            font-size: 18px;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        
+        .available-functions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        
+        .function-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .function-option:hover {
+            border-color: #007bff;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+        }
+        
+        .function-option.selected {
+            opacity: 0.5;
+            pointer-events: none;
+            background: #e9ecef;
+        }
+        
+        .function-option i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .function-option span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .meeting-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .meeting-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            background: white;
+        }
+        
+        .meeting-card:hover {
+            border-color: #dee2e6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .meeting-card.customizing .remove-shortcut {
+            display: flex !important;
+        }
+        
+        .meeting-card.customizing .meeting-action {
+            display: none;
+        }
+        
+        .meeting-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+        
+        .meeting-info {
+            flex: 1;
+        }
+        
+        .meeting-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+        
+        .meeting-info p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .meeting-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .meeting-status {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        .meeting-action {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            color: #6c757d;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .meeting-action:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+        
+        .remove-shortcut {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: #dc3545;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .remove-shortcut:hover {
+            background: #c82333;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 8px;
+            color: #2d5a2d;
+        }
+        
+        .error {
+            background: #ffeaea;
+            border-color: #ffb3b3;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 快速操作功能測試</h1>
+        
+        <div class="meeting-section">
+            <div class="meeting-header">
+                <h3>快速操作</h3>
+                <div class="meeting-actions">
+                    <button id="customize-btn" class="meeting-btn" title="自定義快速操作">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button id="add-shortcut-btn" class="meeting-btn" title="新增快捷方式">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button id="reset-shortcuts-btn" class="meeting-btn" title="重置為預設">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Function Selector -->
+            <div class="function-selector">
+                <h4>選擇要加入快速操作的功能：</h4>
+                <div class="available-functions">
+                    <div class="function-option" data-function="employees">
+                        <i class="fas fa-users" style="color: #4A90E2;"></i>
+                        <span>員工資料</span>
+                    </div>
+                    <div class="function-option" data-function="attendances">
+                        <i class="fas fa-clock" style="color: #27AE60;"></i>
+                        <span>出勤打卡</span>
+                    </div>
+                    <div class="function-option" data-function="overtime">
+                        <i class="fas fa-calculator" style="color: #E67E22;"></i>
+                        <span>加班費計算</span>
+                    </div>
+                    <div class="function-option" data-function="payrolls">
+                        <i class="fas fa-file-invoice-dollar" style="color: #9B59B6;"></i>
+                        <span>薪資單產生器</span>
+                    </div>
+                    <div class="function-option" data-function="insurance_statements">
+                        <i class="fas fa-shield-alt" style="color: #E74C3C;"></i>
+                        <span>勞健保比對工具</span>
+                    </div>
+                    <div class="function-option" data-function="statements">
+                        <i class="fas fa-history" style="color: #34495E;"></i>
+                        <span>發薪紀錄</span>
+                    </div>
+                    <div class="function-option" data-function="employee_login">
+                        <i class="fas fa-user-circle" style="color: #16A085;"></i>
+                        <span>員工自助平台</span>
+                    </div>
+                    <div class="function-option" data-function="reports">
+                        <i class="fas fa-chart-line" style="color: #8E44AD;"></i>
+                        <span>年度報表</span>
+                    </div>
+                    <div class="function-option" data-function="system_settings">
+                        <i class="fas fa-cogs" style="color: #95A5A6;"></i>
+                        <span>系統設定</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions Grid -->
+            <div class="meeting-grid" id="quick-actions-grid">
+                <!-- Default quick actions will be loaded here -->
+            </div>
+        </div>
+        
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Quick Actions Functionality Test
+        document.addEventListener('DOMContentLoaded', function() {
+            const customizeBtn = document.getElementById('customize-btn');
+            const addShortcutBtn = document.getElementById('add-shortcut-btn');
+            const resetShortcutsBtn = document.getElementById('reset-shortcuts-btn');
+            const functionSelector = document.querySelector('.function-selector');
+            const quickActionsGrid = document.getElementById('quick-actions-grid');
+            const statusDiv = document.getElementById('status');
+
+            let isCustomizing = false;
+
+            // Function definitions
+            const functionDefinitions = {
+                employees: {
+                    icon: 'fas fa-users',
+                    color: '#4A90E2',
+                    title: '員工管理',
+                    description: '管理員工資料',
+                    status: '管理'
+                },
+                attendances: {
+                    icon: 'fas fa-clock',
+                    color: '#27AE60',
+                    title: '出勤管理',
+                    description: '員工打卡記錄',
+                    status: '出勤'
+                },
+                overtime: {
+                    icon: 'fas fa-calculator',
+                    color: '#E67E22',
+                    title: '加班費計算',
+                    description: '一例一休計算',
+                    status: '計算'
+                },
+                payrolls: {
+                    icon: 'fas fa-file-invoice-dollar',
+                    color: '#9B59B6',
+                    title: '薪資計算',
+                    description: '計算員工薪資',
+                    status: '計算'
+                },
+                insurance_statements: {
+                    icon: 'fas fa-shield-alt',
+                    color: '#E74C3C',
+                    title: '勞健保比對',
+                    description: '保險費用比對',
+                    status: '比對'
+                },
+                statements: {
+                    icon: 'fas fa-history',
+                    color: '#34495E',
+                    title: '發薪紀錄',
+                    description: '歷史薪資記錄',
+                    status: '記錄'
+                },
+                employee_login: {
+                    icon: 'fas fa-user-circle',
+                    color: '#16A085',
+                    title: '員工自助平台',
+                    description: '員工入口網站',
+                    status: '平台'
+                },
+                reports: {
+                    icon: 'fas fa-chart-line',
+                    color: '#8E44AD',
+                    title: '報表分析',
+                    description: '薪資統計報表',
+                    status: '報表'
+                },
+                system_settings: {
+                    icon: 'fas fa-cogs',
+                    color: '#95A5A6',
+                    title: '系統設定',
+                    description: '系統參數設定',
+                    status: '設定'
+                }
+            };
+
+            // Show status message
+            function showStatus(message, isError = false) {
+                statusDiv.textContent = message;
+                statusDiv.className = isError ? 'status error' : 'status';
+                statusDiv.style.display = 'block';
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+
+            // Load saved quick actions from localStorage
+            function loadQuickActions() {
+                const saved = localStorage.getItem('fortuna_quick_actions_test');
+                if (saved) {
+                    try {
+                        const quickActions = JSON.parse(saved);
+                        renderQuickActions(quickActions);
+                        showStatus('✅ 已載入保存的快速操作設定');
+                    } catch (e) {
+                        console.error('Error loading quick actions:', e);
+                        const defaultActions = ['employees', 'payrolls', 'attendances', 'reports'];
+                        renderQuickActions(defaultActions);
+                        showStatus('⚠️ 載入設定失敗，使用預設配置', true);
+                    }
+                } else {
+                    const defaultActions = ['employees', 'payrolls', 'attendances', 'reports'];
+                    renderQuickActions(defaultActions);
+                    showStatus('📋 載入預設快速操作');
+                }
+            }
+
+            // Save quick actions to localStorage
+            function saveQuickActions() {
+                const currentActions = [];
+                const actionCards = quickActionsGrid.querySelectorAll('.quick-action-item');
+
+                actionCards.forEach(card => {
+                    const functionName = card.getAttribute('data-function');
+                    if (functionName) {
+                        currentActions.push(functionName);
+                    }
+                });
+
+                localStorage.setItem('fortuna_quick_actions_test', JSON.stringify(currentActions));
+                showStatus('💾 快速操作設定已保存');
+            }
+
+            // Render quick actions
+            function renderQuickActions(actions) {
+                quickActionsGrid.innerHTML = '';
+
+                actions.forEach(functionName => {
+                    const func = functionDefinitions[functionName];
+                    if (func) {
+                        const card = createQuickActionCard(functionName, func);
+                        quickActionsGrid.appendChild(card);
+                    }
+                });
+
+                updateCustomizeMode();
+            }
+
+            // Create a quick action card
+            function createQuickActionCard(functionName, func) {
+                const card = document.createElement('div');
+                card.className = 'meeting-card quick-action-item';
+                card.setAttribute('data-function', functionName);
+
+                card.innerHTML = `
+                    <div class="meeting-avatar">
+                        <i class="${func.icon}" style="font-size: 20px; color: ${func.color};"></i>
+                    </div>
+                    <div class="meeting-info">
+                        <h4>${func.title}</h4>
+                        <p>${func.description}</p>
+                    </div>
+                    <div class="meeting-meta">
+                        <span class="meeting-status">${func.status}</span>
+                        <span class="meeting-time">快速訪問</span>
+                        <span class="meeting-score">★</span>
+                    </div>
+                    <button class="meeting-action">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="remove-shortcut">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+
+                // Add click handler for the card
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.remove-shortcut') && !isCustomizing) {
+                        showStatus(`🚀 點擊了 ${func.title} 功能`);
+                    }
+                });
+
+                // Add remove functionality
+                const removeBtn = card.querySelector('.remove-shortcut');
+                removeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (confirm(`確定要移除 "${func.title}" 嗎？`)) {
+                        card.remove();
+                        updateFunctionSelector();
+                        saveQuickActions();
+                        showStatus(`🗑️ 已移除 ${func.title}`);
+                    }
+                });
+
+                return card;
+            }
+
+            // Toggle customize mode
+            function toggleCustomizeMode() {
+                isCustomizing = !isCustomizing;
+                updateCustomizeMode();
+
+                if (isCustomizing) {
+                    showStatus('🔧 進入自定義模式');
+                } else {
+                    showStatus('✅ 退出自定義模式');
+                    saveQuickActions();
+                }
+            }
+
+            // Update customize mode UI
+            function updateCustomizeMode() {
+                if (isCustomizing) {
+                    functionSelector.style.display = 'block';
+                    customizeBtn.classList.add('active');
+
+                    const actionCards = quickActionsGrid.querySelectorAll('.quick-action-item');
+                    actionCards.forEach(card => {
+                        card.classList.add('customizing');
+                    });
+                } else {
+                    functionSelector.style.display = 'none';
+                    customizeBtn.classList.remove('active');
+
+                    const actionCards = quickActionsGrid.querySelectorAll('.quick-action-item');
+                    actionCards.forEach(card => {
+                        card.classList.remove('customizing');
+                    });
+                }
+
+                updateFunctionSelector();
+            }
+
+            // Update function selector
+            function updateFunctionSelector() {
+                const currentActions = Array.from(quickActionsGrid.querySelectorAll('.quick-action-item'))
+                    .map(card => card.getAttribute('data-function'));
+
+                const functionOptions = functionSelector.querySelectorAll('.function-option');
+                functionOptions.forEach(option => {
+                    const functionName = option.getAttribute('data-function');
+                    if (currentActions.includes(functionName)) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+            }
+
+            // Add function to quick actions
+            function addFunctionToQuickActions(functionName) {
+                const func = functionDefinitions[functionName];
+                if (func) {
+                    const card = createQuickActionCard(functionName, func);
+                    quickActionsGrid.appendChild(card);
+
+                    if (isCustomizing) {
+                        card.classList.add('customizing');
+                    }
+
+                    updateFunctionSelector();
+                    saveQuickActions();
+                    showStatus(`➕ 已新增 ${func.title}`);
+                }
+            }
+
+            // Event listeners
+            customizeBtn.addEventListener('click', toggleCustomizeMode);
+
+            addShortcutBtn.addEventListener('click', function() {
+                if (!isCustomizing) {
+                    toggleCustomizeMode();
+                }
+                functionSelector.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            resetShortcutsBtn.addEventListener('click', function() {
+                if (confirm('確定要重置為預設的快速操作嗎？')) {
+                    const defaultActions = ['employees', 'payrolls', 'attendances', 'reports'];
+                    renderQuickActions(defaultActions);
+                    saveQuickActions();
+                    showStatus('🔄 已重置為預設配置');
+                }
+            });
+
+            // Function option click handlers
+            document.addEventListener('click', function(e) {
+                const option = e.target.closest('.function-option');
+                if (option && !option.classList.contains('selected') && isCustomizing) {
+                    const functionName = option.getAttribute('data-function');
+                    addFunctionToQuickActions(functionName);
+                }
+            });
+
+            // Initialize
+            loadQuickActions();
+        });
+    </script>
+</body>
+</html>

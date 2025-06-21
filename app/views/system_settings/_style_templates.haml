@@ -1,0 +1,283 @@
+/ 樣式模板切換功能
+.macos-card.style-templates-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-palette
+      樣式模板
+    %p.macos-card-subtitle 選擇您喜歡的介面風格，讓系統更符合您的使用習慣
+
+  .macos-card-body
+    .style-templates-container
+      / 經典 macOS 風格
+      .style-template-item{data: { template: 'macos-classic' }}
+        .style-template-preview
+          .preview-header
+            .preview-dots
+              %span.dot.dot-red
+              %span.dot.dot-yellow
+              %span.dot.dot-green
+            .preview-title macOS 經典
+          .preview-content
+            .preview-sidebar
+              .sidebar-item.active
+              .sidebar-item
+              .sidebar-item
+            .preview-main
+              .content-block.primary
+              .content-block.secondary
+              .content-block.tertiary
+        .style-template-info
+          %h4.template-name macOS 經典風格
+          %p.template-description 採用 Apple 設計語言，簡潔優雅的介面風格
+          .template-features
+            %span.feature-tag 簡潔
+            %span.feature-tag 優雅
+            %span.feature-tag 專業
+        .style-template-actions
+          %button.macos-btn.macos-btn-primary.select-template{data: { template: 'macos-classic' }}
+            %i.fas.fa-check
+            選擇此樣式
+
+      / 現代 AI 風格
+      .style-template-item{data: { template: 'ai-modern' }}
+        .style-template-preview
+          .preview-header.ai-header
+            .preview-logo
+              %i.fas.fa-brain
+            .preview-title AI Modern
+          .preview-content.ai-content
+            .preview-sidebar.ai-sidebar
+              .sidebar-item.ai-item.active
+                %i.fas.fa-home
+              .sidebar-item.ai-item
+                %i.fas.fa-chart-line
+              .sidebar-item.ai-item
+                %i.fas.fa-cog
+            .preview-main.ai-main
+              .content-block.ai-primary
+                .ai-glow
+              .content-block.ai-secondary
+              .content-block.ai-accent
+        .style-template-info
+          %h4.template-name AI 現代風格
+          %p.template-description 融合 AI 元素的現代化設計，科技感十足
+          .template-features
+            %span.feature-tag.ai-tag 科技感
+            %span.feature-tag.ai-tag 現代化
+            %span.feature-tag.ai-tag 智能
+        .style-template-actions
+          %button.macos-btn.macos-btn-primary.select-template{data: { template: 'ai-modern' }}
+            %i.fas.fa-robot
+            選擇此樣式
+
+      / 極簡風格
+      .style-template-item{data: { template: 'minimal' }}
+        .style-template-preview
+          .preview-header.minimal-header
+            .preview-title Minimal
+          .preview-content.minimal-content
+            .preview-sidebar.minimal-sidebar
+              .sidebar-item.minimal-item.active
+              .sidebar-item.minimal-item
+              .sidebar-item.minimal-item
+            .preview-main.minimal-main
+              .content-block.minimal-primary
+              .content-block.minimal-secondary
+        .style-template-info
+          %h4.template-name 極簡風格
+          %p.template-description 去除多餘裝飾，專注於內容本身的純淨設計
+          .template-features
+            %span.feature-tag.minimal-tag 純淨
+            %span.feature-tag.minimal-tag 專注
+            %span.feature-tag.minimal-tag 高效
+        .style-template-actions
+          %button.macos-btn.macos-btn-primary.select-template{data: { template: 'minimal' }}
+            %i.fas.fa-circle
+            選擇此樣式
+
+      / 深色專業風格
+      .style-template-item{data: { template: 'dark-pro' }}
+        .style-template-preview.dark-preview
+          .preview-header.dark-header
+            .preview-dots
+              %span.dot.dot-dark-red
+              %span.dot.dot-dark-yellow
+              %span.dot.dot-dark-green
+            .preview-title Dark Pro
+          .preview-content.dark-content
+            .preview-sidebar.dark-sidebar
+              .sidebar-item.dark-item.active
+              .sidebar-item.dark-item
+              .sidebar-item.dark-item
+            .preview-main.dark-main
+              .content-block.dark-primary
+              .content-block.dark-secondary
+              .content-block.dark-accent
+        .style-template-info
+          %h4.template-name 深色專業風格
+          %p.template-description 護眼的深色主題，適合長時間工作使用
+          .template-features
+            %span.feature-tag.dark-tag 護眼
+            %span.feature-tag.dark-tag 專業
+            %span.feature-tag.dark-tag 沉穩
+        .style-template-actions
+          %button.macos-btn.macos-btn-primary.select-template{data: { template: 'dark-pro' }}
+            %i.fas.fa-moon
+            選擇此樣式
+
+      / 彩色活潑風格
+      .style-template-item{data: { template: 'colorful' }}
+        .style-template-preview
+          .preview-header.colorful-header
+            .preview-rainbow
+            .preview-title Colorful
+          .preview-content.colorful-content
+            .preview-sidebar.colorful-sidebar
+              .sidebar-item.colorful-item.active.color-blue
+              .sidebar-item.colorful-item.color-green
+              .sidebar-item.colorful-item.color-orange
+            .preview-main.colorful-main
+              .content-block.colorful-primary
+              .content-block.colorful-secondary
+              .content-block.colorful-tertiary
+        .style-template-info
+          %h4.template-name 彩色活潑風格
+          %p.template-description 豐富的色彩搭配，讓工作更有活力和樂趣
+          .template-features
+            %span.feature-tag.colorful-tag 活潑
+            %span.feature-tag.colorful-tag 豐富
+            %span.feature-tag.colorful-tag 有趣
+        .style-template-actions
+          %button.macos-btn.macos-btn-primary.select-template{data: { template: 'colorful' }}
+            %i.fas.fa-rainbow
+            選擇此樣式
+
+      / 商務正式風格
+      .style-template-item{data: { template: 'business' }}
+        .style-template-preview
+          .preview-header.business-header
+            .preview-logo
+              %i.fas.fa-building
+            .preview-title Business
+          .preview-content.business-content
+            .preview-sidebar.business-sidebar
+              .sidebar-item.business-item.active
+              .sidebar-item.business-item
+              .sidebar-item.business-item
+            .preview-main.business-main
+              .content-block.business-primary
+              .content-block.business-secondary
+              .content-block.business-accent
+        .style-template-info
+          %h4.template-name 商務正式風格
+          %p.template-description 正式的商務風格，適合企業環境使用
+          .template-features
+            %span.feature-tag.business-tag 正式
+            %span.feature-tag.business-tag 商務
+            %span.feature-tag.business-tag 穩重
+        .style-template-actions
+          %button.macos-btn.macos-btn-primary.select-template{data: { template: 'business' }}
+            %i.fas.fa-briefcase
+            選擇此樣式
+
+      / HubSpot CRM 風格
+      .style-template-item{data: { template: 'hubspot-crm' }}
+        .style-template-preview
+          .preview-header.hubspot-header
+            .preview-logo
+              %i.fas.fa-chart-line
+            .preview-title HubSpot CRM
+          .preview-content.hubspot-content
+            .preview-sidebar.hubspot-sidebar
+              .sidebar-item.hubspot-item.active
+                %i.fas.fa-tachometer-alt
+              .sidebar-item.hubspot-item
+                %i.fas.fa-users
+              .sidebar-item.hubspot-item
+                %i.fas.fa-chart-bar
+            .preview-main.hubspot-main
+              .content-block.hubspot-primary
+                .hubspot-metric
+                  .metric-value 2.4K
+                  .metric-label 總客戶
+              .content-block.hubspot-secondary
+                .hubspot-chart
+              .content-block.hubspot-accent
+                .hubspot-progress
+        .style-template-info
+          %h4.template-name HubSpot CRM 風格
+          %p.template-description 現代化的 CRM 設計風格，專業且易用的商務介面
+          .template-features
+            %span.feature-tag.hubspot-tag 現代化
+            %span.feature-tag.hubspot-tag CRM專業
+            %span.feature-tag.hubspot-tag 數據導向
+        .style-template-actions
+          %button.macos-btn.macos-btn-primary.select-template{data: { template: 'hubspot-crm' }}
+            %i.fas.fa-chart-line
+            選擇此樣式
+
+    / 自定義選項
+    .style-customization-section
+      %h4.customization-title
+        %i.fas.fa-sliders-h
+        進階自定義
+      .customization-options
+        .customization-group
+          %label.customization-label 主色調
+          .color-picker-group
+            %input.color-picker{type: "color", id: "primary-color", value: "#007AFF"}
+            %span.color-label 主要顏色
+
+        .customization-group
+          %label.customization-label 輔助色調
+          .color-picker-group
+            %input.color-picker{type: "color", id: "secondary-color", value: "#5AC8FA"}
+            %span.color-label 輔助顏色
+
+        .customization-group
+          %label.customization-label 圓角程度
+          .slider-group
+            %input.range-slider{type: "range", id: "border-radius", min: "0", max: "20", value: "10"}
+            %span.slider-value 10px
+
+        .customization-group
+          %label.customization-label 陰影強度
+          .slider-group
+            %input.range-slider{type: "range", id: "shadow-intensity", min: "0", max: "100", value: "20"}
+            %span.slider-value 20%
+
+        .customization-group
+          %label.customization-label 字體縮放
+          .font-scale-group
+            %input.range-slider{type: "range", id: "font-scale", min: "1", max: "2.5", step: "0.5", value: "1"}
+            %span.slider-value 1x
+            %small.font-scale-help 調整整體字體大小，適合視力需求
+          .font-scale-buttons
+            %button.font-scale-btn{data: { scale: "1" }} 標準
+            %button.font-scale-btn{data: { scale: "1.5" }} 1.5倍
+            %button.font-scale-btn.recommended{data: { scale: "2" }} 2倍 (推薦)
+            %button.font-scale-btn{data: { scale: "2.5" }} 2.5倍
+
+        .customization-actions
+          %button.macos-btn.macos-btn-secondary#preview-custom
+            %i.fas.fa-eye
+            預覽自定義
+          %button.macos-btn.macos-btn-primary#apply-custom
+            %i.fas.fa-save
+            套用自定義
+
+    / 當前樣式資訊
+    .current-style-info
+      %h4.current-style-title
+        %i.fas.fa-info-circle
+        當前樣式資訊
+      .current-style-details
+        %p
+          %strong 樣式名稱：
+          %span#current-template-name macOS 經典風格
+        %p
+          %strong 套用時間：
+          %span#current-apply-time= Time.current.strftime("%Y-%m-%d %H:%M:%S")
+        %p
+          %strong 自定義設定：
+          %span#custom-settings-status 未啟用

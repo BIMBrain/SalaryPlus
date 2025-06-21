@@ -1,0 +1,15 @@
+%h1 #{@payroll.payment_period} 薪資單明細設定
+
+= render "/employees/info", employee: @payroll.employee
+= render "/salaries/info", salary: @payroll.salary
+
+= link_to "報表校正", edit_statement_path(@payroll.statement), class: "btn btn-sm btn-warning"
+
+= simple_form_for @payroll do |f|
+  = render "basic_form", f: f
+  = render "festival_bonus_form", f: f
+  = render "overtime_form", f: f
+  = render "extra_entry_form", f: f
+
+  .text-center
+    = f.submit "送出"

@@ -1,0 +1,74 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-users
+      員工資料管理
+    %p.macos-card-subtitle 管理公司所有員工的基本資料和任期資訊
+
+  .macos-card-actions
+    = link_to new_employee_path, class: "macos-btn macos-btn-primary macos-btn-sm" do
+      %i.fas.fa-plus
+      新增員工
+    = link_to employees_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do
+      %i.fas.fa-briefcase
+      月薪制
+    = link_to parttimers_employees_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do
+      %i.fas.fa-clock
+      兼職外包
+    = link_to inactive_employees_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do
+      %i.fas.fa-user-slash
+      閒置
+
+/ Employee Table
+.macos-card
+  .macos-card-body{style: "padding: 0;"}
+    %table.macos-table
+      %thead
+        %tr
+          %th
+            %i.fas.fa-hashtag
+            編號
+          %th
+            %i.fas.fa-user
+            姓名
+          %th
+            %i.fas.fa-id-badge
+            身份
+          %th
+            %i.fas.fa-calendar-alt
+            到職日期
+          %th
+            %i.fas.fa-cogs
+            操作
+      %tbody
+        - @result.each do |row|
+          %tr
+            %td
+              %span{style: "font-weight: 600; color: var(--macos-blue);"} ##{row.employee_id}
+            %td
+              %div{style: "display: flex; align-items: center;"}
+                %div{style: "width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--macos-blue), var(--macos-purple)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 12px;"}
+                  = row.name.first
+                %div
+                  %div{style: "font-weight: 500;"} #{row.name}
+            %td
+              %span.badge{style: "background-color: var(--macos-blue); color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;"}
+                = row.given_role
+            %td
+              %span{style: "color: var(--macos-text-secondary);"}
+                = row.term_start
+            %td
+              .btn-group{style: "display: flex; gap: 4px;"}
+                = link_to employee_path(row.employee_id), class: "macos-btn macos-btn-secondary macos-btn-xs" do
+                  %i.fas.fa-eye
+                = link_to edit_employee_path(row.employee_id), class: "macos-btn macos-btn-secondary macos-btn-xs" do
+                  %i.fas.fa-edit
+                = link_to employee_path(row.employee_id), method: :delete, data: { confirm: "確定刪除這位員工嗎？" }, class: "macos-btn macos-btn-danger macos-btn-xs" do
+                  %i.fas.fa-trash
+
+/ Pagination
+- if respond_to?(:paginate) && @result.respond_to?(:current_page)
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      = paginate @result

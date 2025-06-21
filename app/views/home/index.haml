@@ -1,0 +1,270 @@
+/ Top Navigation Bar with Fortuna Functions
+.top-nav-bar
+  .nav-left
+    %i.fas.fa-bars.menu-toggle
+    = link_to root_path, class: "nav-brand" do
+      %i.fas.fa-coins
+      %span Fortuna
+  .nav-center
+    .nav-functions
+      = link_to employees_path, class: "nav-function-btn", title: "員工資料" do
+        %i.fas.fa-users
+        %span 員工資料
+      = link_to attendances_path, class: "nav-function-btn", title: "出勤打卡" do
+        %i.fas.fa-clock
+        %span 出勤打卡
+      = link_to overtime_index_path, class: "nav-function-btn", title: "加班費計算" do
+        %i.fas.fa-calculator
+        %span 加班費計算
+      = link_to payrolls_path, class: "nav-function-btn", title: "薪資單產生器" do
+        %i.fas.fa-file-invoice-dollar
+        %span 薪資單產生器
+      = link_to insurance_statements_path, class: "nav-function-btn", title: "勞健保比對工具" do
+        %i.fas.fa-shield-alt
+        %span 勞健保比對工具
+      = link_to statements_path, class: "nav-function-btn", title: "發薪紀錄" do
+        %i.fas.fa-history
+        %span 發薪紀錄
+      = link_to employee_login_path, class: "nav-function-btn", title: "員工自助平台" do
+        %i.fas.fa-user-circle
+        %span 員工自助平台
+      = link_to reports_path, class: "nav-function-btn", title: "年度報表" do
+        %i.fas.fa-chart-line
+        %span 年度報表
+      = link_to system_settings_path, class: "nav-function-btn", title: "系統設定" do
+        %i.fas.fa-cogs
+        %span 系統設定
+  .nav-right
+    .nav-time-info
+      %i.fas.fa-calendar.nav-icon
+      %span.nav-date= Date.current.strftime("%d %B")
+      %span.nav-time= Time.current.strftime("%I:%M %p")
+    %button.nav-profile
+      %i.fas.fa-user-circle
+
+/ Modern Workspace Header
+.workspace-header
+  .workspace-title
+    %i.fas.fa-arrow-left.back-arrow
+    %h1 WORKSPACE
+  .workspace-actions
+    %button.workspace-btn
+      %i.fas.fa-search
+    %button.workspace-btn
+      %i.fas.fa-filter
+    %button.workspace-btn All
+
+/ Main Workspace Content
+.workspace-container
+  / Left Sidebar
+  .workspace-sidebar
+    .sidebar-nav
+      = link_to root_path, class: "nav-item active" do
+        %i.fas.fa-th-large
+      = link_to employees_path, class: "nav-item" do
+        %i.fas.fa-users
+      = link_to reports_path, class: "nav-item" do
+        %i.fas.fa-chart-bar
+      = link_to system_settings_path, class: "nav-item" do
+        %i.fas.fa-cog
+
+  / Main Content Area
+  .workspace-main
+    / Statistics Cards
+    .stats-grid
+      .stat-card.calls-card
+        .stat-header
+          %i.fas.fa-users
+          %span 總員工數
+          %i.fas.fa-external-link-alt.stat-link
+        .stat-number
+          = @total_employees || "156"
+          %sup +02
+
+      .stat-card.email-card
+        .stat-header
+          %i.fas.fa-calculator
+          %span 本月薪資
+          %i.fas.fa-external-link-alt.stat-link
+        .stat-number
+          = @current_month_payrolls || "124"
+          %sup +10
+
+      .stat-card.overdue-card
+        .stat-header
+          %i.fas.fa-user-check
+          %span 在職員工
+        .stat-number
+          = @active_employees || "144"
+          %sup +23
+
+    / Customizable Quick Actions Section
+    .meeting-section
+      .meeting-header
+        %h3 快速操作
+        .meeting-actions
+          %button.meeting-btn#customize-btn{title: "自定義快速操作"}
+            %i.fas.fa-cog
+          %button.meeting-btn#add-shortcut-btn{title: "新增快捷方式"}
+            %i.fas.fa-plus
+          %button.meeting-btn#reset-shortcuts-btn{title: "重置為預設"}
+            %i.fas.fa-sync-alt
+
+      / Available Functions Selector (Hidden by default)
+      .function-selector{style: "display: none;"}
+        %h4 選擇要加入快速操作的功能：
+        .available-functions
+          .function-option{"data-function" => "employees", "data-icon" => "fas fa-users", "data-color" => "#4A90E2"}
+            %i.fas.fa-users
+            %span 員工資料
+          .function-option{"data-function" => "attendances", "data-icon" => "fas fa-clock", "data-color" => "#27AE60"}
+            %i.fas.fa-clock
+            %span 出勤打卡
+          .function-option{"data-function" => "overtime", "data-icon" => "fas fa-calculator", "data-color" => "#E67E22"}
+            %i.fas.fa-calculator
+            %span 加班費計算
+          .function-option{"data-function" => "payrolls", "data-icon" => "fas fa-file-invoice-dollar", "data-color" => "#9B59B6"}
+            %i.fas.fa-file-invoice-dollar
+            %span 薪資單產生器
+          .function-option{"data-function" => "insurance_statements", "data-icon" => "fas fa-shield-alt", "data-color" => "#E74C3C"}
+            %i.fas.fa-shield-alt
+            %span 勞健保比對工具
+          .function-option{"data-function" => "statements", "data-icon" => "fas fa-history", "data-color" => "#34495E"}
+            %i.fas.fa-history
+            %span 發薪紀錄
+          .function-option{"data-function" => "employee_login", "data-icon" => "fas fa-user-circle", "data-color" => "#16A085"}
+            %i.fas.fa-user-circle
+            %span 員工自助平台
+          .function-option{"data-function" => "reports", "data-icon" => "fas fa-chart-line", "data-color" => "#8E44AD"}
+            %i.fas.fa-chart-line
+            %span 年度報表
+          .function-option{"data-function" => "system_settings", "data-icon" => "fas fa-cogs", "data-color" => "#95A5A6"}
+            %i.fas.fa-cogs
+            %span 系統設定
+
+      / Quick Actions Grid (Customizable)
+      .meeting-grid#quick-actions-grid
+        / Default shortcuts - these will be customizable
+        .meeting-card.quick-action-item{"data-function" => "employees"}
+          .meeting-avatar
+            %i.fas.fa-users{style: "font-size: 20px; color: #4A90E2;"}
+          .meeting-info
+            %h4 員工管理
+            %p 管理員工資料
+          .meeting-meta
+            %span.meeting-status 管理
+            %span.meeting-time= "#{@total_employees || 0} 位員工"
+            %span.meeting-score= @active_employees || 0
+          %button.meeting-action
+            %i.fas.fa-arrow-right
+          %button.remove-shortcut{style: "display: none;"}
+            %i.fas.fa-times
+
+        .meeting-card.quick-action-item{"data-function" => "payrolls"}
+          .meeting-avatar
+            %i.fas.fa-file-invoice-dollar{style: "font-size: 20px; color: #9B59B6;"}
+          .meeting-info
+            %h4 薪資計算
+            %p 計算員工薪資
+          .meeting-meta
+            %span.meeting-status 計算
+            %span.meeting-time= "本月 #{@current_month_payrolls || 0} 筆"
+            %span.meeting-score= @current_month_payrolls || 0
+          %button.meeting-action
+            %i.fas.fa-arrow-right
+          %button.remove-shortcut{style: "display: none;"}
+            %i.fas.fa-times
+
+        .meeting-card.quick-action-item{"data-function" => "attendances"}
+          .meeting-avatar
+            %i.fas.fa-clock{style: "font-size: 20px; color: #27AE60;"}
+          .meeting-info
+            %h4 出勤管理
+            %p 員工打卡記錄
+          .meeting-meta
+            %span.meeting-status 出勤
+            %span.meeting-time 今日打卡
+            %span.meeting-score 100%
+          %button.meeting-action
+            %i.fas.fa-arrow-right
+          %button.remove-shortcut{style: "display: none;"}
+            %i.fas.fa-times
+
+        .meeting-card.quick-action-item{"data-function" => "reports"}
+          .meeting-avatar
+            %i.fas.fa-chart-line{style: "font-size: 20px; color: #8E44AD;"}
+          .meeting-info
+            %h4 報表分析
+            %p 薪資統計報表
+          .meeting-meta
+            %span.meeting-status 報表
+            %span.meeting-time 月度報表
+            %span.meeting-score= @total_statements || 0
+          %button.meeting-action
+            %i.fas.fa-arrow-right
+          %button.remove-shortcut{style: "display: none;"}
+            %i.fas.fa-times
+
+      / Add New Shortcut Placeholder
+      .add-shortcut-placeholder{style: "display: none;"}
+        %button.add-new-shortcut
+          %i.fas.fa-plus
+          %span 新增快捷方式
+
+  / Right Sidebar
+  .workspace-right-sidebar
+    / System Status Section
+    .video-call-section
+      .video-call-container
+        .system-status-bg
+          .status-content
+            %h3{style: "color: white; margin-bottom: 10px;"} 系統狀態
+            %p{style: "color: #bdc3c7; margin-bottom: 15px;"} 所有服務正常運行
+            .status-indicators
+              .status-item
+                %i.fas.fa-check-circle{style: "color: #27AE60;"}
+                %span{style: "color: white; margin-left: 8px;"} 薪資計算
+              .status-item
+                %i.fas.fa-check-circle{style: "color: #27AE60;"}
+                %span{style: "color: white; margin-left: 8px;"} 資料庫
+              .status-item
+                %i.fas.fa-check-circle{style: "color: #27AE60;"}
+                %span{style: "color: white; margin-left: 8px;"} 備份系統
+
+    / Summary Section
+    .summary-section
+      .summary-header
+        %i.fas.fa-times.close-btn
+        %h4 系統摘要
+        %i.fas.fa-chevron-up.expand-btn
+
+      .summary-content
+        .summary-item
+          .summary-icon
+            %i.fas.fa-file-invoice-dollar
+          .summary-info
+            %span.summary-label 薪資單
+            %span.summary-count= @total_statements || "315"
+          %button.summary-action
+            %i.fas.fa-download
+
+        .summary-documents
+          .document-preview
+            .doc-icon
+              %i.fas.fa-file-pdf{style: "font-size: 24px; color: #e74c3c;"}
+              %p{style: "font-size: 10px; margin: 5px 0 0 0; color: #7f8c8d;"} 薪資單
+          .document-preview
+            .doc-icon
+              %i.fas.fa-file-excel{style: "font-size: 24px; color: #27ae60;"}
+              %p{style: "font-size: 10px; margin: 5px 0 0 0; color: #7f8c8d;"} 報表
+
+        .summary-item
+          .summary-icon
+            %i.fas.fa-calendar-check
+          .summary-info
+            %span.summary-label 本月處理
+            %span.summary-count= "#{Date.current.strftime('%m')}月"
+          %button.summary-action
+            %i.fas.fa-edit
+
+

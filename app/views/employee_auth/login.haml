@@ -1,0 +1,33 @@
+.employee-login-card
+  .text-center{style: "margin-bottom: 2rem;"}
+    %h1{style: "color: var(--macos-blue); margin-bottom: 0.5rem;"}
+      %i.fas.fa-user-circle
+      員工自助平台
+    %p{style: "color: var(--macos-text-secondary);"}
+      請使用員工編號和身分證字號登入
+
+  - if alert
+    .macos-alert.macos-alert-danger{style: "margin-bottom: 1.5rem;"}
+      %i.fas.fa-exclamation-triangle
+      = alert
+
+  = form_with url: employee_authenticate_path, method: :post, local: true, class: "macos-form" do |f|
+    .macos-form-group
+      = f.label :employee_number, "員工編號", class: "macos-form-label"
+      = f.text_field :employee_number, class: "macos-form-control", placeholder: "請輸入員工編號", required: true, autofocus: true
+    
+    .macos-form-group
+      = f.label :id_number, "身分證字號", class: "macos-form-label"
+      = f.text_field :id_number, class: "macos-form-control", placeholder: "請輸入身分證字號", required: true
+    
+    .macos-form-group{style: "margin-top: 2rem;"}
+      = f.submit "登入", class: "macos-btn macos-btn-primary", style: "width: 100%; padding: 12px; font-size: 16px;"
+  
+  .text-center{style: "margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--macos-border-color);"}
+    %p{style: "color: var(--macos-text-secondary); font-size: 0.9rem;"}
+      %i.fas.fa-info-circle
+      如有登入問題，請聯繫人事部門
+    
+    = link_to root_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do
+      %i.fas.fa-arrow-left
+      返回主系統

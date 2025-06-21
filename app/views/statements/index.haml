@@ -1,0 +1,33 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-history
+      發薪紀錄
+    %p.macos-card-subtitle 查看歷史發薪記錄和薪資明細，支援按年月查詢
+
+/ Search Form
+.macos-card
+  .macos-card-body
+    = search_form_for @query, html: { class: "macos-form" } do |f|
+      .row
+        .col-md-3
+          .macos-form-group
+            = f.label :year_eq, "年份", class: "macos-form-label"
+            = f.search_field :year_eq, class: "macos-form-control", placeholder: Date.current.year.to_s
+        .col-md-3
+          .macos-form-group
+            = f.label :month_eq, "月份", class: "macos-form-label"
+            = f.search_field :month_eq, class: "macos-form-control", placeholder: Date.current.month.to_s
+        .col-md-6
+          .macos-form-group
+            %label.macos-form-label &nbsp;
+            .d-flex{style: "gap: 8px;"}
+              = f.submit "查詢紀錄", class: "macos-btn macos-btn-primary"
+              = link_to statements_path, class: "macos-btn macos-btn-secondary" do
+                %i.fas.fa-refresh
+                重設
+
+/ Results
+- if params[:query]
+  = render "list", statements: @statements

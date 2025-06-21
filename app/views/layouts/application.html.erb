@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fortuna - 薪資計算系統</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="color-scheme" content="light dark">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <meta name="csrf-token" content="<%= form_authenticity_token %>">
+
+    <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+
+    <script>
+      // 防止FOUC (Flash of Unstyled Content)
+      (function() {
+        const theme = localStorage.getItem('fortuna_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+
+        const preferences = JSON.parse(localStorage.getItem('fortuna_ui_preferences') || '{}');
+        if (preferences.ui_enable_animations === false) {
+          document.documentElement.setAttribute('data-animations', 'false');
+        }
+        if (preferences.ui_compact_mode === true) {
+          document.documentElement.setAttribute('data-compact', 'true');
+        }
+        if (preferences.ui_font_size) {
+          document.documentElement.setAttribute('data-font-size', preferences.ui_font_size);
+        }
+
+        // 字體縮放設定
+        const fontScale = localStorage.getItem('fortuna_font_scale') || '1';
+        if (fontScale !== '1') {
+          document.documentElement.setAttribute('data-font-scale', fontScale);
+        }
+
+        // 樣式模板設定
+        const styleTemplate = localStorage.getItem('fortuna_style_template') || 'macos-classic';
+        if (styleTemplate !== 'macos-classic') {
+          document.documentElement.classList.add('template-' + styleTemplate);
+        }
+      })();
+    </script>
+
+    <!-- macOS Style Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </head>
+
+  <body class="<%= controller_name %>" id="<%= action_name %>">
+    <!-- 字體縮放工具列 -->
+    <div class="font-scale-toolbar">
+      <div class="font-scale-toolbar-content">
+        <span class="font-scale-label">字體大小：</span>
+        <button class="font-scale-quick-btn" data-scale="1">標準</button>
+        <button class="font-scale-quick-btn" data-scale="1.5">1.5倍</button>
+        <button class="font-scale-quick-btn recommended" data-scale="2">2倍</button>
+        <button class="font-scale-quick-btn" data-scale="2.5">2.5倍</button>
+      </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="macos-navbar">
+      <%= link_to root_path, class: "macos-navbar-brand" do %>
+        <i class="fas fa-calculator"></i>
+        Fortuna
+      <% end %>
+
+      <div class="macos-navbar-nav">
+        <%= link_to employees_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do %>
+          <i class="fas fa-users"></i>
+          員工資料
+        <% end %>
+
+        <%= link_to attendances_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do %>
+          <i class="fas fa-clock"></i>
+          出勤打卡
+        <% end %>
+
+        <%= link_to overtime_index_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do %>
+          <i class="fas fa-calculator"></i>
+          加班費計算
+        <% end %>
+
+        <%= link_to payrolls_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do %>
+          <i class="fas fa-file-invoice-dollar"></i>
+          薪資單產生器
+        <% end %>
+
+        <%= link_to statements_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do %>
+          <i class="fas fa-history"></i>
+          發薪紀錄
+        <% end %>
+
+        <%= link_to reports_path, class: "macos-btn macos-btn-secondary macos-btn-sm" do %>
+          <i class="fas fa-chart-bar"></i>
+          年度報表
+        <% end %>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="macos-container">
+      <%= yield %>
+    </div>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 2rem; color: var(--macos-text-tertiary); font-size: 14px;">
+      <p>&copy; <%= Date.current.year %> Fortuna 薪資計算系統 - 讓薪資計算變得簡單</p>
+    </footer>
+  </body>
+</html>

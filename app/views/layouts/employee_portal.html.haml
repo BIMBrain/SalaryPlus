@@ -1,0 +1,117 @@
+!!!
+%html
+  %head
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1"}
+    %title= content_for?(:title) ? yield(:title) : "員工自助平台 - Fortuna"
+    %meta{name: "description", content: "員工自助平台 - 查閱薪資條、保險費、所得稅"}
+    
+    = csrf_meta_tags
+    = csp_meta_tag
+    
+    = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
+    = javascript_importmap_tags
+    
+    %link{href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css", rel: "stylesheet"}
+    
+    :css
+      .employee-portal-layout {
+        background: linear-gradient(135deg, var(--macos-blue) 0%, var(--macos-purple) 100%);
+        min-height: 100vh;
+      }
+      
+      .employee-portal-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      
+      .employee-portal-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+      
+      .employee-portal-logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--macos-blue);
+        text-decoration: none;
+      }
+      
+      .employee-portal-user {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .employee-portal-main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      
+      .employee-portal-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: var(--macos-radius-large);
+        box-shadow: var(--macos-shadow-large);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+      }
+      
+      .employee-login-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+      
+      .employee-login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: var(--macos-radius-large);
+        box-shadow: var(--macos-shadow-large);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 3rem;
+        width: 100%;
+        max-width: 400px;
+      }
+
+  %body.employee-portal-layout
+    - if session[:employee_id].present?
+      %header.employee-portal-header
+        %nav.employee-portal-nav
+          = link_to "員工自助平台", employee_portal_index_path, class: "employee-portal-logo"
+          
+          .employee-portal-user
+            %span.employee-portal-username
+              %i.fas.fa-user
+              = @current_employee&.display_name || "員工"
+            = link_to employee_logout_path, method: :delete, class: "macos-btn macos-btn-sm macos-btn-secondary" do
+              %i.fas.fa-sign-out-alt
+              登出
+      
+      %main.employee-portal-main
+        - if notice
+          .macos-alert.macos-alert-success
+            %i.fas.fa-check-circle
+            = notice
+        - if alert
+          .macos-alert.macos-alert-danger
+            %i.fas.fa-exclamation-triangle
+            = alert
+        
+        = yield
+    
+    - else
+      %main.employee-login-container
+        = yield

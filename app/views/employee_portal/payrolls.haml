@@ -1,0 +1,121 @@
+/ 頁面標題
+.employee-portal-card{style: "margin-bottom: 2rem;"}
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-file-invoice-dollar
+      薪資查詢
+  .macos-card-body
+    = form_with url: employee_portal_payrolls_path, method: :get, local: true, class: "macos-form" do |f|
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :year, "查詢年度", class: "macos-form-label"
+            = f.select :year, options_for_select(@years.map { |y| [y, y] }, @year), {}, { class: "macos-form-control" }
+        .col-md-6
+          .macos-form-group
+            %label.macos-form-label &nbsp;
+            = f.submit "查詢", class: "macos-btn macos-btn-primary", style: "width: 100%;"
+
+/ 年度統計
+.employee-portal-card{style: "margin-bottom: 2rem;"}
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-chart-bar
+      #{@year}年度統計
+  .macos-card-body
+    .macos-stats-grid
+      .macos-stats-card
+        .macos-stats-icon.macos-stats-icon-green
+          %i.fas.fa-dollar-sign
+        .macos-stats-content
+          .macos-stats-number= number_to_currency(@annual_summary[:total_gross_pay], unit: "NT$ ", precision: 0)
+          .macos-stats-label 總收入
+      
+      .macos-stats-card
+        .macos-stats-icon.macos-stats-icon-blue
+          %i.fas.fa-hand-holding-usd
+        .macos-stats-content
+          .macos-stats-number= number_to_currency(@annual_summary[:total_net_pay], unit: "NT$ ", precision: 0)
+          .macos-stats-label 實領金額
+      
+      .macos-stats-card
+        .macos-stats-icon.macos-stats-icon-red
+          %i.fas.fa-receipt
+        .macos-stats-content
+          .macos-stats-number= number_to_currency(@annual_summary[:total_tax], unit: "NT$ ", precision: 0)
+          .macos-stats-label 扣繳稅額
+      
+      .macos-stats-card
+        .macos-stats-icon.macos-stats-icon-orange
+          %i.fas.fa-calendar
+        .macos-stats-content
+          .macos-stats-number= "#{@annual_summary[:months_worked]}個月"
+          .macos-stats-label 發薪月數
+
+/ 月度薪資明細
+.employee-portal-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-list
+      #{@year}年度薪資明細
+    = link_to download_tax_statement_employee_portal_path(year: @year, format: :pdf), class: "macos-btn macos-btn-success" do
+      %i.fas.fa-download
+      下載年度所得證明
+  .macos-card-body
+    - if @payrolls.any?
+      .macos-table-container
+        %table.macos-table
+          %thead
+            %tr
+              %th 月份
+              %th 基本薪資
+              %th 津貼補助
+              %th 總收入
+              %th 勞保費
+              %th 健保費
+              %th 所得稅
+              %th 實領金額
+              %th 操作
+          %tbody
+            - @payrolls.each do |payroll|
+              %tr
+                %td= "#{payroll.month}月"
+                %td.text-right= number_to_currency(payroll.salary.monthly_wage, unit: "NT$ ", precision: 0)
+                %td.text-right
+                  = number_to_currency(
+                    (payroll.salary.equipment_subsidy + payroll.salary.commuting_subsidy + payroll.salary.supervisor_allowance), 
+                    unit: "NT$ ", precision: 0
+                  )
+                %td.text-right= number_to_currency(payroll.statement&.amount || 0, unit: "NT$ ", precision: 0)
+                %td.text-right= number_to_currency(payroll.salary.labor_insurance, unit: "NT$ ", precision: 0)
+                %td.text-right= number_to_currency(payroll.salary.health_insurance, unit: "NT$ ", precision: 0)
+                %td.text-right= number_to_currency(payroll.statement&.income_tax || 0, unit: "NT$ ", precision: 0)
+                %td.text-right
+                  %strong{style: "color: var(--macos-green);"}
+                    = number_to_currency(payroll.statement&.net_income || 0, unit: "NT$ ", precision: 0)
+                %td
+                  .macos-btn-group
+                    = link_to employee_portal_payroll_path(payroll), class: "macos-btn macos-btn-sm macos-btn-info" do
+                      %i.fas.fa-eye
+                    = link_to download_payslip_employee_portal_path(payroll, format: :pdf), class: "macos-btn macos-btn-sm macos-btn-success" do
+                      %i.fas.fa-download
+          %tfoot
+            %tr{style: "background-color: var(--macos-bg-secondary); font-weight: bold;"}
+              %th 合計
+              %th.text-right= number_to_currency(@payrolls.joins(:salary).sum(:monthly_wage), unit: "NT$ ", precision: 0)
+              %th.text-right
+                = number_to_currency(
+                  @payrolls.joins(:salary).sum('equipment_subsidy + commuting_subsidy + supervisor_allowance'), 
+                  unit: "NT$ ", precision: 0
+                )
+              %th.text-right= number_to_currency(@annual_summary[:total_gross_pay], unit: "NT$ ", precision: 0)
+              %th.text-right= number_to_currency(@annual_summary[:total_labor_insurance], unit: "NT$ ", precision: 0)
+              %th.text-right= number_to_currency(@annual_summary[:total_health_insurance], unit: "NT$ ", precision: 0)
+              %th.text-right= number_to_currency(@annual_summary[:total_tax], unit: "NT$ ", precision: 0)
+              %th.text-right= number_to_currency(@annual_summary[:total_net_pay], unit: "NT$ ", precision: 0)
+              %th
+    - else
+      .macos-empty-state
+        %i.fas.fa-inbox
+        %h3 查無薪資記錄
+        %p= "#{@year}年度尚無薪資資料"

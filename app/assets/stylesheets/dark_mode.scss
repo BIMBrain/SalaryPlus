@@ -1,0 +1,399 @@
+// 暗黑模式樣式
+
+// 暗黑模式變數
+:root {
+  // 淺色模式變數（預設）
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #e5e5e7;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --border-color: #d2d2d7;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-large: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --blue: #007aff;
+  --green: #34c759;
+  --orange: #ff9500;
+  --red: #ff3b30;
+  --purple: #af52de;
+  --pink: #ff2d92;
+  --yellow: #ffcc00;
+}
+
+// 暗黑模式變數
+[data-theme="dark"] {
+  --bg-primary: #1c1c1e;
+  --bg-secondary: #2c2c2e;
+  --bg-tertiary: #3a3a3c;
+  --text-primary: #ffffff;
+  --text-secondary: #98989d;
+  --border-color: #48484a;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-large: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --blue: #0a84ff;
+  --green: #30d158;
+  --orange: #ff9f0a;
+  --red: #ff453a;
+  --purple: #bf5af2;
+  --pink: #ff375f;
+  --yellow: #ffd60a;
+}
+
+// 自動模式（跟隨系統）
+[data-theme="auto"] {
+  // 淺色模式（預設）
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #e5e5e7;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --border-color: #d2d2d7;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-large: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --blue: #007aff;
+  --green: #34c759;
+  --orange: #ff9500;
+  --red: #ff3b30;
+  --purple: #af52de;
+  --pink: #ff2d92;
+  --yellow: #ffcc00;
+}
+
+// 自動模式的暗黑模式（當系統偏好暗黑模式時）
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --bg-primary: #1c1c1e;
+    --bg-secondary: #2c2c2e;
+    --bg-tertiary: #3a3a3c;
+    --text-primary: #ffffff;
+    --text-secondary: #98989d;
+    --border-color: #48484a;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --shadow-large: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --blue: #0a84ff;
+    --green: #30d158;
+    --orange: #ff9f0a;
+    --red: #ff453a;
+    --purple: #bf5af2;
+    --pink: #ff375f;
+    --yellow: #ffd60a;
+  }
+}
+
+// 更新所有使用顏色變數的元素
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// 卡片樣式
+.macos-card {
+  background-color: var(--bg-primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.macos-card-header {
+  border-bottom-color: var(--border-color);
+}
+
+// 表單元素
+.macos-form-control {
+  background-color: var(--bg-primary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+  
+  &:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+  }
+  
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+}
+
+.macos-form-label {
+  color: var(--text-primary);
+}
+
+.macos-form-help {
+  color: var(--text-secondary);
+}
+
+// 按鈕樣式
+.macos-btn {
+  &.macos-btn-primary {
+    background-color: var(--blue);
+    border-color: var(--blue);
+  }
+  
+  &.macos-btn-secondary {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    
+    &:hover {
+      background-color: var(--bg-tertiary);
+    }
+  }
+  
+  &.macos-btn-success {
+    background-color: var(--green);
+    border-color: var(--green);
+  }
+  
+  &.macos-btn-warning {
+    background-color: var(--orange);
+    border-color: var(--orange);
+  }
+  
+  &.macos-btn-danger {
+    background-color: var(--red);
+    border-color: var(--red);
+  }
+}
+
+// 表格樣式
+.macos-table {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  
+  th {
+    background-color: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  
+  td {
+    border-bottom-color: var(--border-color);
+  }
+  
+  tbody tr:hover {
+    background-color: var(--bg-secondary);
+  }
+}
+
+// 統計卡片
+.macos-stats-card {
+  background-color: var(--bg-primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.macos-stats-number {
+  color: var(--text-primary);
+}
+
+.macos-stats-label {
+  color: var(--text-secondary);
+}
+
+// 導航樣式
+.macos-sidebar {
+  background-color: var(--bg-secondary);
+  border-right-color: var(--border-color);
+}
+
+.macos-nav-item {
+  color: var(--text-secondary);
+  
+  &:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+  }
+  
+  &.active {
+    background-color: var(--blue);
+    color: white;
+  }
+}
+
+// 頁面標題
+.macos-page-title h1 {
+  color: var(--text-primary);
+}
+
+.macos-page-subtitle {
+  color: var(--text-secondary);
+}
+
+// 暗黑模式切換器
+.theme-switcher {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  padding: 8px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-option {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  &.active {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+  }
+}
+
+.theme-light {
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f7 100%);
+  color: #1d1d1f;
+}
+
+.theme-dark {
+  background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+  color: #ffffff;
+}
+
+.theme-auto {
+  background: linear-gradient(135deg, #ffffff 0%, #1c1c1e 100%);
+  color: #007aff;
+}
+
+// 設定頁面特殊樣式
+.macos-settings-grid .macos-setting-item {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.macos-setting-title {
+  color: var(--text-primary);
+}
+
+.macos-formula-container {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.macos-formula {
+  background-color: var(--blue);
+  color: white;
+}
+
+.macos-formula-display {
+  background-color: rgba(0, 122, 255, 0.1);
+  border-left-color: var(--blue);
+  
+  code {
+    color: var(--blue);
+  }
+}
+
+// 預覽區域
+.macos-preview-container {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.macos-preview-form {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.macos-preview-result {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+}
+
+.macos-result-item {
+  background-color: var(--bg-secondary);
+}
+
+.macos-result-label {
+  color: var(--text-secondary);
+}
+
+.macos-result-value {
+  color: var(--blue);
+}
+
+// 動畫過渡
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+// 禁用動畫模式
+[data-animations="false"] * {
+  transition: none !important;
+  animation: none !important;
+}
+
+// 緊湊模式
+[data-compact="true"] {
+  .macos-card {
+    margin-bottom: 1rem;
+  }
+  
+  .macos-card-body {
+    padding: 1rem;
+  }
+  
+  .macos-form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .macos-stats-card {
+    padding: 1rem;
+  }
+  
+  .macos-dashboard-card {
+    padding: 1rem;
+  }
+}
+
+// 字體大小設定
+[data-font-size="small"] {
+  font-size: 14px;
+  
+  .macos-page-title h1 {
+    font-size: 1.8rem;
+  }
+  
+  .macos-card-title {
+    font-size: 1rem;
+  }
+}
+
+[data-font-size="large"] {
+  font-size: 18px;
+  
+  .macos-page-title h1 {
+    font-size: 2.5rem;
+  }
+  
+  .macos-card-title {
+    font-size: 1.4rem;
+  }
+  
+  .macos-form-control {
+    font-size: 18px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .macos-btn {
+    font-size: 18px;
+    padding: 0.75rem 1.5rem;
+  }
+}

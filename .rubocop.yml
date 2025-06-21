@@ -1,0 +1,172 @@
+require:
+  - rubocop-rails
+
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+  Exclude:
+    - ./Rakefile
+    - ./config.ru
+    - ./Gemfile
+    - bin/**/*
+    - db/**/*
+    - config/**/*
+    - vendor/bundle/ruby/**/*
+
+Rails:
+  Enabled: true
+
+# Use &&/|| instead of and/or.
+Style/AndOr:
+  Enabled: true
+
+# Use only ascii symbols in identifiers.
+Style/AsciiComments:
+  Enabled: false
+
+# Document classes and non-namespace modules.
+Style/Documentation:
+  Enabled: false
+
+# Use the lambda method for multi-line lambdas.
+Style/Lambda:
+  Enabled: false
+
+# Limit lines to 79 characters.
+Layout/LineLength:
+  Max: 79
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 30
+  Enabled: true
+
+# Don't use self where it's not needed.
+Style/RedundantSelf:
+  Enabled: false
+
+# Checks for proper usage of fail and raise.
+Style/SignalException:
+  Enabled: false
+
+# Prefer ' strings when you don't need string interpolation or special symbols.
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+  SupportedStyles:
+    - single_quotes
+    - double_quotes
+
+# Align block ends correctly.
+Layout/BlockAlignment:
+  Enabled: false
+
+# Avoid the use of attr. Use attr_reader and attr_accessor instead.
+Style/Attr:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Lint/UnusedBlockArgument:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Layout/MultilineOperationIndentation:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 20
+  Exclude:
+      - "test/**/*"
+
+Metrics/CyclomaticComplexity:
+  Max: 30
+
+Style/RescueModifier:
+  Severity: warning
+  AutoCorrect: false
+
+# node(:id) { |m| m.file_id }
+Style/SymbolProc:
+  Severity: warning
+  AutoCorrect: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Style/EmptyMethod:
+  Enabled: false
+
+Style/BlockComments:
+  Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: no_comma
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/RegexpLiteral:
+  EnforcedStyle: percent_r
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/FormatString:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Exclude:
+    - "lib/tasks/*.rake"
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Rails/FilePath:
+  Enabled: false
+
+Metrics/ClassLength:
+  Exclude:
+    - "test/**/*"
+
+Metrics/BlockLength:
+  Exclude:
+    - "lib/tasks/*.rake"
+    - "**/*_test.rb"
+
+# turned off because this app doesn't care about timezone
+Rails/Date:
+  Enabled: false
+
+Naming/VariableNumber:
+  Enabled: false
+
+Style/KeywordParametersOrder:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Exclude:
+    - "test/factories/*.rb"

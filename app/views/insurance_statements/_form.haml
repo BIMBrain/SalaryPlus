@@ -1,0 +1,106 @@
+= simple_form_for insurance_statement, html: { class: "macos-form" } do |f|
+  - if insurance_statement.errors.any?
+    .macos-alert.macos-alert-danger
+      %h4= pluralize(insurance_statement.errors.count, "個錯誤") + " 阻止了對帳單的儲存："
+      %ul
+        - insurance_statement.errors.full_messages.each do |message|
+          %li= message
+
+  / 基本資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-info-circle
+        基本資訊
+    .macos-card-body
+      .row
+        .col-md-4
+          .macos-form-group
+            = f.label :statement_type, "保險類型", class: "macos-form-label"
+            = f.input_field :statement_type, collection: InsuranceStatement::STATEMENT_TYPES, prompt: "請選擇保險類型", class: "macos-form-control"
+        .col-md-4
+          .macos-form-group
+            = f.label :year, "年度", class: "macos-form-label"
+            = f.input_field :year, collection: (2020..Date.current.year + 1).to_a.reverse, prompt: "請選擇年度", class: "macos-form-control"
+        .col-md-4
+          .macos-form-group
+            = f.label :month, "月份", class: "macos-form-label"
+            = f.input_field :month, collection: (1..12).map { |m| ["#{m}月", m] }, prompt: "請選擇月份", class: "macos-form-control"
+
+  / 金額資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-dollar-sign
+        金額資訊
+    .macos-card-body
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :statement_amount, "對帳單金額", class: "macos-form-label"
+            = f.input_field :statement_amount, class: "macos-form-control", placeholder: "請輸入對帳單金額", step: 0.01
+            %small.macos-form-help 請輸入從保險機構收到的對帳單上的金額
+        .col-md-6
+          .macos-form-group
+            = f.label :calculated_amount, "系統計算金額", class: "macos-form-label"
+            - if insurance_statement.persisted?
+              .macos-form-control-static
+                = number_to_currency(insurance_statement.calculated_amount, unit: "NT$ ", precision: 0)
+              %small.macos-form-help 系統根據薪資資料自動計算的金額
+            - else
+              .macos-form-control-static.text-muted 儲存後自動計算
+              %small.macos-form-help 系統將根據選擇的年月和保險類型自動計算
+
+      - if insurance_statement.persisted? && insurance_statement.calculated_amount
+        .row
+          .col-md-12
+            .macos-alert{class: insurance_statement.has_discrepancy? ? 'macos-alert-warning' : 'macos-alert-success'}
+              %h4
+                - if insurance_statement.has_discrepancy?
+                  %i.fas.fa-exclamation-triangle
+                  發現差異
+                - else
+                  %i.fas.fa-check-circle
+                  金額一致
+              %p
+                差異金額：
+                %strong{class: insurance_statement.has_discrepancy? ? 'text-danger' : 'text-success'}
+                  = number_to_currency(insurance_statement.difference_amount, unit: "NT$ ", precision: 0)
+              - if insurance_statement.has_discrepancy?
+                %p 請檢查對帳單金額是否正確，或確認該月份是否有特殊調整項目。
+
+  / 對帳狀態
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-tasks
+        對帳狀態
+    .macos-card-body
+      .row
+        .col-md-6
+          .macos-form-group
+            = f.label :reconciliation_status, "對帳狀態", class: "macos-form-label"
+            = f.input_field :reconciliation_status, collection: InsuranceStatement::RECONCILIATION_STATUS, class: "macos-form-control"
+            %small.macos-form-help 系統會根據金額差異自動設定狀態
+        .col-md-6
+          .macos-form-group
+            = f.label :statement_file_path, "對帳單檔案路徑", class: "macos-form-label"
+            = f.input_field :statement_file_path, class: "macos-form-control", placeholder: "選填：對帳單檔案存放路徑"
+            %small.macos-form-help 可記錄對帳單檔案的存放位置
+
+  / 備註資訊
+  .macos-card
+    .macos-card-header
+      %h3.macos-card-title
+        %i.fas.fa-sticky-note
+        備註資訊
+    .macos-card-body
+      .macos-form-group
+        = f.label :resolution_notes, "解決備註", class: "macos-form-label"
+        = f.input_field :resolution_notes, as: :text, class: "macos-form-control", rows: 4, placeholder: "如有差異或特殊情況，請在此記錄處理方式和備註"
+        %small.macos-form-help 記錄差異原因、處理方式或其他重要備註
+
+  / 提交按鈕
+  .macos-form-group{style: "text-align: center; margin-top: 2rem;"}
+    = f.submit insurance_statement.persisted? ? "更新對帳單" : "建立對帳單", class: "macos-btn macos-btn-primary", style: "padding: 12px 32px; font-size: 16px; margin-right: 1rem;"
+    = link_to "取消", insurance_statements_path, class: "macos-btn macos-btn-secondary", style: "padding: 12px 32px; font-size: 16px;"

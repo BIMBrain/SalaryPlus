@@ -1,0 +1,30 @@
+= render "header"
+= render "title"
+
+%p= link_to "匯出 CSV", service_reports_path(params[:year], format: :csv), class: "btn btn-m btn-primary"
+
+- if @report.any?
+  %table.table
+    %tr
+      %th 姓名
+      %th.hide 身份證字號
+      %th.hide 戶籍地址
+      - 1.upto(12) do |month|
+        %th= "#{month} 月"
+      %th 總計
+    - @report.each do |row|
+      %tr
+        %td= link_to row[:employee][:name], employee_path(row[:employee][:id])
+        %td.hide= row[:employee][:id_number]
+        %td.hide= row[:employee][:address]
+        - 12.times do |month|
+          = render "cell", cell: row[:income][month]
+        %td= number_with_delimiter Report.sum_service_income_for(params[:year].to_i, row[:employee][:id])
+    %tr
+      %td 總計
+      %td.hide
+      %td.hide
+      %td= number_with_delimiter Report.sum_by_month(year: (params[:year].to_i - 1), month: 12, tax_code: "9a")
+      - 1.upto(11) do |month|
+        %td= number_with_delimiter Report.sum_by_month(year: params[:year], month: month, tax_code: "9a")
+      %td

@@ -1,0 +1,12 @@
+/ 頁面標題
+.macos-page-header
+  .macos-page-title
+    %h1
+      %i.fas.fa-plus
+      新增保險對帳單
+  .macos-page-actions
+    = link_to insurance_statements_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回列表
+
+= render 'form', insurance_statement: @insurance_statement

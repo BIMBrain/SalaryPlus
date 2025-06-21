@@ -1,0 +1,6 @@
+%h1 員工資料
+= render "/employees/info", employee: @salary.employee
+= render "info", salary: @salary
+
+= link_to "修改薪資資料", edit_employee_salary_path(@employee), class: "btn btn-sm btn-default"
+= link_to "刪除薪資資料", employee_salary_path(@employee), method: :delete, data: { confirm: "確認刪除？" }, class: "btn btn-sm btn-danger"

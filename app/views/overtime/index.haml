@@ -1,0 +1,167 @@
+/ Page Header
+.macos-card
+  .macos-card-header
+    %h1.macos-card-title
+      %i.fas.fa-calculator
+      加班費計算管理
+    %p.macos-card-subtitle 一例一休符合法令的加班費自動計算，確保勞資雙方權益
+
+/ Quick Stats
+.macos-dashboard-grid
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-users{style: "color: var(--macos-blue);"}
+      %h3.macos-dashboard-title= @overtime_summary[:total_employees]
+      %p.macos-dashboard-description 總員工數
+      
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-clock{style: "color: var(--macos-orange);"}
+      %h3.macos-dashboard-title= @overtime_summary[:employees_with_overtime]
+      %p.macos-dashboard-description 本月有加班
+      
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-hourglass-half{style: "color: var(--macos-green);"}
+      %h3.macos-dashboard-title= number_with_precision(@overtime_summary[:total_overtime_hours], precision: 1)
+      %p.macos-dashboard-description 本月加班總時數
+      
+  .macos-card
+    .macos-card-body{style: "text-align: center;"}
+      .macos-dashboard-icon
+        %i.fas.fa-exclamation-triangle{style: "color: var(--macos-red);"}
+      %h3.macos-dashboard-title= @overtime_summary[:violations_count]
+      %p.macos-dashboard-description 法規違規項目
+
+/ Action Buttons
+.macos-card
+  .macos-card-actions
+    = link_to batch_calculate_overtime_index_path, class: "macos-btn macos-btn-primary" do
+      %i.fas.fa-calculator
+      批量計算加班費
+    = link_to compliance_report_overtime_index_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-shield-alt
+      法規合規檢查
+    = link_to rates_overtime_index_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-percentage
+      加班費率設定
+
+/ Employee List with Overtime
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-list
+      員工加班費計算
+    %p.macos-card-subtitle 點擊員工查看詳細加班費計算
+    
+  .macos-card-body{style: "padding: 0;"}
+    %table.macos-table
+      %thead
+        %tr
+          %th
+            %i.fas.fa-user
+            員工姓名
+          %th
+            %i.fas.fa-clock
+            本月加班時數
+          %th
+            %i.fas.fa-dollar-sign
+            本月加班費
+          %th
+            %i.fas.fa-shield-alt
+            法規狀態
+          %th
+            %i.fas.fa-cogs
+            操作
+      %tbody
+        - @employees.each do |employee|
+          - calculator = OvertimeCalculator.new(employee, @current_month, @current_month.end_of_month)
+          - overtime_result = calculator.calculate_overtime_pay
+          - compliance_check = calculator.check_labor_law_compliance
+          %tr
+            %td
+              %div{style: "display: flex; align-items: center;"}
+                %div{style: "width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--macos-blue), var(--macos-purple)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 12px;"}
+                  = employee.name.first
+                %div
+                  %div{style: "font-weight: 500;"} #{employee.name}
+            %td
+              %span{style: "font-weight: 500; color: var(--macos-blue);"}
+                = number_with_precision(overtime_result[:summary][:total_hours], precision: 1)
+                小時
+            %td
+              %span{style: "font-weight: 500; color: var(--macos-green);"}
+                = number_to_currency(overtime_result[:total_pay], unit: "NT$ ", precision: 0)
+            %td
+              - if compliance_check.any?
+                %span.macos-badge.macos-badge-danger
+                  %i.fas.fa-exclamation-triangle
+                  #{compliance_check.count} 項違規
+              - else
+                %span.macos-badge.macos-badge-success
+                  %i.fas.fa-check
+                  符合法規
+            %td
+              .btn-group{style: "display: flex; gap: 4px;"}
+                = link_to overtime_path(employee), class: "macos-btn macos-btn-primary macos-btn-xs" do
+                  %i.fas.fa-calculator
+                  計算詳情
+                = link_to calculate_overtime_path(employee), class: "macos-btn macos-btn-secondary macos-btn-xs" do
+                  %i.fas.fa-sync
+                  重新計算
+
+/ Overtime Rates Information
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-info-circle
+      一例一休加班費率說明
+    %p.macos-card-subtitle 依據勞動基準法規定的加班費計算標準
+    
+  .macos-card-body
+    .row
+      .col-md-6
+        %h4{style: "color: var(--macos-blue); margin-bottom: 1rem;"}
+          %i.fas.fa-calendar-day
+          平日加班
+        %ul{style: "list-style: none; padding: 0;"}
+          %li{style: "margin-bottom: 0.5rem;"}
+            %i.fas.fa-clock{style: "color: var(--macos-green); margin-right: 0.5rem;"}
+            前2小時：時薪 × 1.34倍
+          %li{style: "margin-bottom: 0.5rem;"}
+            %i.fas.fa-clock{style: "color: var(--macos-orange); margin-right: 0.5rem;"}
+            超過2小時：時薪 × 1.67倍
+            
+        %h4{style: "color: var(--macos-purple); margin-bottom: 1rem; margin-top: 2rem;"}
+          %i.fas.fa-calendar-week
+          週六加班
+        %ul{style: "list-style: none; padding: 0;"}
+          %li{style: "margin-bottom: 0.5rem;"}
+            %i.fas.fa-clock{style: "color: var(--macos-blue); margin-right: 0.5rem;"}
+            全日：時薪 × 1.34倍
+            
+      .col-md-6
+        %h4{style: "color: var(--macos-red); margin-bottom: 1rem;"}
+          %i.fas.fa-bed
+          休息日加班
+        %ul{style: "list-style: none; padding: 0;"}
+          %li{style: "margin-bottom: 0.5rem;"}
+            %i.fas.fa-clock{style: "color: var(--macos-green); margin-right: 0.5rem;"}
+            前2小時：時薪 × 1.34倍
+          %li{style: "margin-bottom: 0.5rem;"}
+            %i.fas.fa-clock{style: "color: var(--macos-orange); margin-right: 0.5rem;"}
+            2-8小時：時薪 × 1.67倍
+          %li{style: "margin-bottom: 0.5rem;"}
+            %i.fas.fa-clock{style: "color: var(--macos-red); margin-right: 0.5rem;"}
+            超過8小時：時薪 × 2.0倍
+            
+        %h4{style: "color: var(--macos-orange); margin-bottom: 1rem; margin-top: 2rem;"}
+          %i.fas.fa-star
+          國定假日加班
+        %ul{style: "list-style: none; padding: 0;"}
+          %li{style: "margin-bottom: 0.5rem;"}
+            %i.fas.fa-clock{style: "color: var(--macos-red); margin-right: 0.5rem;"}
+            全日：時薪 × 2.0倍

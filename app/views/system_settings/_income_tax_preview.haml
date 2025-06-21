@@ -1,0 +1,194 @@
+.macos-preview-container
+  %h4.macos-preview-title
+    %i.fas.fa-receipt
+    所得稅預扣計算預覽
+  
+  .macos-preview-form
+    .row
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 年收入
+          %input#annual_income.macos-form-control{type: "number", value: "600000", placeholder: "請輸入年收入"}
+          %small.macos-form-help 全年薪資總額
+      
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 婚姻狀況
+          %select#marital_status.macos-form-control
+            %option{value: "single"} 單身
+            %option{value: "married"} 已婚
+      
+      .col-md-4
+        .macos-form-group
+          %label.macos-form-label 扶養人數
+          %input#dependents.macos-form-control{type: "number", value: "0", min: "0", placeholder: "扶養人數"}
+          %small.macos-form-help 每人免稅額92,000元
+    
+    .macos-form-actions
+      %button#calculate_income_tax.macos-btn.macos-btn-primary{type: "button"}
+        %i.fas.fa-calculator
+        計算所得稅
+  
+  .macos-preview-result#income_tax_result{style: "display: none;"}
+    %h5.macos-result-title 計算結果
+    
+    / 扣除額明細
+    .macos-tax-section
+      %h6.macos-section-title
+        %i.fas.fa-minus-circle
+        扣除額明細
+      .macos-result-grid
+        .macos-result-item
+          .macos-result-label 個人免稅額
+          .macos-result-value#personal_exemption --
+        .macos-result-item
+          .macos-result-label 扶養免稅額
+          .macos-result-value#dependent_exemption --
+        .macos-result-item
+          .macos-result-label 標準扣除額
+          .macos-result-value#standard_deduction --
+        .macos-result-item
+          .macos-result-label 薪資特別扣除額
+          .macos-result-value#salary_deduction --
+    
+    / 稅額計算
+    .macos-tax-section
+      %h6.macos-section-title
+        %i.fas.fa-calculator
+        稅額計算
+      .macos-result-grid
+        .macos-result-item
+          .macos-result-label 年收入
+          .macos-result-value#total_income --
+        .macos-result-item
+          .macos-result-label 總扣除額
+          .macos-result-value#total_deductions --
+        .macos-result-item
+          .macos-result-label 課稅所得
+          .macos-result-value#taxable_income --
+        .macos-result-item
+          .macos-result-label 適用稅率
+          .macos-result-value#tax_rate --
+        .macos-result-item
+          .macos-result-label 年度應納稅額
+          .macos-result-value#annual_tax --
+        .macos-result-item
+          .macos-result-label 月扣繳稅額
+          .macos-result-value#monthly_tax --
+    
+    / 稅率級距表
+    .macos-tax-brackets
+      %h6.macos-section-title 綜合所得稅稅率級距表
+      .macos-table-container
+        %table.macos-table.macos-table-sm
+          %thead
+            %tr
+              %th 課稅所得淨額
+              %th 稅率
+              %th 累進差額
+          %tbody
+            %tr
+              %td 560,000元以下
+              %td 5%
+              %td 0
+            %tr
+              %td 560,001 - 1,260,000元
+              %td 12%
+              %td 39,200
+            %tr
+              %td 1,260,001 - 2,520,000元
+              %td 20%
+              %td 140,000
+            %tr
+              %td 2,520,001 - 4,720,000元
+              %td 30%
+              %td 392,000
+            %tr
+              %td 4,720,001元以上
+              %td 40%
+              %td 864,000
+
+:css
+  .macos-tax-section {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(0, 122, 255, 0.1);
+  }
+  
+  .macos-tax-brackets {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--macos-radius);
+    padding: 1.5rem;
+    border: 1px solid rgba(0, 122, 255, 0.2);
+  }
+  
+  .macos-table-sm {
+    font-size: 0.9rem;
+    
+    th, td {
+      padding: 0.5rem;
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const calculateBtn = document.getElementById('calculate_income_tax');
+    const resultDiv = document.getElementById('income_tax_result');
+    
+    calculateBtn.addEventListener('click', function() {
+      const annualIncome = parseFloat(document.getElementById('annual_income').value) || 0;
+      const maritalStatus = document.getElementById('marital_status').value;
+      const dependents = parseInt(document.getElementById('dependents').value) || 0;
+      
+      // 取得當前設定的扣除額
+      const personalExemption = parseFloat(document.querySelector(`[data-setting-key="income_tax_exemption_${maritalStatus}"]`)?.value) || (maritalStatus === 'married' ? 184000 : 92000);
+      const standardDeduction = parseFloat(document.querySelector(`[data-setting-key="income_tax_standard_deduction_${maritalStatus}"]`)?.value) || (maritalStatus === 'married' ? 248000 : 124000);
+      const salaryDeduction = parseFloat(document.querySelector('[data-setting-key="income_tax_salary_deduction"]')?.value) || 207000;
+      
+      // 計算扣除額
+      const dependentExemption = dependents * 92000; // 每位扶養親屬92,000元
+      const totalDeductions = personalExemption + dependentExemption + standardDeduction + salaryDeduction;
+      const taxableIncome = Math.max(annualIncome - totalDeductions, 0);
+      
+      // 計算稅額（使用累進稅率）
+      let annualTax = 0;
+      let taxRate = 0;
+      
+      if (taxableIncome <= 560000) {
+        annualTax = taxableIncome * 0.05;
+        taxRate = 5;
+      } else if (taxableIncome <= 1260000) {
+        annualTax = taxableIncome * 0.12 - 39200;
+        taxRate = 12;
+      } else if (taxableIncome <= 2520000) {
+        annualTax = taxableIncome * 0.20 - 140000;
+        taxRate = 20;
+      } else if (taxableIncome <= 4720000) {
+        annualTax = taxableIncome * 0.30 - 392000;
+        taxRate = 30;
+      } else {
+        annualTax = taxableIncome * 0.40 - 864000;
+        taxRate = 40;
+      }
+      
+      annualTax = Math.max(annualTax, 0);
+      const monthlyTax = Math.round(annualTax / 12);
+      
+      // 更新結果顯示
+      document.getElementById('personal_exemption').textContent = `NT$ ${personalExemption.toLocaleString()}`;
+      document.getElementById('dependent_exemption').textContent = `NT$ ${dependentExemption.toLocaleString()}`;
+      document.getElementById('standard_deduction').textContent = `NT$ ${standardDeduction.toLocaleString()}`;
+      document.getElementById('salary_deduction').textContent = `NT$ ${salaryDeduction.toLocaleString()}`;
+      
+      document.getElementById('total_income').textContent = `NT$ ${annualIncome.toLocaleString()}`;
+      document.getElementById('total_deductions').textContent = `NT$ ${totalDeductions.toLocaleString()}`;
+      document.getElementById('taxable_income').textContent = `NT$ ${taxableIncome.toLocaleString()}`;
+      document.getElementById('tax_rate').textContent = `${taxRate}%`;
+      document.getElementById('annual_tax').textContent = `NT$ ${Math.round(annualTax).toLocaleString()}`;
+      document.getElementById('monthly_tax').textContent = `NT$ ${monthlyTax.toLocaleString()}`;
+      
+      resultDiv.style.display = 'block';
+    });
+  });

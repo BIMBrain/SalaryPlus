@@ -1,0 +1,187 @@
+/ 頁面標題
+.macos-page-header
+  .macos-page-title
+    %h1
+      %i.fas.fa-chart-line
+      保險對帳總覽
+  .macos-page-actions
+    = link_to insurance_statements_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回列表
+
+/ 年月選擇
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-calendar
+      選擇對帳期間
+  .macos-card-body
+    = form_with url: dashboard_insurance_statements_path, method: :get, local: true, class: "macos-form" do |f|
+      .row
+        .col-md-3
+          .macos-form-group
+            = f.label :year, "年度", class: "macos-form-label"
+            = f.select :year, options_for_select((2020..Date.current.year).to_a.reverse.map { |y| [y, y] }, @year), {}, { class: "macos-form-control" }
+        .col-md-3
+          .macos-form-group
+            = f.label :month, "月份", class: "macos-form-label"
+            = f.select :month, options_for_select((1..12).map { |m| ["#{m}月", m] }, @month), {}, { class: "macos-form-control" }
+        .col-md-3
+          .macos-form-group
+            %label.macos-form-label &nbsp;
+            = f.submit "查詢", class: "macos-btn macos-btn-primary", style: "width: 100%;"
+        .col-md-3
+          .macos-form-group
+            %label.macos-form-label &nbsp;
+            = link_to export_insurance_statements_path(year: @year, month: @month, format: :csv), class: "macos-btn macos-btn-success", style: "width: 100%;" do
+              %i.fas.fa-download
+              匯出報表
+
+/ 對帳總覽
+.macos-dashboard-grid
+  - @summary.each do |item|
+    .macos-dashboard-card{class: item[:status] == 'discrepancy' ? 'macos-dashboard-card-warning' : ''}
+      .macos-dashboard-icon{class: item[:has_statement] ? 'macos-dashboard-icon-blue' : 'macos-dashboard-icon-gray'}
+        %i.fas.fa-shield-alt
+      
+      %h3.macos-dashboard-title= item[:type_name]
+      
+      .macos-dashboard-content
+        .row
+          .col-md-6
+            %strong 對帳單金額
+            %p.macos-dashboard-amount{class: item[:statement_amount] > 0 ? 'text-primary' : 'text-muted'}
+              = number_to_currency(item[:statement_amount], unit: "NT$ ", precision: 0)
+          .col-md-6
+            %strong 系統計算金額
+            %p.macos-dashboard-amount.text-info
+              = number_to_currency(item[:calculated_amount], unit: "NT$ ", precision: 0)
+        
+        - if item[:has_statement]
+          .macos-dashboard-difference{class: item[:difference] == 0 ? 'text-success' : 'text-danger'}
+            %strong 差異：
+            = number_to_currency(item[:difference], unit: "NT$ ", precision: 0)
+            - if item[:difference] == 0
+              %i.fas.fa-check-circle.text-success
+            - else
+              %i.fas.fa-exclamation-triangle.text-danger
+        - else
+          .macos-dashboard-status.text-warning
+            %i.fas.fa-upload
+            尚未上傳對帳單
+      
+      .macos-dashboard-actions
+        - if item[:has_statement]
+          = link_to item[:statement], class: "macos-btn macos-btn-sm macos-btn-info" do
+            %i.fas.fa-eye
+            查看詳情
+          - if item[:status] == 'discrepancy'
+            = link_to resolve_insurance_statement_path(item[:statement]), method: :patch, class: "macos-btn macos-btn-sm macos-btn-warning" do
+              %i.fas.fa-check
+              標記解決
+        - else
+          = link_to new_insurance_statement_path(year: @year, month: @month, statement_type: item[:type]), class: "macos-btn macos-btn-sm macos-btn-primary" do
+            %i.fas.fa-plus
+            新增對帳單
+
+/ 詳細對帳資訊
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-table
+      詳細對帳資訊 (#{@year}/#{@month.to_s.rjust(2, '0')})
+  .macos-card-body
+    .macos-table-container
+      %table.macos-table
+        %thead
+          %tr
+            %th 保險類型
+            %th 對帳單金額
+            %th 系統計算金額
+            %th 差異金額
+            %th 差異率
+            %th 狀態
+            %th 操作
+        %tbody
+          - @summary.each do |item|
+            %tr{class: item[:difference] != 0 ? 'macos-table-row-warning' : ''}
+              %td
+                %span.macos-badge.macos-badge-info= item[:type_name]
+              %td.text-right= number_to_currency(item[:statement_amount], unit: "NT$ ", precision: 0)
+              %td.text-right= number_to_currency(item[:calculated_amount], unit: "NT$ ", precision: 0)
+              %td.text-right{class: item[:difference] != 0 ? 'text-danger' : 'text-success'}
+                = number_to_currency(item[:difference], unit: "NT$ ", precision: 0)
+              %td.text-right{class: item[:difference] != 0 ? 'text-danger' : 'text-success'}
+                - if item[:calculated_amount] > 0
+                  = "#{((item[:difference].abs / item[:calculated_amount]) * 100).round(2)}%"
+                - else
+                  = "N/A"
+              %td
+                - if item[:has_statement]
+                  - case item[:status]
+                  - when 'matched'
+                    %span.macos-badge.macos-badge-success 已對帳
+                  - when 'discrepancy'
+                    %span.macos-badge.macos-badge-danger 有差異
+                  - when 'resolved'
+                    %span.macos-badge.macos-badge-secondary 已解決
+                  - else
+                    %span.macos-badge.macos-badge-warning 待對帳
+                - else
+                  %span.macos-badge.macos-badge-gray 無對帳單
+              %td
+                .macos-btn-group
+                  - if item[:has_statement]
+                    = link_to item[:statement], class: "macos-btn macos-btn-sm macos-btn-info" do
+                      %i.fas.fa-eye
+                    = link_to edit_insurance_statement_path(item[:statement]), class: "macos-btn macos-btn-sm macos-btn-secondary" do
+                      %i.fas.fa-edit
+                  - else
+                    = link_to new_insurance_statement_path(year: @year, month: @month, statement_type: item[:type]), class: "macos-btn macos-btn-sm macos-btn-primary" do
+                      %i.fas.fa-plus
+
+/ 對帳建議
+.macos-card
+  .macos-card-header
+    %h3.macos-card-title
+      %i.fas.fa-lightbulb
+      對帳建議
+  .macos-card-body
+    - discrepancy_items = @summary.select { |item| item[:difference] != 0 && item[:has_statement] }
+    - missing_statements = @summary.select { |item| !item[:has_statement] }
+    
+    - if discrepancy_items.any?
+      .macos-alert.macos-alert-warning
+        %h4
+          %i.fas.fa-exclamation-triangle
+          發現差異項目
+        %ul
+          - discrepancy_items.each do |item|
+            %li
+              %strong= item[:type_name]
+              差異金額：
+              %span.text-danger= number_to_currency(item[:difference], unit: "NT$ ", precision: 0)
+        %p 建議檢查以下項目：
+        %ul
+          %li 確認對帳單金額是否正確輸入
+          %li 檢查該月份是否有特殊調整項目
+          %li 確認員工保險異動是否已正確處理
+          %li 檢查是否有補繳或退費情況
+    
+    - if missing_statements.any?
+      .macos-alert.macos-alert-info
+        %h4
+          %i.fas.fa-info-circle
+          缺少對帳單
+        %p 以下保險類型尚未上傳對帳單：
+        %ul
+          - missing_statements.each do |item|
+            %li= item[:type_name]
+        %p 請盡快上傳對帳單以完成對帳作業。
+    
+    - if discrepancy_items.empty? && missing_statements.empty?
+      .macos-alert.macos-alert-success
+        %h4
+          %i.fas.fa-check-circle
+          對帳完成
+        %p 本月份所有保險項目對帳無誤，系統計算金額與對帳單金額一致。
