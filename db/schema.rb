@@ -10,10 +10,64 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_06_19_154000) do
+ActiveRecord::Schema.define(version: 2025_06_27_000001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "attendance_records", force: :cascade do |t|
+    t.bigint "employee_id", null: false
+    t.date "attendance_date", null: false
+    t.string "day_of_week"
+    t.boolean "is_holiday", default: false
+    t.decimal "regular_hours_required", precision: 4, scale: 2, default: "0.0"
+    t.decimal "regular_hours_actual", precision: 4, scale: 2, default: "0.0"
+    t.decimal "regular_hours_extra", precision: 4, scale: 2, default: "0.0"
+    t.decimal "weekday_overtime_required", precision: 4, scale: 2, default: "0.0"
+    t.decimal "weekday_overtime_actual", precision: 4, scale: 2, default: "0.0"
+    t.decimal "weekday_overtime_extra", precision: 4, scale: 2, default: "0.0"
+    t.decimal "weekend_overtime_required", precision: 4, scale: 2, default: "0.0"
+    t.decimal "weekend_overtime_actual", precision: 4, scale: 2, default: "0.0"
+    t.decimal "weekend_overtime_extra", precision: 4, scale: 2, default: "0.0"
+    t.decimal "personal_leave_days", precision: 3, scale: 1, default: "0.0"
+    t.decimal "menstrual_leave_days", precision: 3, scale: 1, default: "0.0"
+    t.decimal "annual_leave_days", precision: 3, scale: 1, default: "0.0"
+    t.decimal "sick_leave_days", precision: 3, scale: 1, default: "0.0"
+    t.decimal "compensatory_leave_days", precision: 3, scale: 1, default: "0.0"
+    t.decimal "business_trip_days", precision: 3, scale: 1, default: "0.0"
+    t.time "shift1_clock_in"
+    t.time "shift1_clock_out"
+    t.boolean "shift1_late", default: false
+    t.boolean "shift1_early_leave", default: false
+    t.boolean "shift1_absent", default: false
+    t.decimal "overtime1_required", precision: 4, scale: 2, default: "0.0"
+    t.decimal "overtime1_actual", precision: 4, scale: 2, default: "0.0"
+    t.decimal "overtime1_extra", precision: 4, scale: 2, default: "0.0"
+    t.time "overtime1_clock_in"
+    t.time "overtime1_clock_out"
+    t.boolean "overtime1_late", default: false
+    t.boolean "overtime1_early_leave", default: false
+    t.boolean "overtime1_absent", default: false
+    t.time "overtime2_clock_in"
+    t.time "overtime2_clock_out"
+    t.boolean "overtime2_late", default: false
+    t.boolean "overtime2_early_leave", default: false
+    t.boolean "overtime2_absent", default: false
+    t.integer "late_count", default: 0
+    t.integer "early_leave_count", default: 0
+    t.integer "absent_count", default: 0
+    t.integer "missing_punch_count", default: 0
+    t.string "filter_status"
+    t.string "exception_status"
+    t.text "notes"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["attendance_date", "is_holiday"], name: "index_attendance_records_on_attendance_date_and_is_holiday"
+    t.index ["attendance_date"], name: "index_attendance_records_on_attendance_date"
+    t.index ["employee_id", "attendance_date"], name: "index_attendance_records_on_employee_id_and_attendance_date", unique: true
+    t.index ["employee_id"], name: "index_attendance_records_on_employee_id"
+    t.index ["is_holiday"], name: "index_attendance_records_on_is_holiday"
+  end
 
   create_table "attendances", force: :cascade do |t|
     t.bigint "employee_id", null: false
@@ -243,6 +297,7 @@ ActiveRecord::Schema.define(version: 2025_06_19_154000) do
     t.index ["start_date"], name: "index_terms_on_start_date"
   end
 
+  add_foreign_key "attendance_records", "employees"
   add_foreign_key "attendances", "employees"
   add_foreign_key "attendances", "employees", column: "approved_by_id"
 

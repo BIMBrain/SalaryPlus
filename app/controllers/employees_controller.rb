@@ -94,6 +94,66 @@ class EmployeesController < ApplicationController
     session.delete(:import_errors)
   end
 
+  # OCR 辨識人事資料卡
+  def ocr_upload
+    # 顯示 OCR 上傳頁面
+    @employee = Employee.new
+  end
+
+  def process_ocr
+    if params[:hr_card_file].blank?
+      flash[:error] = '請選擇要辨識的人事資料卡檔案'
+      redirect_to ocr_upload_employees_path and return
+    end
+
+    begin
+      # 儲存上傳的檔案
+      uploaded_file = params[:hr_card_file]
+      temp_file_path = Rails.root.join('tmp', 'ocr', "#{SecureRandom.hex(8)}_#{uploaded_file.original_filename}")
+      FileUtils.mkdir_p(File.dirname(temp_file_path))
+      
+      File.open(temp_file_path, 'wb') do |file|
+        file.write(uploaded_file.read)
+      end
+
+      # 進行 OCR 辨識
+      ocr_result = OcrService.process_hr_card(temp_file_path)
+
+      # 清理臨時檔案
+      File.delete(temp_file_path) if File.exist?(temp_file_path)
+
+      if ocr_result[:success]
+        # 將辨識結果存入 session，用於預填表單
+        session[:ocr_data] = ocr_result[:data]
+        session[:ocr_raw_text] = ocr_result[:raw_text]
+        
+        flash[:success] = 'OCR 辨識成功！請檢查並確認以下資料'
+        redirect_to new_employee_path(ocr: true)
+      else
+        flash[:error] = "OCR 辨識失敗：#{ocr_result[:error]}"
+        redirect_to ocr_upload_employees_path
+      end
+
+    rescue => e
+      Rails.logger.error "OCR 處理錯誤: #{e.message}"
+      flash[:error] = "OCR 處理失敗：#{e.message}"
+      redirect_to ocr_upload_employees_path
+    end
+  end
+
+  # 獲取 OCR 辨識結果的 JSON API
+  def ocr_result
+    ocr_data = session[:ocr_data] || {}
+    render json: { success: true, data: ocr_data }
+  end
+
+  # 清除 OCR 資料
+  def clear_ocr_data
+    session.delete(:ocr_data)
+    session.delete(:ocr_raw_text)
+    render json: { success: true }
+  end
+
   private
 
   def employee_params

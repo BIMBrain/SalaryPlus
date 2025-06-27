@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   resources :employees do
     get "inactive", on: :collection
     get "parttimers", on: :collection
+    get "ocr_upload", on: :collection
+    post "process_ocr", on: :collection
+    get "ocr_result", on: :collection
+    delete "clear_ocr_data", on: :collection
 
     resources :salaries
     get "salaries/recent/:employee_id", to: "salaries#recent", as: :salaries_recent
@@ -31,6 +35,14 @@ Rails.application.routes.draw do
       get :daily_summary
       get :monthly_report
       get :export
+    end
+  end
+
+  resources :attendance_records do
+    collection do
+      post :import
+      get :export
+      get :monthly_summary
     end
   end
 

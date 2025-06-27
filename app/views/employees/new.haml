@@ -6,7 +6,268 @@
       新增員工資料
     %p.macos-card-subtitle 填寫新員工的基本資料和聯絡資訊
 
+  / OCR 功能區域
+  - if params[:ocr] == 'true'
+    .ocr-success-banner
+      .ocr-banner-content
+        %i.fas.fa-check-circle
+        %span OCR 辨識完成！以下資料已自動填入，請檢查並確認
+        %button.btn-clear-ocr{onclick: "clearOcrData()"}
+          %i.fas.fa-times
+          清除 OCR 資料
+  - else
+    .ocr-quick-access
+      .ocr-option-card
+        .ocr-icon
+          %i.fas.fa-camera-retro
+        .ocr-content
+          %h3 使用 OCR 辨識
+          %p 上傳人事資料卡，自動填入員工資料
+          = link_to ocr_upload_employees_path, class: "btn btn-ocr" do
+            %i.fas.fa-upload
+            開始 OCR 辨識
+
 = render "form", employee: @employee
+
+/ Back Button
+.macos-card
+  .macos-card-actions
+    = link_to employees_path, class: "macos-btn macos-btn-secondary" do
+      %i.fas.fa-arrow-left
+      返回員工列表
+
+:css
+  .ocr-success-banner {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  .ocr-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .ocr-banner-content i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+  }
+
+  .btn-clear-ocr {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-clear-ocr:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .ocr-quick-access {
+    margin-bottom: 2rem;
+  }
+
+  .ocr-option-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .ocr-option-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+  }
+
+  .ocr-icon {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ocr-icon i {
+    font-size: 2rem;
+    color: #ffd700;
+  }
+
+  .ocr-content {
+    flex: 1;
+  }
+
+  .ocr-content h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .ocr-content p {
+    margin: 0 0 1rem 0;
+    opacity: 0.9;
+    font-size: 1.1rem;
+  }
+
+  .btn-ocr {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-ocr:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    color: white;
+    text-decoration: none;
+  }
+
+  @media (max-width: 768px) {
+    .ocr-option-card {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+
+    .ocr-banner-content {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    // 如果是 OCR 模式，自動填入資料
+    if (window.location.search.includes('ocr=true')) {
+      loadOcrData();
+    }
+  });
+
+  function loadOcrData() {
+    fetch('/employees/ocr_result')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.data) {
+          fillFormWithOcrData(data.data);
+        }
+      })
+      .catch(error => {
+        console.error('載入 OCR 資料失敗:', error);
+      });
+  }
+
+  function fillFormWithOcrData(ocrData) {
+    // 基本資料
+    setFieldValue('employee_name', ocrData.name);
+    setFieldValue('employee_chinese_name', ocrData.name);
+    setFieldValue('employee_id_number', ocrData.id_number);
+    setFieldValue('employee_birthday', ocrData.birth_date);
+    setFieldValue('employee_gender', ocrData.gender);
+    setFieldValue('employee_phone_number', ocrData.phone);
+    setFieldValue('employee_mobile_number', ocrData.phone);
+    setFieldValue('employee_personal_email', ocrData.email);
+    setFieldValue('employee_residence_address', ocrData.address);
+    setFieldValue('employee_current_address', ocrData.address);
+    
+    // 學歷資料
+    if (ocrData.education) {
+      setFieldValue('employee_school_name', ocrData.education.school);
+      setFieldValue('employee_major', ocrData.education.department);
+      setFieldValue('employee_education_level', ocrData.education.degree);
+    }
+    
+    // 緊急聯絡人
+    setFieldValue('employee_emergency_contact_name', ocrData.emergency_contact_name);
+    setFieldValue('employee_emergency_contact_phone', ocrData.emergency_contact_phone);
+    setFieldValue('employee_emergency_contact_relationship', ocrData.emergency_contact_relationship);
+    
+    // 其他資料
+    setFieldValue('employee_blood_type', ocrData.blood_type);
+    setFieldValue('employee_height', ocrData.height);
+    setFieldValue('employee_weight', ocrData.weight);
+    setFieldValue('employee_marital_status', ocrData.marital_status);
+    setFieldValue('employee_military_service_status', ocrData.military_status);
+    setFieldValue('employee_special_skills', ocrData.skills);
+    setFieldValue('employee_hobbies', ocrData.interests);
+    
+    // 高亮已填入的欄位
+    highlightFilledFields();
+  }
+
+  function setFieldValue(fieldName, value) {
+    if (!value) return;
+    
+    const field = document.querySelector(`[name="${fieldName}"]`);
+    if (field) {
+      field.value = value;
+      field.classList.add('ocr-filled');
+      
+      // 觸發 change 事件
+      field.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+
+  function highlightFilledFields() {
+    const style = document.createElement('style');
+    style.textContent = `
+      .ocr-filled {
+        background-color: #f0fdf4 !important;
+        border-color: #10b981 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+      }
+      
+      .ocr-filled:focus {
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function clearOcrData() {
+    if (confirm('確定要清除 OCR 辨識的資料嗎？')) {
+      fetch('/employees/clear_ocr_data', { method: 'DELETE' })
+        .then(() => {
+          // 移除 URL 中的 ocr 參數
+          const url = new URL(window.location);
+          url.searchParams.delete('ocr');
+          window.history.replaceState({}, '', url);
+          
+          // 重新載入頁面
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('清除 OCR 資料失敗:', error);
+        });
+    }
+  }
 
 / Back Button
 .macos-card

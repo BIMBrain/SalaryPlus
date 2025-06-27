@@ -1,0 +1,510 @@
+/ OCR 人事資料卡辨識上傳頁面
+.ocr-upload-container
+  .ocr-header
+    %h1.ocr-title
+      %i.fas.fa-camera-retro
+      OCR 人事資料卡辨識
+    %p.ocr-subtitle 上傳人事資料卡，系統將自動辨識並填入員工資料
+
+  .ocr-upload-card
+    = form_with url: process_ocr_employees_path, method: :post, multipart: true, local: true, class: "ocr-form" do |form|
+      .upload-area
+        .upload-zone#uploadZone
+          .upload-icon
+            %i.fas.fa-cloud-upload-alt
+          .upload-text
+            %h3 拖拽檔案到此處或點擊上傳
+            %p 支援格式：JPG, PNG, PDF, DOC, DOCX
+            %p.file-size-hint 檔案大小限制：10MB
+          = form.file_field :hr_card_file, accept: "image/*,.pdf,.doc,.docx", class: "file-input", id: "hrCardFile"
+          
+        .file-preview#filePreview.hidden
+          .preview-content
+            .preview-icon
+              %i.fas.fa-file-alt
+            .preview-info
+              %span.file-name
+              %span.file-size
+            .preview-actions
+              %button.btn.btn-remove{type: "button", onclick: "removeFile()"}
+                %i.fas.fa-times
+                移除檔案
+
+      .upload-options
+        .option-group
+          %label.checkbox-label
+            = form.check_box :auto_fill, checked: true
+            %span.checkmark
+            辨識成功後自動填入新增員工表單
+        
+        .option-group
+          %label.checkbox-label
+            = form.check_box :save_raw_text
+            %span.checkmark
+            保存原始辨識文字（用於除錯）
+
+      .upload-actions
+        = form.submit "開始 OCR 辨識", class: "btn btn-primary btn-large", id: "submitBtn", disabled: true
+        = link_to "返回員工列表", employees_path, class: "btn btn-secondary"
+
+  .ocr-info-section
+    .info-card
+      %h3
+        %i.fas.fa-info-circle
+        OCR 辨識說明
+      %ul.info-list
+        %li 系統支援繁體中文和英文辨識
+        %li 建議上傳清晰、光線充足的圖片
+        %li 表格式文件辨識效果較佳
+        %li 辨識後請仔細檢查資料準確性
+
+    .supported-formats
+      %h3
+        %i.fas.fa-file-image
+        支援格式
+      .format-grid
+        .format-item
+          %i.fas.fa-image
+          %span 圖片檔案
+          %small JPG, PNG, BMP, TIFF
+        .format-item
+          %i.fas.fa-file-pdf
+          %span PDF 文件
+          %small 可搜尋的 PDF
+        .format-item
+          %i.fas.fa-file-word
+          %span Word 文件
+          %small DOC, DOCX
+
+:css
+  .ocr-upload-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+  }
+
+  .ocr-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: white;
+  }
+
+  .ocr-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .ocr-title i {
+    margin-right: 1rem;
+    color: #ffd700;
+  }
+
+  .ocr-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  .ocr-upload-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+  }
+
+  .upload-area {
+    margin-bottom: 2rem;
+  }
+
+  .upload-zone {
+    border: 3px dashed #e0e6ed;
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .upload-zone:hover {
+    border-color: #667eea;
+    background: #f1f5f9;
+    transform: translateY(-2px);
+  }
+
+  .upload-zone.dragover {
+    border-color: #667eea;
+    background: #e0e7ff;
+    transform: scale(1.02);
+  }
+
+  .upload-icon i {
+    font-size: 4rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+
+  .upload-text h3 {
+    font-size: 1.5rem;
+    color: #334155;
+    margin-bottom: 0.5rem;
+  }
+
+  .upload-text p {
+    color: #64748b;
+    margin: 0.25rem 0;
+  }
+
+  .file-size-hint {
+    font-size: 0.9rem;
+    color: #94a3b8;
+  }
+
+  .file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .file-preview {
+    border: 2px solid #10b981;
+    border-radius: 15px;
+    padding: 2rem;
+    background: #f0fdf4;
+    text-align: center;
+  }
+
+  .file-preview.hidden {
+    display: none;
+  }
+
+  .preview-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .preview-icon i {
+    font-size: 2rem;
+    color: #10b981;
+  }
+
+  .preview-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .file-name {
+    font-weight: 600;
+    color: #065f46;
+  }
+
+  .file-size {
+    font-size: 0.9rem;
+    color: #059669;
+  }
+
+  .btn-remove {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-remove:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+  }
+
+  .upload-options {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  .option-group {
+    margin-bottom: 1rem;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+    color: #334155;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    margin-right: 0.75rem;
+    transform: scale(1.2);
+  }
+
+  .upload-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn-primary:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-secondary {
+    background: #e2e8f0;
+    color: #475569;
+  }
+
+  .btn-secondary:hover {
+    background: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  .btn-large {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  .ocr-info-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .info-card, .supported-formats {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+
+  .info-card h3, .supported-formats h3 {
+    color: #334155;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .info-card h3 i {
+    color: #3b82f6;
+  }
+
+  .supported-formats h3 i {
+    color: #10b981;
+  }
+
+  .info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .info-list li {
+    padding: 0.5rem 0;
+    color: #64748b;
+    position: relative;
+    padding-left: 1.5rem;
+  }
+
+  .info-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: bold;
+  }
+
+  .format-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .format-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .format-item:hover {
+    background: #e2e8f0;
+    transform: translateX(5px);
+  }
+
+  .format-item i {
+    font-size: 1.5rem;
+    color: #667eea;
+  }
+
+  .format-item span {
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .format-item small {
+    color: #64748b;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .ocr-upload-container {
+      padding: 1rem;
+    }
+
+    .ocr-upload-card {
+      padding: 2rem;
+    }
+
+    .ocr-info-section {
+      grid-template-columns: 1fr;
+    }
+
+    .upload-actions {
+      flex-direction: column;
+    }
+
+    .preview-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const uploadZone = document.getElementById('uploadZone');
+    const fileInput = document.getElementById('hrCardFile');
+    const filePreview = document.getElementById('filePreview');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // 拖拽功能
+    uploadZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect(files[0]);
+      }
+    });
+
+    // 點擊上傳
+    uploadZone.addEventListener('click', function() {
+      fileInput.click();
+    });
+
+    // 檔案選擇
+    fileInput.addEventListener('change', function(e) {
+      if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    function handleFileSelect(file) {
+      // 檢查檔案大小 (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('檔案大小不能超過 10MB');
+        return;
+      }
+
+      // 檢查檔案類型
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp', 'image/tiff', 
+                           'application/pdf', 'application/msword', 
+                           'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      
+      if (!allowedTypes.includes(file.type)) {
+        alert('不支援的檔案格式');
+        return;
+      }
+
+      // 顯示檔案預覽
+      showFilePreview(file);
+      
+      // 啟用提交按鈕
+      submitBtn.disabled = false;
+    }
+
+    function showFilePreview(file) {
+      uploadZone.style.display = 'none';
+      filePreview.classList.remove('hidden');
+      
+      const fileName = filePreview.querySelector('.file-name');
+      const fileSize = filePreview.querySelector('.file-size');
+      
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // 全域函數：移除檔案
+    window.removeFile = function() {
+      fileInput.value = '';
+      uploadZone.style.display = 'block';
+      filePreview.classList.add('hidden');
+      submitBtn.disabled = true;
+    };
+  });
+

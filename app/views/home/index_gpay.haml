@@ -60,7 +60,7 @@
     .gpay-actions-section
       .section-header
         %h2.section-title 快速操作
-        .section-subtitle 常用功能快速訪問
+        .section-subtitle 常用功能快速訊問
       
       .gpay-actions-grid
         = link_to employees_path, class: "gpay-action-card action-employees" do
@@ -152,4 +152,30 @@
             %span 備份系統
             .status-badge.badge-online 正常
 
+/ Navigation Bar (Floating)
+.gpay-navbar
+  .navbar-content
+    .navbar-brand
+      %i.fas.fa-coins
+      %span SalaryPlus
+    .navbar-nav
+      = link_to employees_path, class: "nav-item" do
+        %i.fas.fa-users
+        %span 員工
+      = link_to payrolls_path, class: "nav-item" do
+        %i.fas.fa-calculator
+        %span 薪資
+      = link_to attendances_path, class: "nav-item" do
+        %i.fas.fa-clock
+        %span 出勤
+      = link_to reports_path, class: "nav-item" do
+        %i.fas.fa-chart-line
+        %span 報表
+      = link_to system_settings_path, class: "nav-item" do
+        %i.fas.fa-cogs
+        %span 設定
+    .navbar-actions
+      .user-profile
+        %i.fas.fa-user-circle
+        %span 管理員
 
